@@ -102,7 +102,7 @@ fit7<- glm(data=comp, Q6~Q3+Q5+DrinkYN+ZEduc+ZIncom45+Age+ZAlcTox+ZCESDFU+ZAUDIT
 # Simulate
 set.seed(1234)
 sim.data <- list()
-for (i in 1:200) {
+for (i in 1:5) {
   X <- as.data.frame(rmvnorm(60, mean=rep(0,6), sigma=corrmat))
   names(X) <- c('ZEduc', 'ZIncom45', 'Age', 'ZAlcTox', 'ZCESDFU', 'ZAUDIT')
   X$PID <- 1:60
@@ -145,7 +145,7 @@ for (i in 1:200) {
   
   X$groupErr <- rnorm(60, mean=0, sd=sigmaPID)[X$PID]
   X$groupErr2 <- rnorm(60, mean=0, sd=sigmaPID)[X$PID]
-  X$MissedDose <- int +X$groupErr+b1*as.numeric(as.character(X$DrinkYN))+b3*X$ZAlcTox+b2*X$Day+b4*as.numeric(as.character(X$DrinkYN))*X$Day
+  X$MissedDose <- predict(MD,X,allow.new.levels=TRUE)
   X$MissedDose <- 1/(1+exp(-X$MissedDose))
   X$MissedDose <- rbinom(2700, 1, prob=X$MissedDose)
   
@@ -159,7 +159,7 @@ rm(comp, sigma, X, b1, b2,b3,b4, fit1, fit2, fit3, fit4, fit5, fit6, fit7,
 l1 <- sim.data[[1]]
 
 ## Create MISSINGNESS
-rremove <- function(nrem, x) {
+rremove <- function(nrem, x) { # this literally just randomly removes nrem columns. Like, the entire column. Why???
   id <- sample(length(x), nrem)
   x[id] <- NA
   x
@@ -167,33 +167,16 @@ rremove <- function(nrem, x) {
 
 grps <- list(X='Q1',A=c('Q2','Q3'),B=c('Q4','Q5'),C=c('Q6','Q7'))
 
-split.form <- function(set,grps) {
-  grp <- sample(toupper(letters[1:3]),1)
-  out <- apply(set,1,function(x){
-    if (grp=="A"){
-      x[grps$A] <- NA
-    }
-    else if (grp == "B")
-    {
-      x[grps$B] <- NA
-    }
-    else {
-      x[grps$C] <- NA
-    }
-  })
-  out
-}
-  
-s <- split.form(X,grps)
-  
-  
-  # This is wrong?? Questions about Split Form
-  set[set$Day >= bound, c('Q1','Q2','Q3','Q4','Q5','Q6','Q7')] <- t(apply(set[set$Day>=bound,], MARGIN=1, function(x) {rremove(nrem=n, x=x[,c('Q1','Q2','Q3','Q4','Q5','Q6','Q7')])}))
+split.form <- function(set,grps){
+  set$block[sample(1:nrow(set),nrow(set),FALSE)] <- c('A','B','C')
+  set[set$block == "A",grps$A] <- NA
+  set[set$block == "B",grps$B] <- NA
+  set[set$block == "C",grps$C] <- NA
   set
 }
 
 
-wave.des <- function(set, nmiss, ...) {
+wave.des <- function(set, nmiss, ...) { # nmiss is the number of days each person would miss? 11?? Like, miss a fourth of the days?
   id <- replicate(60, sample(2:44, size=nmiss))
   for (i in 1:60) {
     set[set$PID==i & set$Day %in% id[,i], c('Q1','Q2','Q3','Q4','Q5','Q6','Q7')] <- NA
@@ -208,36 +191,65 @@ wave.des <- function(set, nmiss, ...) {
 #                                                                         
 # }
 
-imp1 <- list()
+# Step 1 - Apply PM methods to simulated datasets
 set.seed(917236)
-for(j in c(2,4,6)) {
-  new.data <-lapply(sim.data, function(x) {split.form(x, n=j, bound=0)})
-  imp1[[j/2]] <- lapply(new.data, function(x) {mice(x, m=5)})
+split.pm <- lapply(sim.data,function(x){split.form(x,grps)})
+wave.pm <- lapply(sim.data,function(x){wave.des(x,11)})
+
+# Step 2 - Impute simulated datasets, for both methods
+split.imp <- lapply(split.pm, function(x) {mice(x, m=5)})
+split.data <- lapply(split.imp,function(x) {complete(x,1)})
+
+wave.imp <- lapply(wave.pm, function(x) {mice(x, m=5)})
+wave.data <- lapply(wave.imp,function(x) {complete(x,1)})
+
+# for(j in c(2,4,6)) { # 2, 4, 6? Why?
+#   new.data <-lapply(sim.data, function(x) {split.form(x, grps)})
+#   split.imp[[j/2]] <- lapply(new.data, function(x) {mice(x, m=5)})
+# }
+
+# l1.split <- split.form(l1, grps)
+# l1.split.imp <- mice(l1, m=5)
+# l1.split.imp2 <- mice(l1, m=50)
+
+# imp2 <- list()
+# set.seed(917236)
+# for(j in c(2,4,6)) {
+#   new.data <-lapply(sim.data, function(x) {split.form(x, n=j, bound=2)})
+#   imp2[[j/2]] <- lapply(new.data, function(x) {mice(x, m=5)})
+# } 
+
+# wave.imp <- list()
+# set.seed(918273)
+# for(i in c(11, 22, 33)) {
+#   new.data <- lapply(sim.data, function(x) {wave.des(set=x, nmiss=i)})
+#   wave.imp[[i/11]] <- lapply(new.data, function(x) {mice(x, m=5)})
+# }
+
+# Step 3 - Build models from imputed simulation data for both methods
+set.seed(12345)
+splitmods <- list()
+for (i in 1:length(split.data)){
+  dat <- data.frame(split.data[i])
+  model <- glm(MissedDose ~ DrinkYN*Day + ZAlcTox, data = dat, family=binomial(link=logit))
+  # No "+ (1|PID)" because the data doesn't have PID, it indexes the rows as 1,1.1,1.2,...,2,2.1,2.2,...Change this?
+  splitmods[i] <- data.frame(model$coefficients)
 }
 
-l1 <- split.form(l1, n=4, bound=0)
-imp <- mice(l1, m=5)
-imp2 <- mice(l1, m=50)
-
-
-
-imp2 <- list()
-set.seed(917236)
-for(j in c(2,4,6)) {
-  new.data <-lapply(sim.data, function(x) {split.form(x, n=j, bound=2)})
-  imp2[[j/2]] <- lapply(new.data, function(x) {mice(x, m=5)})
-} 
-
-
-imp3 <- list()
-set.seed(918273)
-for(i in c(11, 22, 33)) {
-  new.data <- lapply(sim.data, function(x) {wave.des(set=x, nmiss=i)})
-  imp3[[i/11]] <- lapply(new.data, function(x) {mice(x, m=5)})
+set.seed(12345)
+wavemods <- list()
+for (i in 1:length(wave.data)){
+  dat <- data.frame(wave.data[i])
+  model <- glm(MissedDose ~ DrinkYN*Day + ZAlcTox, data = dat, family=binomial(link=logit))
+  # No "+ (1|PID)" because the data doesn't have PID, it indexes the rows as 1,1.1,1.2,...,2,2.1,2.2,...Change this?
+  wavemods[i] <- data.frame(model$coefficients)
 }
 
-
-
+# Step 4 - Calculate mean parameter estimates for both methods
+split.means
+for (i in 1:5){ # there are 5 parameter estimates
+  
+}
 
 analyze.comp <- function(df, ...) {
   fit <- glmer(data=df, MissedDose~DrinkYN+ZAlcTox+Day+(1|PID), family=binomial(link=logit),
@@ -266,12 +278,10 @@ beep(2, expr= full.res <- lapply(sim.data, function(x) {analyze.comp(x)}))
 
 
 mean(unlist(lapply(full.res, function(x) {abs(x[10]-(0.2))})))
-mean(unlist(lapply(full.res, function(x) {abs(x[10]-(0.2))/0.2})))
+mean(unlist(lapply(full.res, function(x) {abs(x[10]-(0.2))/0.2})))          # What is this???
 mean(unlist(lapply(full.res, function(x) {(x[10]-(0.2))**2})))
 mean(unlist(lapply(full.res, function(x) {(x[11]<0.2)&(x[12]>0.2)})))
 mean(unlist(lapply(full.res, function(x) {x[12]-x[11]})))
-
-
 
 
 mi.ml <- function(set,...) {
@@ -283,7 +293,7 @@ mi.ml <- function(set,...) {
     res[3,1], res[3,6], res[3,7], res[3,9], res[4,1], res[4,6], res[4,7], res[4,9])
 }
 
-fit <- with(imp, glmer(MissedDose~DrinkYN+ZAlcTox+Day+(1 |PID), family=binomial(link=logit),
+fit <- with(split.imp, glmer(MissedDose~DrinkYN+ZAlcTox+Day+(1 |PID), family=binomial(link=logit),
                        control=glmerControl(optimizer='bobyqa', optCtrl = list(maxfun=2000))))
 fit2 <- with(imp2, glmer(MissedDose~DrinkYN+ZAlcTox+Day+(1 |PID), family=binomial(link=logit),
                          control=glmerControl(optimizer='bobyqa', optCtrl = list(maxfun=2000))))
