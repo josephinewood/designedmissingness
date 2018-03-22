@@ -197,11 +197,22 @@ split.pm <- lapply(sim.data,function(x){split.form(x,grps)})
 wave.pm <- lapply(sim.data,function(x){wave.des(x,11)})
 
 # Step 2 - Impute simulated datasets, for both methods
-split.imp <- lapply(split.pm, function(x) {mice(x, m=5)})
-split.data <- lapply(split.imp,function(x) {complete(x,1)})
+split.imp <- lapply(split.pm, function(x) {mice(x, m=5)}) # loop through the split.imps in the complete function
+split.data <- rep(NA,length(split.imp))
+for (i in 1:length(split.imp)){
+  split.data[i] <- list(lapply(split.imp,function(x) {complete(x,i)}))
+}
+
+s1 <- data.frame(split.data[1][1])
+s3 <- data.frame(split.data[3][1]) # very similar, but I guess that is obvious as the missingness isn't a lot
+w1 <- data.frame(wave.data[1][1])
+
 
 wave.imp <- lapply(wave.pm, function(x) {mice(x, m=5)})
-wave.data <- lapply(wave.imp,function(x) {complete(x,1)})
+wave.data <- rep(NA,length(wave.imp))
+for (i in 1:length(wave.imp)){
+  wave.data[i] <- list(lapply(wave.imp,function(x) {complete(x,i)}))
+}
 
 # for(j in c(2,4,6)) { # 2, 4, 6? Why?
 #   new.data <-lapply(sim.data, function(x) {split.form(x, grps)})
@@ -227,29 +238,40 @@ wave.data <- lapply(wave.imp,function(x) {complete(x,1)})
 # }
 
 # Step 3 - Build models from imputed simulation data for both methods
-set.seed(12345)
-splitmods <- list()
-for (i in 1:length(split.data)){
-  dat <- data.frame(split.data[i])
-  model <- glm(MissedDose ~ DrinkYN*Day + ZAlcTox, data = dat, family=binomial(link=logit))
-  # No "+ (1|PID)" because the data doesn't have PID, it indexes the rows as 1,1.1,1.2,...,2,2.1,2.2,...Change this?
-  splitmods[i] <- data.frame(model$coefficients)
+# Result: a list of lists of model coefficients for each method
+# Coefficient order: Intercept, DrinkYN2, Day, ZAlcTox, and DrinkYN2:Day
+
+mod.maker <- function(dat){
+  mods <- NULL
+  for (i in 1:length(split.pm)){
+    df <- data.frame(dat[[1]][[i]])
+    model <- glm(MissedDose ~ DrinkYN*Day + ZAlcTox, data = df, family=binomial(link=logit))
+    # No "+ (1|PID)" because the data doesn't have PID, it indexes the rows as 1,1.1,1.2,...,2,2.1,2.2,...Change this?
+    mods <- rbind(mods,model$coefficients)
+  }
+  mods
 }
 
 set.seed(12345)
-wavemods <- list()
-for (i in 1:length(wave.data)){
-  dat <- data.frame(wave.data[i])
-  model <- glm(MissedDose ~ DrinkYN*Day + ZAlcTox, data = dat, family=binomial(link=logit))
-  # No "+ (1|PID)" because the data doesn't have PID, it indexes the rows as 1,1.1,1.2,...,2,2.1,2.2,...Change this?
-  wavemods[i] <- data.frame(model$coefficients)
+#splitmods <- list()
+splitmods <- NULL
+for (i in 1:length(split.pm)){
+  splitmods[i] <- list(mod.maker(split.data[i]))
+}
+
+# models are the same for all five data sets??? maybe the sets are too similar?
+# models are the same for split and wave??? wtf they aren't the same, though
+
+set.seed(12345)
+#wavemods <- list()
+wavemods <- NULL
+for (i in 1:length(wave.pm)){
+  wavemods[i] <- list(mod.maker(wave.data[i]))
 }
 
 # Step 4 - Calculate mean parameter estimates for both methods
-split.means
-for (i in 1:5){ # there are 5 parameter estimates
-  
-}
+split.means <- colMeans(splitmods)
+wave.means <- colMeans(wavemods)
 
 analyze.comp <- function(df, ...) {
   fit <- glmer(data=df, MissedDose~DrinkYN+ZAlcTox+Day+(1|PID), family=binomial(link=logit),
