@@ -37,10 +37,29 @@ comp$Q3 <- as.factor(comp$Q3)
 comp$Q4 <- as.factor(comp$Q4)
 comp$Q5 <- as.factor(comp$Q5)
 comp$Q6 <- as.factor(comp$Q6)
-comp$Q7 <- as.integer(comp$Q7)
-comp$DrinkYN <- as.factor(comp$DrinkYN)
+comp$Q7 <- as.factor(comp$DrinkYN)
+comp$Q8 <- as.integer(comp$Q7)
 comp$MissedDose <- as.factor(comp$MissedDose)
 comp$Gender <- as.factor(comp$Gender)
+
+cols.keep <- c('PID', 'Day', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'MissedDose', 'ZEduc', 'ZIncom45', 'Gender', 'Age', 'ZAlcTox', 'ZCESDFU', 'ZAUDIT')
+
+comp <- comp[,cols.keep]
+
+no.pid <- 60
+
+pop.mod <- glm(data=comp,MissedDose~Q7+ZAlcTox+Day+Q7*Day,family=binomial(link=logit))
+
+# pop.pids <- list()
+pop.mod.coeffs <- coef(pop.mod)[2:5] # if glmer object: take the first row of coefficients, excluding the intercept, the betas are the same for each PID but the intercept varies.
+
+
+# sim.pids <- list()
+# sim.pid.means <- list()
+# 
+# for (k in 1:no.pid){  # only 59 PIDs instead of 60...is it using PID = 1 as a baseline and that intercept is 0? the other PID list have 60...oh is that because we've simulated another person? I think this is the cause. Is that an issue? Maybe just don't compare results to the original population, just to their simulated parent data set?
+#     pop.pids[[k]]<- coef(pop.mod)[[1]][[1]][k]
+# }
 
 # Correlation Matrix
 # Use model.matrix to convert factor variables to dummy encoding
@@ -91,18 +110,19 @@ round(corrmat, 2) # display the matrix, rounding values to 2 decimal places
 # }
 
 # OG fit models for the questions using variables simulated via corrmat
-fit1 <- glm(data=comp, DrinkYN~ZIncom45+Age+ZAlcTox+ZAUDIT, family=binomial(link=logit))
+fit1 <- glm(data=comp, Q7~ZIncom45+Age+ZAlcTox+ZAUDIT, family=binomial(link=logit))
 fit2<- glm(data=comp, Q1~ZEduc+ZIncom45+ZAlcTox+ZCESDFU, family=binomial(link=logit))
 fit3<- glm(data=comp, Q2~Q1+ZEduc+ZIncom45+Age+ZAlcTox+ZCESDFU+ZAUDIT+Gender, family=binomial(link=logit))
 fit4<- glm(data=comp, Q3~Q1+Q2+ZEduc+ZIncom45+ZAlcTox+ZCESDFU+Gender, family=binomial(link=logit))
 fit5<- glm(data=comp, Q4~Q1+Q2+Q3+ZEduc+ZAlcTox+ZCESDFU+ZAUDIT+Gender, family=binomial(link=logit))
 fit6<- glm(data=comp, Q5~Q1+Q3+Q4+ZEduc+ZIncom45+ZAlcTox+ZAUDIT, family=binomial(link=logit))
-fit7<- glm(data=comp, Q6~Q3+Q5+DrinkYN+ZEduc+ZIncom45+Age+ZAlcTox+ZCESDFU+ZAUDIT, family=binomial(link=logit))
+fit7<- glm(data=comp, Q6~Q3+Q5+Q7+ZEduc+ZIncom45+Age+ZAlcTox+ZCESDFU+ZAUDIT, family=binomial(link=logit))
 
 # Simulate
 set.seed(1234)
+no.sim = 5 # number of simulated datasets
 sim.data <- list()
-for (i in 1:5) {
+for (i in 1:no.sim) {
   X <- as.data.frame(rmvnorm(60, mean=rep(0,6), sigma=corrmat))
   names(X) <- c('ZEduc', 'ZIncom45', 'Age', 'ZAlcTox', 'ZCESDFU', 'ZAUDIT')
   X$PID <- 1:60
@@ -112,8 +132,8 @@ for (i in 1:5) {
   X$Day <- rep(0:44, 60) #Create a variable containing day variable 0-44
 
   # Create Variables
-  X$DrinkYN <- 1/(1+exp(-1*predict(fit1, newdata = X)))
-  X$DrinkYN <- as.factor(rbinom(2700, 1, prob = X$DrinkYN))
+  X$Q7 <- 1/(1+exp(-1*predict(fit1, newdata = X)))
+  X$Q7 <- as.factor(rbinom(2700, 1, prob = X$Q7))
   X$Q1 <- 1/(1+exp(-1*predict(fit2, newdata=X)))
   X$Q1 <- as.factor(rbinom(2700, 1, prob = X$Q1))
   X$Q2 <- 1/(1+exp(-1*predict(fit3, newdata = X)))
@@ -126,22 +146,22 @@ for (i in 1:5) {
   X$Q5 <- as.factor(rbinom(2700,1,prob=X$Q5))
   X$Q6 <- 1/(1+exp(-1*predict(fit7, newdata = X)))
   X$Q6 <- as.factor(rbinom(2700,1,prob=X$Q6))
-  X$Q7 <- rpois(2700, 2) # lambda = 2...mean of 2. why???
-  X[X$DrinkYN==0,c('Q7')] <- 0
+  X$Q8 <- rpois(2700, 2) # lambda = 2...mean of 2. why???
+  X[X$Q7==0,c('Q8')] <- 0
   
   # Make Missed Dose
   # This is where issues come in!!!
   # Closest I could get to these numbers was:
   # MD <- glm(data=comp,MissedDose~ZEduc+ZIncom45+Age+ZAlcTox+ZCESDFU+ZAUDIT,family=binomial(link=logit))
-  # MD <- glm(data=comp,MissedDose~DrinkYN+ZAlcTox+Day,family=binomial(link=logit))
-  MD <- glmer(MissedDose ~ DrinkYN*Day + ZAlcTox + (1|PID), data = comp, family=binomial(link=logit))
+  MD <- glm(data=comp,MissedDose~Q7+ZAlcTox+Day+Q7*Day,family=binomial(link=logit))
+  # MD <- glmer(MissedDose ~ Q7*Day + Q1 + Q2 + Q3 + Q4 + Q5 + Q6 + Q8 + (1|PID), data = comp, family=binomial(link=logit))
   # Use a predict function instead of coding in the values
-  int <- MD@beta[1]
-  b1 <- MD@beta[2] # DrinkYN1
-  b2 <- MD@beta[3] # Day
-  b3 <- MD@beta[4] # ZAlcTox
-  b4 <- MD@beta[5] # DrinkYN1:Day
-  sigmaPID <- MD@theta
+  # int <- MD@beta[1]
+  # b1 <- MD@beta[2] # DrinkYN1
+  # b2 <- MD@beta[3] # Day
+  # b3 <- MD@beta[4] # ZAlcTox
+  # b4 <- MD@beta[5] # DrinkYN1:Day
+  sigmaPID <- MD$null.deviance
   
   X$groupErr <- rnorm(60, mean=0, sd=sigmaPID)[X$PID]
   X$groupErr2 <- rnorm(60, mean=0, sd=sigmaPID)[X$PID]
@@ -152,6 +172,29 @@ for (i in 1:5) {
   sim.data[[i]] <- X
 }
 
+sim.mods <- list()
+sim.mod.intercepts <- list()
+sim.mod.coeffs <- list()
+
+for (i in 1:no.sim){
+  sim.mods[[i]] <- glm(data=as.data.frame(sim.data[i]),MissedDose~Q7+ZAlcTox+Day+Q7*Day,family=binomial(link=logit))
+  #sim.mod.intercepts[[i]] <- coef(sim.mods[[i]])[[1]][1]
+  sim.mod.coeffs[[i]] <- coef(sim.mods[[i]])
+}
+
+# sim.pids <- list()
+# sim.pid.means <- list()
+# 
+# for (k in 1:no.pid){
+#   for (i in 1:no.sim){
+#       sim.pids[[k]][[i]] <- sim.mod.intercepts[[i]][[1]][[1]][k] # subscripting thing and no. of items not multiple of replacement length warning
+#   }
+# }
+# 
+# for (k in 1:no.pid){
+#   sim.pid.means[k] <- mean(sim.pids[[k]])   # means for wave and split are very similar but not the same!
+# }
+
 #Remove unnecessary before analysis
 rm(comp, sigma, X, b1, b2,b3,b4, fit1, fit2, fit3, fit4, fit5, fit6, fit7,
    i, int, sigmaPID)
@@ -159,13 +202,13 @@ rm(comp, sigma, X, b1, b2,b3,b4, fit1, fit2, fit3, fit4, fit5, fit6, fit7,
 l1 <- sim.data[[1]]
 
 ## Create MISSINGNESS
-rremove <- function(nrem, x) { # this literally just randomly removes nrem columns. Like, the entire column. Why???
-  id <- sample(length(x), nrem)
-  x[id] <- NA
-  x
-}
+# rremove <- function(nrem, x) { # this literally just randomly removes nrem columns. Like, the entire column. Why???
+#   id <- sample(length(x), nrem)
+#   x[id] <- NA
+#   x
+# }
 
-grps <- list(X='Q1',A=c('Q2','Q3'),B=c('Q4','Q5'),C=c('Q6','Q7'))
+grps <- list(X=c('Q1','Q8'),A=c('Q2','Q3'),B=c('Q4','Q5'),C=c('Q6','Q7'))
 
 split.form <- function(set,grps){
   set$block[sample(1:nrow(set),nrow(set),FALSE)] <- c('A','B','C')
@@ -196,22 +239,30 @@ set.seed(917236)
 split.pm <- lapply(sim.data,function(x){split.form(x,grps)})
 wave.pm <- lapply(sim.data,function(x){wave.des(x,11)})
 
+no.imp = 5 # number of imputed datasets
+
 # Step 2 - Impute simulated datasets, for both methods
-split.imp <- lapply(split.pm, function(x) {mice(x, m=5)}) # loop through the split.imps in the complete function
-split.data <- rep(NA,length(split.imp))
-for (i in 1:length(split.imp)){
-  split.data[i] <- list(lapply(split.imp,function(x) {complete(x,i)}))
+split.imp <- lapply(split.pm, function(x) {mice(x, m=no.imp)}) # loop through the split.imps in the complete function
+split.data <- list()
+for (i in 1:no.sim){
+  split.data[[i]] <- list()
+  for (j in 1:no.imp){
+  split.data[[i]][[j]] <- complete(split.imp[[i]],j)
+  }
 }
 
-s1 <- data.frame(split.data[1][1])
-s3 <- data.frame(split.data[3][1]) # very similar, but I guess that is obvious as the missingness isn't a lot
-w1 <- data.frame(wave.data[1][1])
+# s1 <- data.frame(split.data[1][1])
+# s3 <- data.frame(split.data[3][1]) # very similar, but I guess that is obvious as the missingness isn't a lot
+# w1 <- data.frame(wave.data[1][1])
 
 
-wave.imp <- lapply(wave.pm, function(x) {mice(x, m=5)})
-wave.data <- rep(NA,length(wave.imp))
-for (i in 1:length(wave.imp)){
-  wave.data[i] <- list(lapply(wave.imp,function(x) {complete(x,i)}))
+wave.imp <- lapply(wave.pm, function(x) {mice(x, m=no.imp)})
+wave.data <- list()
+for (i in 1:no.sim){
+  wave.data[[i]] <- list()
+  for (j in 1:no.imp){
+    wave.data[[i]][[j]] <- complete(wave.imp[[i]],j)
+  }
 }
 
 # for(j in c(2,4,6)) { # 2, 4, 6? Why?
@@ -241,37 +292,112 @@ for (i in 1:length(wave.imp)){
 # Result: a list of lists of model coefficients for each method
 # Coefficient order: Intercept, DrinkYN2, Day, ZAlcTox, and DrinkYN2:Day
 
-mod.maker <- function(dat){
-  mods <- NULL
-  for (i in 1:length(split.pm)){
-    df <- data.frame(dat[[1]][[i]])
-    model <- glm(MissedDose ~ DrinkYN*Day + ZAlcTox, data = df, family=binomial(link=logit))
-    # No "+ (1|PID)" because the data doesn't have PID, it indexes the rows as 1,1.1,1.2,...,2,2.1,2.2,...Change this?
-    mods <- rbind(mods,model$coefficients)
+mod.maker <- function(dat){ # passing split.data[[i]]
+  mods <- list()
+  for (j in 1:length(dat)){
+    df <- data.frame(dat[[j]])
+    model <- glm(data=df,MissedDose~Q7+ZAlcTox+Day+Q7*Day,family=binomial(link=logit))
+    mods[[j]] <- coef(model)
   }
   mods
 }
+# df <- data.frame(split.data[[1]][[1]])
+# model <- glmer(MissedDose ~ DrinkYN*Day + Q1 + Q2 + Q3 + Q4 + Q5 + Q6 + Q7 + (1|PID), data = df, family=binomial(link="logit"))
+# mod <- mod.maker(split.data[[1]]) # <-- every person has their own intercept??? the coefficients are the same except ints
 
 set.seed(12345)
-#splitmods <- list()
-splitmods <- NULL
-for (i in 1:length(split.pm)){
-  splitmods[i] <- list(mod.maker(split.data[i]))
+splitmods <- list()
+for (i in 1:no.sim){
+  splitmods[i] <- list(mod.maker(split.data[[i]]))
 }
 
 # models are the same for all five data sets??? maybe the sets are too similar?
 # models are the same for split and wave??? wtf they aren't the same, though
 
 set.seed(12345)
-#wavemods <- list()
-wavemods <- NULL
-for (i in 1:length(wave.pm)){
-  wavemods[i] <- list(mod.maker(wave.data[i]))
+wavemods <- list()
+for (i in 1:no.sim){
+  wavemods[i] <- list(mod.maker(wave.data[[i]]))
 }
 
 # Step 4 - Calculate mean parameter estimates for both methods
-split.means <- colMeans(splitmods)
-wave.means <- colMeans(wavemods)
+# compare means of coefficents overall and then find means of each person's intercept and compare those to original???
+split.coeff.means <- list()
+wave.coeff.means <- list()
+
+for (i in 1:no.sim){
+  for (j in 1:no.imp){
+    split.coeff.means[[i]] <- list(colMeans(as.data.frame(do.call(rbind, splitmods[[i]])))) # using split.coeff.means[[i]] throws an error about the subscript being out of bounds, but if run with split.coeff.means[i] and THEN double brackets, it works???
+  }
+}
+
+for (i in 1:no.sim){
+  for (j in 1:no.imp){
+    wave.coeff.means[[i]] <- list(colMeans(as.data.frame(do.call(rbind, wavemods[[i]])))) # same here
+  }
+}
+
+# split.pids <- list()
+# wave.pids <- list()
+# 
+# split.pid.means <- list()
+# wave.pid.means <- list()
+# 
+# 
+# for (k in 1:no.pid){
+#   for (i in 1:no.sim){
+#     for (j in 1:no.imp){
+#       split.pids[[k]][i][j] <- splitmods[[i]][[j]][[1]][[1]][k] # same subscripting thing and no. of items not multiple of replacement length warning...results in 5 intercepts per PID, not 25 as expected, I think it takes the first intercept for each set of 5 imputation sets
+#     }
+#   }
+# }
+# 
+# for (k in 1:no.pid){
+#   for (i in 1:no.sim){
+#     for (j in 1:no.imp){
+#       wave.pids[[k]][i][j] <- wavemods[[i]][[j]][[1]][[1]][k] # same subscripting thing and no. of items not multiple of replacement length warning...results in 5 intercepts per PID, not 25 as expected
+#     }
+#   }
+# }
+# 
+# for (k in 1:no.pid){
+#   split.pid.means[k] <- mean(split.pids[[k]])   # means for wave and split are very similar but not the same!
+# }
+# 
+# for (k in 1:no.pid){
+#   wave.pid.means[k] <- mean(wave.pids[[k]])
+# }
+# 
+# 
+# # Compare means to sim datasets and original true model??? 
+# 
+# 
+# # PIDs: Is difference significant??? Do a permutation test?!
+# # Coefficients: is the imputed missing estimate within the CI of the simulated/true estimate? That's what OG did
+# 
+# pid.means <- cbind(sim.pid.means,split.pid.means,wave.pid.means)
+# # coeff.means <- cbind(sim.mod.coeffs,split.coeff.means,wave.coeff.means)
+# 
+# 
+# sim.split.pid.means <- list()
+# 
+# for (k in 1:no.pid){
+#   sim.split.pid.means[k] <- sim.pid.means[[k]]-split.pid.means[[k]]
+# }
+
+# Std. Error = summary(sim.mods[[1]])$coefficients[i,2] where i is the row of the variable you care about
+std.errors <- list()
+for (i in 1:no.sim){
+  for (j in 2:11){
+    std.errors[[i]][j] <- summary(sim.mods[[i]])$coefficients[i,2]
+  }
+}
+  
+
+
+
+
+
 
 analyze.comp <- function(df, ...) {
   fit <- glmer(data=df, MissedDose~DrinkYN+ZAlcTox+Day+(1|PID), family=binomial(link=logit),
