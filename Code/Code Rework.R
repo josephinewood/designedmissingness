@@ -153,15 +153,15 @@ for (i in 1:no.sim) {
   # This is where issues come in!!!
   # Closest I could get to these numbers was:
   # MD <- glm(data=comp,MissedDose~ZEduc+ZIncom45+Age+ZAlcTox+ZCESDFU+ZAUDIT,family=binomial(link=logit))
-  MD <- glm(data=comp,MissedDose~Q7+ZAlcTox+Day+Q7*Day,family=binomial(link=logit))
-  # MD <- glmer(MissedDose ~ Q7*Day + Q1 + Q2 + Q3 + Q4 + Q5 + Q6 + Q8 + (1|PID), data = comp, family=binomial(link=logit))
+  # MD <- glm(data=comp,MissedDose~Q7+ZAlcTox+Day+Q7*Day,family=binomial(link=logit))
+  MD <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + Q7*Day + (1|PID), data = comp, family=binomial(link=logit))
   # Use a predict function instead of coding in the values
   # int <- MD@beta[1]
   # b1 <- MD@beta[2] # DrinkYN1
   # b2 <- MD@beta[3] # Day
   # b3 <- MD@beta[4] # ZAlcTox
   # b4 <- MD@beta[5] # DrinkYN1:Day
-  sigmaPID <- MD$null.deviance
+  sigmaPID <- MD@theta
   
   X$groupErr <- rnorm(60, mean=0, sd=sigmaPID)[X$PID]
   X$groupErr2 <- rnorm(60, mean=0, sd=sigmaPID)[X$PID]
@@ -177,9 +177,9 @@ sim.mod.intercepts <- list()
 sim.mod.coeffs <- list()
 
 for (i in 1:no.sim){
-  sim.mods[[i]] <- glm(data=as.data.frame(sim.data[i]),MissedDose~Q7+ZAlcTox+Day+Q7*Day,family=binomial(link=logit))
+  sim.mods[[i]] <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + Q7*Day + (1|PID), data = as.data.frame(sim.data[i]), family=binomial(link=logit))
   #sim.mod.intercepts[[i]] <- coef(sim.mods[[i]])[[1]][1]
-  sim.mod.coeffs[[i]] <- coef(sim.mods[[i]])
+  sim.mod.coeffs[[i]] <- coef(sim.mods[[i]])[[1]][1,2:5] # take the first row and only the last 4 columns to get coefficients for everything but the intercepts
 }
 
 # sim.pids <- list()
@@ -296,8 +296,8 @@ mod.maker <- function(dat){ # passing split.data[[i]]
   mods <- list()
   for (j in 1:length(dat)){
     df <- data.frame(dat[[j]])
-    model <- glm(data=df,MissedDose~Q7+ZAlcTox+Day+Q7*Day,family=binomial(link=logit))
-    mods[[j]] <- coef(model)
+    model <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + Q7*Day + (1|PID), data = df, family=binomial(link=logit))
+    mods[[j]] <- coef(model)[[1]][1,2:5] # only take the coefficients of the variables, not the intercept
   }
   mods
 }
@@ -308,16 +308,13 @@ mod.maker <- function(dat){ # passing split.data[[i]]
 set.seed(12345)
 splitmods <- list()
 for (i in 1:no.sim){
-  splitmods[i] <- list(mod.maker(split.data[[i]]))
+  splitmods[i] <- list(mod.maker(split.data[[i]])) # fails to converge
 }
-
-# models are the same for all five data sets??? maybe the sets are too similar?
-# models are the same for split and wave??? wtf they aren't the same, though
 
 set.seed(12345)
 wavemods <- list()
 for (i in 1:no.sim){
-  wavemods[i] <- list(mod.maker(wave.data[[i]]))
+  wavemods[i] <- list(mod.maker(wave.data[[i]])) # also fails to converge
 }
 
 # Step 4 - Calculate mean parameter estimates for both methods
@@ -386,22 +383,63 @@ for (i in 1:no.sim){
 # }
 
 # Std. Error = summary(sim.mods[[1]])$coefficients[i,2] where i is the row of the variable you care about
-std.errors <- list()
+sim.allstd.errors <- list() # USE IF CARE ABOUT ALL VARIABELS, NOT JUST Q7
 for (i in 1:no.sim){
-  for (j in 2:11){
-    std.errors[[i]][j] <- summary(sim.mods[[i]])$coefficients[i,2]
-  }
+   for (j in 2:5){ # number of variables is 5
+     sim.allstd.errors[[i]][j-1] <- summary(sim.mods[[i]])$coefficients[j,2] # subscripting error again
+   }
+ }
+
+sim.allcis <- list()    # FIX IF NEED CIs FOR ALL VARIABLES, NOT JUST Q7
+for (i in 1:no.sim){
+   allci <- list()
+   for (j in 1:4){
+     Est <- sim.mod.coeffs[[i]][j]
+     L <- c(sim.mod.coeffs[[i]][j] - sim.allstd.errors[[i]][j])
+     U <- c(sim.mod.coeffs[[i]][j] + sim.allstd.errors[[i]][j])
+     allci[[j]] <- cbind(Est,L,U)
+   }
+   sim.allcis[[i]] <- allci
 }
-  
 
+# USE IF CARE ABOUT ALL OF THE VARIABLES
+allsplit.fits <- list() # lists of lists of whether or not a parameter estimate fell in the sim's CI
+for (i in 1:no.sim){
+  incl <- list()
+  for (j in 1:4){
+    incl[[j]] <- (split.coeff.means[[i]][[1]][j] >= sim.allcis[[i]][[j]][[2]]) & (split.coeff.means[[i]][[1]][j] <= sim.allcis[[i]][[j]][[3]])
+  }
+  allsplit.fits[[i]] <- incl
+}
 
+# USE IF ONLY CARE ABOUT Q7 
 
+sim.std.errors <- list() # USE IF ONLY CARE ABOUT Q7
+for (i in 1:no.sim){
+  sim.std.errors[i] <- summary(sim.mods[[i]])$coefficients[2,2] # subscripting error again
+}
 
+sim.cis <- list()
+for (i in 1:no.sim){
+  Est <- sim.mod.coeffs[[i]][[1]]
+  L <- c(sim.mod.coeffs[[i]][[1]] - 1.96*sim.std.errors[[i]])
+  U <- c(sim.mod.coeffs[[i]][[1]] + 1.96*sim.std.errors[[i]])
+  sim.cis[[i]] <- cbind(Est,L,U)
+}
+
+split.fits <- list() # lists of lists of whether or not a parameter estimate fell in the sim's CI
+for (i in 1:no.sim){
+  split.fits[[i]] <- (split.coeff.means[[i]][[1]][1] >= sim.cis[[i]][2]) & (split.coeff.means[[i]][[1]][1] <= sim.cis[[i]][3])
+}
+
+wave.fits <- list() # lists of lists of whether or not a parameter estimate fell in the sim's CI
+for (i in 1:no.sim){
+  wave.fits[[i]] <- (wave.coeff.means[[i]][[1]][1] >= sim.cis[[i]][2]) & (wave.coeff.means[[i]][[1]][1] <= sim.cis[[i]][3])
+}
 
 
 analyze.comp <- function(df, ...) {
-  fit <- glmer(data=df, MissedDose~DrinkYN+ZAlcTox+Day+(1|PID), family=binomial(link=logit),
-               control=glmerControl(optimizer='bobyqa', optCtrl = list(maxfun=2000)))
+  fit <- glm(data=df, MissedDose~Q7+ZAlcTox+Day+Q7*Day, family=binomial(link=logit))
   g0.est <- summary(fit)$coefficients[1,1]
   g0.se <- summary(fit)$coefficients[1,2]
   g0.L <- g0.est - 1.96*g0.se
@@ -421,8 +459,10 @@ analyze.comp <- function(df, ...) {
   c(g0.est, g0.L, g0.U, b1.est, b1.L, b1.U, b2.est, b2.L, b2.U, b3.est, b3.L, b3.U)
 }
 
-library(beepr)
-beep(2, expr= full.res <- lapply(sim.data, function(x) {analyze.comp(x)}))
+# library(beepr)
+# beep(2, expr= 
+
+full.res <- lapply(sim.data, function(x) {analyze.comp(x)})
 
 
 mean(unlist(lapply(full.res, function(x) {abs(x[10]-(0.2))})))
