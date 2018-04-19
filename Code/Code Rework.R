@@ -4,6 +4,7 @@
 
 # Set working directory
 setwd("~/GitHub/designedmissingness/")
+setwd("~/Dropbox/designedmissingnessGit/")
 
 # Load necessary libraries
 library(mice)
@@ -13,6 +14,7 @@ library(lmerTest)
 
 # Read in Daily With Tox CSV data file
 Daily <- read.csv('~/GitHub/designedmissingness/Daily with Tox.csv')
+#Daily <- read.csv('Daily with Tox.csv')
 
 # Retain desired variables
 names(Daily)[1] <- c('PID')
@@ -235,31 +237,21 @@ for (i in 1:no.sim){
   wave.coeff.means[[i]] <- colMeans(do.call(rbind, wavemods[[i]]$betas))
 }
 
-TD <- function(mods,means){
-  pm.se <- list(NA,5)
-  pm.WD <- list(NaN,5)
-  for (j in 1:5){
-    pm.se[[j]] <- list(NA,no.sim)
-    for (i in 1:no.sim){
-      pm.se[[j]][i] <- (mods[[1]]$se[[i]][j])^2
-    }
-    pm.WD[j] <- Reduce("+",pm.se[[j]])/no.imp
-  }
-  pm.Bnum <- list(NA,5)
-  pm.B <- list(NaN,5)
-  for (j in 1:5){
-    pm.Bnum[[j]] <- list(NA,no.sim)
-    for (i in 1:no.sim){
-      pm.Bnum[[j]][i] <- (mods[[1]]$betas[[i]][j] - means[[i]][j])^2
-    }
-    pm.B[j] <- Reduce("+",pm.Bnum[[j]])/(no.imp - 1)
-  }
-  pm.TD <- list(NaN,5)
-  for (j in 1:5){
-    pm.TD[j] <- unlist(pm.WD[j]) + ((no.imp + 1)/(no.imp))*unlist(pm.B[j])
-  }
-  pm.TD
+
+intervals <- list()
+for (i in 1:no.sim){
+Q <- apply(do.call(rbind,splitmods[[i]]$betas),2,mean)
+B <- apply(do.call(rbind,splitmods[[i]]$betas),2,var)
+W <- apply(do.call(rbind,splitmods[[i]]$se)^2,2,mean)
+
+#Combioned standard error
+Tm <- sqrt((1+1/no.imp)*B + W)
+df <- (no.imp - 1) * (1 + 1/no.imp*W/B)^2
+
+intervals[[i]] <- cbind(Q ,lower = Q - qt(0.025,df)*Tm, upper = Q + qt(0.025,df)*Tm)
+
 }
+
 
 split.TD <- TD(splitmods,split.coeff.means)
 wave.TD <- TD(wavemods,wave.coeff.means)
