@@ -247,8 +247,8 @@ W <- apply(do.call(rbind,splitmods[[i]]$se)^2,2,mean)
 #Combioned standard error
 Tm <- sqrt((1+1/no.imp)*B + W)
 df <- (no.imp - 1) * (1 + 1/no.imp*W/B)^2
-
-intervals[[i]] <- cbind(Q ,lower = Q - qt(0.025,df)*Tm, upper = Q + qt(0.025,df)*Tm)
+print(Tm)
+intervals[[i]] <- cbind(Q ,lower = Q - qt(0.975,df)*Tm, upper = Q + qt(0.975,df)*Tm)
 
 }
 
