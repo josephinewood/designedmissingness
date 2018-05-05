@@ -82,7 +82,7 @@ fit7<- glm(data=comp, Q6~Q3+Q5+Q7+ZEduc+ZIncom45+Age+ZAlcTox+ZCESDFU+ZAUDIT, fam
 set.seed(1234)
 
 sim.data <- list()
-for (i in 1:no.sim) {
+for (i in 1:no.sim) {print(i)
   X <- as.data.frame(rmvnorm(60, mean=rep(0,6), sigma=corrmat))
   names(X) <- c('ZEduc', 'ZIncom45', 'Age', 'ZAlcTox', 'ZCESDFU', 'ZAUDIT')
   X$PID <- 1:60
