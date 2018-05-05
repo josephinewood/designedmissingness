@@ -1,10 +1,4 @@
-
-# Install needed packages, if necessary
-# install.packages(c('lme4','mvtnorm','lmerTest'))
-
-# Set working directory
-setwd("~/GitHub/designedmissingness/")
-setwd("~/Dropbox/designedmissingnessGit/")
+#nohup R --vanilla CMD BATCH /home/gmatthews1/designedMissingness/simulation.R /home/gmatthews1/designedMissingness/simulation.Rout &
 
 # Load necessary libraries
 library(mice)
@@ -12,9 +6,25 @@ library(lme4)
 library(mvtnorm)
 library(lmerTest)
 
+start <- Sys.time()
+
+no.sim = 5 # number of simulated datasets
+no.imp = 5 # number of imputed datasets
+no.pid <- 60
+
+# Install needed packages, if necessary
+# install.packages(c('lme4','mvtnorm','lmerTest'))
+
+# Set working directory
+#setwd("~/GitHub/designedmissingness/")
+#setwd("~/Dropbox/designedmissingnessGit/")
+
+
+
 # Read in Daily With Tox CSV data file
-Daily <- read.csv('~/GitHub/designedmissingness/Daily with Tox.csv')
+#Daily <- read.csv('~/GitHub/designedmissingness/Daily with Tox.csv')
 #Daily <- read.csv('Daily with Tox.csv')
+Daily <- read.csv('/home/gmatthews1/designedMissingness/Daily with Tox.csv')
 
 # Retain desired variables
 names(Daily)[1] <- c('PID')
@@ -48,7 +58,7 @@ cols.keep <- c('PID', 'Day', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Mi
 
 comp <- comp[,cols.keep]
 
-no.pid <- 60
+
 
 pop.mod <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + Q7*Day + (1|PID), data = comp, family=binomial(link=logit))
 
@@ -69,7 +79,7 @@ fit7<- glm(data=comp, Q6~Q3+Q5+Q7+ZEduc+ZIncom45+Age+ZAlcTox+ZCESDFU+ZAUDIT, fam
 
 # Simulate
 set.seed(1234)
-no.sim = 5 # number of simulated datasets
+
 sim.data <- list()
 for (i in 1:no.sim) {
   X <- as.data.frame(rmvnorm(60, mean=rep(0,6), sigma=corrmat))
@@ -146,7 +156,7 @@ set.seed(917236)
 split.pm <- lapply(sim.data,function(x){split.form(x,grps)})
 wave.pm <- lapply(sim.data,function(x){wave.des(x,11)})
 
-no.imp = 5 # number of imputed datasets
+
 
 # Step 2 - Impute simulated datasets, for both methods
 
@@ -174,9 +184,9 @@ mod.maker <- function(dat){ # passing split.data[[i]]
   modse <- list()
   for (j in 1:length(dat)){
     df <- data.frame(dat[[j]])
-    model <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + Q7*Day + (1|PID), data = df, family=binomial(link=logit))
-    modbetas[[j]] <- summary(model)$coef[,1] # only take the coefficients of the variables, not the intercept
-    modse[[j]] <- summary(model)$coef[,2]
+    try(model <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + Q7*Day + (1|PID), data = df, family=binomial(link=logit)))
+    try(modbetas[[j]] <- summary(model)$coef[,1]) # only take the coefficients of the variables, not the intercept
+    try(modse[[j]] <- summary(model)$coef[,2])
   }
   return(list(betas=modbetas,se=modse))
 }
@@ -224,8 +234,8 @@ coverage <- function(intervals){
     fits[[i]] <- incl
   }
   
-  fit.mat <- matrix(unlist(allsplit.fits),5)
-  cover <- apply(splitmat,2,mean)
+  fit.mat <- matrix(unlist(fits),5)
+  cover <- apply(fit.mat,2,mean)
   return(list(fit.mat,cover))
 }
 
@@ -278,15 +288,16 @@ wave.mse <- mse(wave.intervals)
 # FMI #
 
 fmi <- function(mods){
+  FMI <- matrix(NA, nrow = no.imp, ncol = length(mods[[1]]$betas[[1]]))
   for (i in 1:no.sim){
     B <- apply(do.call(rbind,mods[[i]]$betas),2,var)
     W <- apply(do.call(rbind,mods[[i]]$se)^2,2,mean)
     
     # Combined variance
     TD <- (1 + 1/no.imp)*B + W
-    FMI <- ((1 + (1/no.imp))*B)/TD
+    FMI[i,] <- ((1 + (1/no.imp))*B)/TD
   }
-  FMI
+  return(apply(FMI, 2, mean))
 }
 
 split.fmi <- fmi(splitmods)
@@ -304,6 +315,11 @@ colnames(wave.table) <- c('Coverage','Bias','MSE','FMI')
 wave.table
 
 
+save.image("/home/gmatthews1/designedMissingness/simResults20180426.RData")
+
+
+end <- Sys.time()
+print(end-start)
 
 
 
