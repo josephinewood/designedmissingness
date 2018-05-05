@@ -154,15 +154,15 @@ wave.des <- function(set, nmiss, ...) { # nmiss is the number of days each perso
 
 # Step 1 - Apply PM methods to simulated datasets
 set.seed(917236)
-split.pm <- mclapply(sim.data,function(x){split.form(x,grps)})
-wave.pm <- mclapply(sim.data,function(x){wave.des(x,11)})
+split.pm <- mclapply(sim.data,function(x){split.form(x,grps)},mc.cores = 12)
+wave.pm <- mclapply(sim.data,function(x){wave.des(x,11)},mc.cores = 12)
 
 
 
 # Step 2 - Impute simulated datasets, for both methods
 
 impute <- function(pm){ # pass split.data
-  imp <- mclapply(pm, function(x) {mice(x, m=no.imp)}) # loop through the split.imps in the complete function
+  imp <- mclapply(pm, function(x) {mice(x, m=no.imp)},mc.cores = 12) # loop through the split.imps in the complete function
   res.data <- list()
   for (i in 1:no.sim){
     res.data[[i]] <- list()
