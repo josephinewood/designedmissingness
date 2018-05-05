@@ -1,4 +1,4 @@
-#nohup R --vanilla CMD BATCH /home/gmatthews1/designedMissingness/simulation.R /home/gmatthews1/designedMissingness/simulation.Rout &
+#nohup R --vanilla CMD BATCH /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar.Rout &
 
 # Load necessary libraries
 library(mice)
