@@ -126,6 +126,8 @@ for (i in 1:no.sim) {print(i)
 rm(comp, sigma, X, b1, b2,b3,b4, fit1, fit2, fit3, fit4, fit5, fit6, fit7,
    i, int, sigmaPID)
 
+save.image("/home/gmatthews1/designedMissingness/simResults20180426.RData")
+
 ## Create MISSINGNESS
 # rremove <- function(nrem, x) { # this literally just randomly removes nrem columns. Like, the entire column. Why???
 #   id <- sample(length(x), nrem)
@@ -154,15 +156,15 @@ wave.des <- function(set, nmiss, ...) { # nmiss is the number of days each perso
 
 # Step 1 - Apply PM methods to simulated datasets
 set.seed(917236)
-split.pm <- mclapply(sim.data,function(x){split.form(x,grps)},mc.cores = 12)
-wave.pm <- mclapply(sim.data,function(x){wave.des(x,11)},mc.cores = 12)
+split.pm <- mclapply(sim.data,function(x){split.form(x,grps)},mc.cores = 18)
+wave.pm <- mclapply(sim.data,function(x){wave.des(x,11)},mc.cores = 18)
 
-
+save.image("/home/gmatthews1/designedMissingness/simResults20180426.RData")
 
 # Step 2 - Impute simulated datasets, for both methods
 
 impute <- function(pm){ # pass split.data
-  imp <- mclapply(pm, function(x) {mice(x, m=no.imp)},mc.cores = 12) # loop through the split.imps in the complete function
+  imp <- mclapply(pm, function(x) {mice(x, m=no.imp)},mc.cores = 18) # loop through the split.imps in the complete function
   res.data <- list()
   for (i in 1:no.sim){
     res.data[[i]] <- list()
@@ -176,10 +178,15 @@ impute <- function(pm){ # pass split.data
 split.data <- impute(split.pm)
 wave.data <- impute(wave.pm)
 
+save.image("/home/gmatthews1/designedMissingness/simResults20180426.RData")
+
 # Step 3 - Build models from imputed simulation data for both methods
 # Result: a list of lists of model coefficients for each method
 # Coefficient order: Intercept, DrinkYN2, Day, ZAlcTox, and DrinkYN2:Day
 
+
+#This should really be changed to run in parallel.  
+#Loops are inefficient.  
 mod.maker <- function(dat){ # passing split.data[[i]]
   modbetas <- list()
   modse <- list()
@@ -204,7 +211,7 @@ pm.mods <- function(dat){
 splitmods <- pm.mods(split.data)
 wavemods <- pm.mods(wave.data)
 
-
+save.image("/home/gmatthews1/designedMissingness/simResults20180426.RData")
 
 TD <- function(mods){
   intervals <- list()
