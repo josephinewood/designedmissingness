@@ -44,14 +44,15 @@ comp$Day <- comp$Day-1
 rm(Daily)
 
 #comp$Age <- as.numeric(scale(comp$Age)) # why???
+#We re-assign drinkYN to be Q7 to match the survey description in the manuscript?  
 comp$Q1 <- as.factor(comp$Q1)
 comp$Q2 <- as.factor(comp$Q2)
 comp$Q3 <- as.factor(comp$Q3)
 comp$Q4 <- as.factor(comp$Q4)
 comp$Q5 <- as.factor(comp$Q5)
 comp$Q6 <- as.factor(comp$Q6)
-comp$Q7 <- as.factor(comp$DrinkYN)
 comp$Q8 <- as.integer(comp$Q7)
+comp$Q7 <- as.factor(comp$DrinkYN)
 comp$MissedDose <- as.factor(comp$MissedDose)
 comp$Gender <- as.factor(comp$Gender)
 
@@ -61,7 +62,9 @@ comp <- comp[,cols.keep]
 
 
 
-pop.mod <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + Q7*Day + (1|PID), data = comp, family=binomial(link=logit))
+pop.mod <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + (1|PID), data = comp, family=binomial(link=logit))
+
+no.var <- nrow(pop.mod.coeffs)
 
 pop.mod.coeffs <- summary(pop.mod)$coef[,1:2]
 
@@ -110,7 +113,7 @@ for (i in 1:no.sim) {print(i)
   X[X$Q7==0,c('Q8')] <- 0
   
   # Make Missed Dose
-  MD <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + Q7*Day + (1|PID), data = comp, family=binomial(link=logit))
+  MD <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + (1|PID), data = comp, family=binomial(link=logit))
   sigmaPID <- MD@theta
   
   X$groupErr <- rnorm(60, mean=0, sd=sigmaPID)[X$PID]
@@ -192,7 +195,7 @@ mod.maker <- function(dat){ # passing split.data[[i]]
   modse <- list()
   for (j in 1:length(dat)){
     df <- data.frame(dat[[j]])
-    try(model <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + Q7*Day + (1|PID), data = df, family=binomial(link=logit)))
+    try(model <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + (1|PID), data = df, family=binomial(link=logit)))
     try(modbetas[[j]] <- summary(model)$coef[,1]) # only take the coefficients of the variables, not the intercept
     try(modse[[j]] <- summary(model)$coef[,2])
   }
@@ -236,14 +239,14 @@ coverage <- function(intervals){
   fits <- list() # lists of lists of whether or not a parameter estimate fell in the sim's CI
   for (i in 1:no.sim){
     incl <- list()
-    for (j in 1:5){
+    for (j in 1:no.var){
       incl[[j]] <- (pop.mod.coeffs[j] >= intervals[[i]][j,2]) & (pop.mod.coeffs[j] <= intervals[[i]][j,3])
     }
     fits[[i]] <- incl
   }
   
   fit.mat <- matrix(unlist(fits),5)
-  cover <- apply(fit.mat,2,mean)
+  cover <- apply(fit.mat,1,mean)
   return(list(fit.mat,cover))
 }
 
@@ -257,13 +260,15 @@ bias <- function(intervals){
   results <- list()
   numerator <- list()
   Qdiffs <- list()
-  for (j in 1:no.imp){
-    Qdiffs[[j]] <- list(NA,5)
+  #j-th variable
+  for (j in 1:nrow(intervals[[1]])){
+    Qdiffs[[j]] <- list(NA,nrow(intervals[[1]]))
     for (i in 1:no.sim){
       Qdiffs[[j]][i] <- unlist(intervals[[i]][j,1]) - unlist(pop.mod.coeffs[j,1])
     }
-    numerator[j] <- Reduce("+",Qdiffs[[j]])
-    results[j] <- unlist(numerator[j])/no.sim
+    
+  results[j] <- mean(unlist(Qdiffs[[j]]))
+    
   }
   results
 }
@@ -274,18 +279,19 @@ wave.bias <- bias(wave.intervals)
 # MSE #
 
 mse <- function(intervals){
-  results <- list()
+  results <- c()
   numerator <- list()
   Qdiffs2 <- list()
-  for (j in 1:no.imp){
-    Qdiffs2[[j]] <- list(NA,5)
+  for (j in 1:no.var){
+    Qdiffs2[[j]] <- rep(NA,no.sim)
     for (i in 1:no.sim){
       Qdiffs2[[j]][i] <- (unlist(intervals[[i]][j,1]) - unlist(pop.mod.coeffs[j,1]))^2
     }
-    numerator[j] <- Reduce("+",Qdiffs2[[j]])
-    results[j] <- unlist(numerator[j])/no.sim
+    
+  results[j] <- mean(Qdiffs2[[j]])
+    
   }
-  results
+  return(results)
 }
 
 split.mse <- mse(split.intervals)
@@ -295,8 +301,9 @@ wave.mse <- mse(wave.intervals)
 
 # FMI #
 
+#Note: Remove the rows where FMI is 0 likely due to non-vergence. 
 fmi <- function(mods){
-  FMI <- matrix(NA, nrow = no.imp, ncol = length(mods[[1]]$betas[[1]]))
+  FMI <- matrix(NA, nrow = no.sim, ncol = length(mods[[1]]$betas[[1]]))
   for (i in 1:no.sim){
     B <- apply(do.call(rbind,mods[[i]]$betas),2,var)
     W <- apply(do.call(rbind,mods[[i]]$se)^2,2,mean)
