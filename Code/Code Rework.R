@@ -7,6 +7,10 @@ library(mvtnorm)
 library(lmerTest)
 library(parallel)
 
+#Settings: 
+#sampling size: 60 and 120 subjects
+#Correlation settings: regular and low
+#Missingness amount: low, medium, high
 start <- Sys.time()
 
 no.sim = 1000 # number of simulated datasets
