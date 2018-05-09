@@ -1,4 +1,14 @@
-#nohup R --vanilla CMD BATCH /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar.Rout &
+# #nohup R --vanilla CMD BATCH /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar.Rout &
+# 
+# 
+# nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="low" nmiss=11 nrem=2' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_low.Rout &
+# nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="low" nmiss=11 nrem=2' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_low.Rout &
+#   
+#   nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="med" nmiss=22 nrem=4' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med.Rout &
+#   nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="med" nmiss=22 nrem=4' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med.Rout &
+#   
+#   nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="high" nmiss=33 nrem=6' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high.Rout &
+#   nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="high" nmiss=33 nrem=6' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high.Rout &
 
 # Load necessary libraries
 library(mice)
@@ -7,15 +17,33 @@ library(mvtnorm)
 library(lmerTest)
 library(parallel)
 
+#Passing arguments from the command line. 
+#arguments are no.pid
+args=(commandArgs(TRUE))
+
+eval(parse(text=args[[1]]))
+print(eval(parse(text=args[[1]])))
+
+for(i in 1:length(args)){
+  eval(parse(text=args[[i]]))
+}
+
 #Settings: 
 #sampling size: 60 and 120 subjects
-#Correlation settings: regular and low
+#Correlation settings: regular and low (1 and 0.5)
 #Missingness amount: low, medium, high
+#Wave missingness levels are nmiss = 11, 22, and 33.  
+#Split form missingness levels are nrem = 2, 4, 6
+
 start <- Sys.time()
 
 no.sim = 1000 # number of simulated datasets
 no.imp = 5 # number of imputed datasets
-no.pid <- 60
+
+# no.pid <- 60
+# corr.scale <- 1
+
+
 
 # Install needed packages, if necessary
 # install.packages(c('lme4','mvtnorm','lmerTest'))
@@ -76,6 +104,10 @@ pop.mod.coeffs <- summary(pop.mod)$coef[,1:2]
 corrmat <- cor(model.matrix(~.-1,data=comp[,c('ZEduc', 'ZIncom45', 'Age', 'ZAlcTox', 'ZCESDFU', 'ZAUDIT')]))
 round(corrmat, 2) # display the matrix, rounding values to 2 decimal places
 
+#Create low, medium, and high correlation settings.  
+corrmat[lower.tri(corrmat)] <- corr.scale*corrmat[lower.tri(corrmat)] 
+corrmat[upper.tri(corrmat)] <- corr.scale*corrmat[upper.tri(corrmat)] 
+
 # OG fit models for the questions using variables simulated via corrmat
 fit1 <- glm(data=comp, Q7~ZIncom45+Age+ZAlcTox+ZAUDIT, family=binomial(link=logit))
 fit2<- glm(data=comp, Q1~ZEduc+ZIncom45+ZAlcTox+ZCESDFU, family=binomial(link=logit))
@@ -90,13 +122,13 @@ set.seed(1234)
 
 sim.data <- list()
 for (i in 1:no.sim) {print(i)
-  X <- as.data.frame(rmvnorm(60, mean=rep(0,6), sigma=corrmat))
+  X <- as.data.frame(rmvnorm(no.pid, mean=rep(0,6), sigma=corrmat))
   names(X) <- c('ZEduc', 'ZIncom45', 'Age', 'ZAlcTox', 'ZCESDFU', 'ZAUDIT')
-  X$PID <- 1:60
-  X$Gender <- as.factor(rbinom(60, 1, prob=0.5))
+  X$PID <- 1:no.pid
+  X$Gender <- as.factor(rbinom(no.pid, 1, prob=0.5))
   X <- X[rep(row.names(X), 45),] #Repeat each row 45 times, all current variables are time invariant (ZAlcTox, too??)
   X <- X[order(X$PID),] #Order by PID
-  X$Day <- rep(0:44, 60) #Create a variable containing day variable 0-44
+  X$Day <- rep(0:44, no.pid) #Create a variable containing day variable 0-44
 
   # Create Variables
   X$Q7 <- 1/(1+exp(-1*predict(fit1, newdata = X)))
@@ -120,8 +152,8 @@ for (i in 1:no.sim) {print(i)
   MD <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + (1|PID), data = comp, family=binomial(link=logit))
   sigmaPID <- MD@theta
   
-  X$groupErr <- rnorm(60, mean=0, sd=sigmaPID)[X$PID]
-  X$groupErr2 <- rnorm(60, mean=0, sd=sigmaPID)[X$PID]
+  X$groupErr <- rnorm(no.pid, mean=0, sd=sigmaPID)[X$PID]
+  X$groupErr2 <- rnorm(no.pid, mean=0, sd=sigmaPID)[X$PID]
   X$MissedDose <- predict(MD,X,allow.new.levels=TRUE)
   X$MissedDose <- 1/(1+exp(-X$MissedDose))
   X$MissedDose <- rbinom(2700, 1, prob=X$MissedDose)
@@ -133,7 +165,7 @@ for (i in 1:no.sim) {print(i)
 rm(comp, sigma, X, b1, b2,b3,b4, fit1, fit2, fit3, fit4, fit5, fit6, fit7,
    i, int, sigmaPID)
 
-save.image("/home/gmatthews1/designedMissingness/simResults20180426.RData")
+save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,".RData"))
 
 ## Create MISSINGNESS
 # rremove <- function(nrem, x) { # this literally just randomly removes nrem columns. Like, the entire column. Why???
@@ -142,20 +174,37 @@ save.image("/home/gmatthews1/designedMissingness/simResults20180426.RData")
 #   x
 # }
 
-grps <- list(X=c('Q1','Q8'),A=c('Q2','Q3'),B=c('Q4','Q5'),C=c('Q6','Q7'))
+#grps <- list(X=c('Q1','Q8'),A=c('Q2','Q3'),B=c('Q4','Q5'),C=c('Q6','Q7'))
 
-split.form <- function(set,grps){
-  set$block[sample(1:nrow(set),nrow(set),FALSE)] <- c('A','B','C')
-  set[set$block == "A",grps$A] <- NA
-  set[set$block == "B",grps$B] <- NA
-  set[set$block == "C",grps$C] <- NA
-  set
+# split.form <- function(set,grps){
+#   
+#    for (i in 1:no.pid){
+#      set[set$PID == i,grps$A]
+#    }
+#   
+#   set$block[sample(1:nrow(set),nrow(set),FALSE)] <- c('A','B','C')
+#   set[set$block == "A",grps$A] <- NA
+#   set[set$block == "B",grps$B] <- NA
+#   set[set$block == "C",grps$C] <- NA
+#   set
+# }
+
+split.form <- function(set, nrem = 2, bound = 0){
+  
+set[set$Day >= bound, paste0("Q",1:8)] <- t(apply(set[set$Day >= bound,paste0("Q",1:8)], 1, function(x){
+    ind <- sample(1:8, nrem)
+    x[ind] <- NA
+    as.numeric(x)
+  }))
+    
+  return(set)
+
 }
 
 
 wave.des <- function(set, nmiss, ...) { # nmiss is the number of days each person would miss? 11?? Like, miss a fourth of the days?
-  id <- replicate(60, sample(2:44, size=nmiss))
-  for (i in 1:60) {
+  id <- replicate(no.pid, sample(2:44, size=nmiss))
+  for (i in 1:no.pid) {
     set[set$PID==i & set$Day %in% id[,i], c('Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8')] <- NA
   }
   set
@@ -163,10 +212,11 @@ wave.des <- function(set, nmiss, ...) { # nmiss is the number of days each perso
 
 # Step 1 - Apply PM methods to simulated datasets
 set.seed(917236)
-split.pm <- mclapply(sim.data,function(x){split.form(x,grps)},mc.cores = 18)
-wave.pm <- mclapply(sim.data,function(x){wave.des(x,11)},mc.cores = 18)
+split.pm <- mclapply(sim.data,function(x){split.form(x,nrem = nrem, bound = 0)},mc.cores = 12)
+altered.split.pm <- mclapply(sim.data,function(x){split.form(x,nrem = nrem, bound = 2)},mc.cores = 12)
+wave.pm <- mclapply(sim.data,function(x){wave.des(x,nmiss = nmiss)},mc.cores = 12)
 
-save.image("/home/gmatthews1/designedMissingness/simResults20180426.RData")
+save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,".RData"))
 
 # Step 2 - Impute simulated datasets, for both methods
 
@@ -183,9 +233,10 @@ impute <- function(pm){ # pass split.data
 }
 
 split.data <- impute(split.pm)
+altered.split.data <- impute(altered.split.pm)
 wave.data <- impute(wave.pm)
 
-save.image("/home/gmatthews1/designedMissingness/simResults20180426.RData")
+save.image("/home/gmatthews1/designedMissingness/simResults20180509.RData")
 
 # Step 3 - Build models from imputed simulation data for both methods
 # Result: a list of lists of model coefficients for each method
@@ -216,9 +267,10 @@ pm.mods <- function(dat){
 }
 
 splitmods <- pm.mods(split.data)
+alteredsplitmods <- pm.mods(altered.split.data)
 wavemods <- pm.mods(wave.data)
 
-save.image("/home/gmatthews1/designedMissingness/simResults20180426.RData")
+save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,".RData"))
 
 TD <- function(mods){
   intervals <- list()
@@ -237,6 +289,7 @@ TD <- function(mods){
 }
 
 split.intervals <- TD(splitmods)
+altered.split.intervals <- TD(alteredsplitmods)
 wave.intervals <- TD(wavemods)
 
 coverage <- function(intervals){
@@ -266,6 +319,7 @@ coverage <- function(intervals){
 }
 
 split.cover <- coverage(split.intervals)
+altered.split.cover <- coverage(altered.split.intervals)
 wave.cover <- coverage(wave.intervals)
 
 
@@ -289,6 +343,7 @@ bias <- function(intervals){
 }
 
 split.bias <- bias(split.intervals)
+altered.split.bias <- bias(altered.split.intervals)
 wave.bias <- bias(wave.intervals)
 
 # MSE #
@@ -310,6 +365,7 @@ mse <- function(intervals){
 }
 
 split.mse <- mse(split.intervals)
+altered.split.mse <- mse(altered.split.intervals)
 wave.mse <- mse(wave.intervals)
 
 # (1+(1/D))B/TD
@@ -331,6 +387,7 @@ fmi <- function(mods){
 }
 
 split.fmi <- fmi(splitmods)
+altered.split.fmi <- fmi(alteredsplitmods)
 wave.fmi <- fmi(wavemods)
 
 # COMPARISON TABLE #
@@ -340,12 +397,19 @@ split.table <- data.frame(split.cover[2],cbind(split.bias,split.mse),split.fmi)
 colnames(split.table) <- c('Coverage','Bias','MSE','FMI')
 split.table
 
+altered.split.table <- data.frame(altered.split.cover[2],cbind(altered.split.bias,altered.split.mse),altered.split.fmi)
+colnames(altered.split.table) <- c('Coverage','Bias','MSE','FMI')
+altered.split.table
+
 wave.table <- data.frame(wave.cover[2],cbind(wave.bias,wave.mse),wave.fmi)
 colnames(wave.table) <- c('Coverage','Bias','MSE','FMI')
 wave.table
 
 
-save.image("/home/gmatthews1/designedMissingness/simResults20180426.RData")
+
+save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,".RData"))
+d <- list(split.table,altered.split.table,wave.table)
+save(d, file = paste0("/home/gmatthews1/designedMissingness/tables20180509_",no.pid,"_",corr.scale,"_",howmuch,".RData"))
 
 
 end <- Sys.time()
