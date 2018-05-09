@@ -1,0 +1,101 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# Creating dataframe to visualize - one subject's questions for 5 days
+
+grps <- list(X=c('Q1','Q8'),A=c('Q2','Q3'),B=c('Q4','Q5'),C=c('Q6','Q7'))
+
+split.form <- function(set,grps){
+   set$block[sample(1:nrow(set),nrow(set),FALSE)] <- c('A','B','C')
+   set[set$block == "A",grps$A] <- NA
+   set[set$block == "B",grps$B] <- NA
+   set[set$block == "C",grps$C] <- NA
+   set
+}
+
+wave.des <- function(set, nmiss, ...) { # nmiss is the number of days each person would miss? 11?? Like, miss a fourth of the days?
+  id <- sample(2:5, size=nmiss)
+  for (i in 1:nmiss) {
+    set[set$day %in% id[i], c('Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8')] <- NA
+  }
+  set
+}
+```
+
+```{r,warning=FALSE}
+cols <- c('Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8')
+fill <- matrix(1, 5, 8)
+dat <- data.frame(fill)
+colnames(dat) <- cols
+dat$day <- seq.int(nrow(dat))
+split.dat <- split.form(dat,grps)[1:8]
+split.dat
+```
+
+
+```{r,warning=FALSE,message=FALSE}
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+datmelt <- split.dat[1:8] %>% is.na %>% melt
+colnames(datmelt) <- c("Day","Question","Missing")
+datmelt$block <- ifelse((datmelt$Question=="Q1")|(datmelt$Question=="Q8"),"X",ifelse((datmelt$Question=="Q2")|(datmelt$Question=="Q3"),"A",ifelse((datmelt$Question=="Q4")|(datmelt$Question=="Q5"),"B",ifelse((datmelt$Question=="Q6")|(datmelt$Question=="Q7"),"C",0))))
+datmelt$color <- ifelse(datmelt$Missing == "TRUE", "Missing", ifelse(datmelt$block == "X","X",ifelse(datmelt$block == "A","A",ifelse(datmelt$block == "B","B",ifelse(datmelt$block == "C","C","Missing")))))
+```
+
+```{r,warning=FALSE}
+cols <- c("A" = "skyblue3", "B" = "skyblue3", "C" = "skyblue3", "X" = "skyblue4", "Missing" = "white")
+ggplot(datmelt, aes(Question, Day, fill=color)) + geom_raster() + scale_fill_manual(values = cols) + geom_vline(xintercept=seq(1.5, 7.5, 2), lwd=1, colour="white") + geom_hline(yintercept=seq(1.5, 4.5, 1), lwd=1, colour="white") + theme(axis.text.x = element_text(angle=45, vjust=0.5),panel.background = element_rect(fill = NA)) + labs(x = "Questions Asked",y = "Day",fill="Block") + scale_y_reverse()
+```
+
+
+```{r}
+wave.dat <- wave.des(dat,2)
+wave.dat
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+datmelt <- wave.dat[1:8] %>% is.na %>% melt
+colnames(datmelt) <- c("Day","Question","Missing")
+datmelt$block <- ifelse((datmelt$Question=="Q1")|(datmelt$Question=="Q8"),"X",ifelse((datmelt$Question=="Q2")|(datmelt$Question=="Q3"),"A",ifelse((datmelt$Question=="Q4")|(datmelt$Question=="Q5"),"B",ifelse((datmelt$Question=="Q6")|(datmelt$Question=="Q7"),"C",0))))
+datmelt$color <- ifelse(datmelt$Missing == "TRUE", "Missing", ifelse(datmelt$block == "X","X",ifelse(datmelt$block == "A","A",ifelse(datmelt$block == "B","B",ifelse(datmelt$block == "C","C","Missing")))))
+```
+
+```{r,warning=FALSE}
+cols <- c("A" = "skyblue3", "B" = "skyblue3", "C" = "skyblue3", "X" = "skyblue4", "Missing" = "white")
+ggplot(datmelt, aes(Question, Day, fill=color)) + geom_raster() + scale_fill_manual(values = cols) + geom_vline(xintercept=seq(1.5, 7.5, 2), lwd=1, colour="white") + geom_hline(yintercept=seq(1.5, 4.5, 1), lwd=1, colour="white") + theme(axis.text.x = element_text(angle=45, vjust=0.5),panel.background = element_rect(fill = NA)) + labs(x = "Questions Asked",y = "Day",fill="Block") + scale_y_reverse()
+```
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
