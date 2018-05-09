@@ -240,6 +240,17 @@ split.intervals <- TD(splitmods)
 wave.intervals <- TD(wavemods)
 
 coverage <- function(intervals){
+  #How I would have written it.  Results are exactly the same.  
+  # out <- c()
+  # cov <- lapply(intervals, function(x){
+  #   for (j in 1:no.var){
+  #     out[j] <- (pop.mod.coeffs[j,1] >= x[j,2]) & (pop.mod.coeffs[j] <= x[j,3])
+  #   }
+  #   out
+  # })
+  # 
+  # apply(do.call(rbind,cov),2,mean)
+  
   fits <- list() # lists of lists of whether or not a parameter estimate fell in the sim's CI
   for (i in 1:no.sim){
     incl <- list()
@@ -249,7 +260,7 @@ coverage <- function(intervals){
     fits[[i]] <- incl
   }
   
-  fit.mat <- matrix(unlist(fits),5)
+  fit.mat <- matrix(unlist(fits),no.var)
   cover <- apply(fit.mat,1,mean)
   return(list(fit.mat,cover))
 }
