@@ -10,6 +10,27 @@
 #   nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="high" nmiss=33 nrem=6' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high.Rout &
 #   nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="high" nmiss=33 nrem=6' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high.Rout &
 
+#hightime == 1
+nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="low" nmiss=11 nrem=2 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_low_highttime.Rout &
+nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="low" nmiss=11 nrem=2 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_low_highttime.Rout &
+
+  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="med" nmiss=22 nrem=4 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med_highttime.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="med" nmiss=22 nrem=4 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_med_highttime.Rout &
+
+  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="high" nmiss=33 nrem=6 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high_highttime.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="high" nmiss=33 nrem=6 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_high_highttime.Rout &
+
+  
+  
+nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=0.5 howmuch="low" nmiss=11 nrem=2' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_low.Rout &
+nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=0.5 howmuch="low" nmiss=11 nrem=2' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_low.Rout &
+
+  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=0.5 howmuch="med" nmiss=22 nrem=4' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=0.5 howmuch="med" nmiss=22 nrem=4' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med.Rout &
+
+  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=0.5 howmuch="high" nmiss=33 nrem=6' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=0.5 howmuch="high" nmiss=33 nrem=6' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high.Rout &
+
 # Load necessary libraries
 library(mice)
 library(lme4)
@@ -96,9 +117,13 @@ comp <- comp[,cols.keep]
 
 pop.mod <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + (1|PID), data = comp, family=binomial(link=logit))
 
+pop.mod.coeffs <- summary(pop.mod)$coef[,1:2]
+
 no.var <- nrow(pop.mod.coeffs)
 
-pop.mod.coeffs <- summary(pop.mod)$coef[,1:2]
+if (hightime == 1){
+  pop.mod.coeffs[,1] <- pop.mod.coeffs[,1] * c(2,0.5,0.5,1)
+}
 
 # Correlation Matrix
 corrmat <- cor(model.matrix(~.-1,data=comp[,c('ZEduc', 'ZIncom45', 'Age', 'ZAlcTox', 'ZCESDFU', 'ZAUDIT')]))
@@ -165,7 +190,7 @@ for (i in 1:no.sim) {print(i)
 rm(comp, sigma, X, b1, b2,b3,b4, fit1, fit2, fit3, fit4, fit5, fit6, fit7,
    i, int, sigmaPID)
 
-save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,".RData"))
+save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,"_hightime",hightime,".RData"))
 
 ## Create MISSINGNESS
 # rremove <- function(nrem, x) { # this literally just randomly removes nrem columns. Like, the entire column. Why???
@@ -236,7 +261,7 @@ split.data <- impute(split.pm)
 altered.split.data <- impute(altered.split.pm)
 wave.data <- impute(wave.pm)
 
-save.image("/home/gmatthews1/designedMissingness/simResults20180509.RData")
+save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,"_hightime",hightime,".RData"))
 
 # Step 3 - Build models from imputed simulation data for both methods
 # Result: a list of lists of model coefficients for each method
@@ -270,7 +295,7 @@ splitmods <- pm.mods(split.data)
 alteredsplitmods <- pm.mods(altered.split.data)
 wavemods <- pm.mods(wave.data)
 
-save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,".RData"))
+save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,"_hightime",hightime,".RData"))
 
 TD <- function(mods){
   intervals <- list()
@@ -407,9 +432,9 @@ wave.table
 
 
 
-save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,".RData"))
+save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,"_hightime",hightime,".RData"))
 d <- list(split.table,altered.split.table,wave.table)
-save(d, file = paste0("/home/gmatthews1/designedMissingness/tables20180509_",no.pid,"_",corr.scale,"_",howmuch,".RData"))
+save(d, file = paste0("/home/gmatthews1/designedMissingness/tables20180509_",no.pid,"_",corr.scale,"_",howmuch,"_hightime",hightime,".RData"))
 
 
 end <- Sys.time()
