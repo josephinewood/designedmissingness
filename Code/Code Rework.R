@@ -177,6 +177,10 @@ for (i in 1:no.sim) {print(i)
   MD <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + (1|PID), data = comp, family=binomial(link=logit))
   sigmaPID <- MD@theta
   
+  if (hightime == 1){
+    MD@beta <- MD@beta * c(2,0.5,0.5,1)
+  }
+  
   X$groupErr <- rnorm(no.pid, mean=0, sd=sigmaPID)[X$PID]
   X$groupErr2 <- rnorm(no.pid, mean=0, sd=sigmaPID)[X$PID]
   X$MissedDose <- predict(MD,X,allow.new.levels=TRUE)
@@ -185,6 +189,20 @@ for (i in 1:no.sim) {print(i)
   
   sim.data[[i]] <- X
 }
+
+mod.maker.nomiss <- function(dat){ #
+  modbetas <- list()
+  modse <- list()
+  for (i in 1:length(dat)){
+    try(model <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + (1|PID), data = dat[[i]], family=binomial(link=logit)))
+    try(modbetas[[i]] <- summary(model)$coef[,1]) # only take the coefficients of the variables, not the intercept
+    try(modse[[i]] <- summary(model)$coef[,2])
+  }
+  return(list(betas=modbetas,se=modse))
+}
+
+#Get results for the data with no missingess.
+fullmods <- mod.maker.nomiss(sim.data)
 
 #Remove unnecessary before analysis
 rm(comp, sigma, X, b1, b2,b3,b4, fit1, fit2, fit3, fit4, fit5, fit6, fit7,
@@ -347,6 +365,27 @@ split.cover <- coverage(split.intervals)
 altered.split.cover <- coverage(altered.split.intervals)
 wave.cover <- coverage(wave.intervals)
 
+# CI Length #
+
+cilength <- function(intervals){
+  length <- list() # lists of lists of whether or not a parameter estimate fell in the sim's CI
+  for (i in 1:no.sim){
+    len <- list()
+    for (j in 1:no.var){
+      len[[j]] <-  intervals[[i]][j,3] - intervals[[i]][j,2]
+    }
+    length[[i]] <- len
+  }
+  
+  fit.mat <- matrix(unlist(length),no.var)
+  out <- apply(fit.mat,1,mean)
+  return(list(fit.mat,out))
+}
+
+split.length <- cilength(split.intervals)
+altered.split.length <- cilength(altered.split.intervals)
+wave.length <- cilength(wave.intervals)
+
 
 # BIAS #
 
@@ -370,6 +409,29 @@ bias <- function(intervals){
 split.bias <- bias(split.intervals)
 altered.split.bias <- bias(altered.split.intervals)
 wave.bias <- bias(wave.intervals)
+
+# BIAS #
+
+pctbias <- function(intervals){
+  results <- list()
+  numerator <- list()
+  Qdiffs <- list()
+  #j-th variable
+  for (j in 1:nrow(intervals[[1]])){
+    Qdiffs[[j]] <- list(NA,nrow(intervals[[1]]))
+    for (i in 1:no.sim){
+      Qdiffs[[j]][i] <- (unlist(intervals[[i]][j,1]) - unlist(pop.mod.coeffs[j,1])) / (unlist(pop.mod.coeffs[j,1]))
+    }
+    
+    results[j] <- mean(unlist(Qdiffs[[j]]))
+    
+  }
+  results
+}
+
+split.pctbias <- pctbias(split.intervals)
+altered.split.pctbias <- pctbias(altered.split.intervals)
+wave.pctbias <- pctbias(wave.intervals)
 
 # MSE #
 
@@ -418,16 +480,16 @@ wave.fmi <- fmi(wavemods)
 # COMPARISON TABLE #
 # coverage, bias, mse, fmi for each variable, each method
 
-split.table <- data.frame(split.cover[2],cbind(split.bias,split.mse),split.fmi)
-colnames(split.table) <- c('Coverage','Bias','MSE','FMI')
+split.table <- data.frame(split.cover[2],cbind(split.bias,split.mse),split.fmi,split.length,split.pctbias)
+colnames(split.table) <- c('Coverage','Bias','MSE','FMI','CI Length','Pct Bias')
 split.table
 
-altered.split.table <- data.frame(altered.split.cover[2],cbind(altered.split.bias,altered.split.mse),altered.split.fmi)
-colnames(altered.split.table) <- c('Coverage','Bias','MSE','FMI')
+altered.split.table <- data.frame(altered.split.cover[2],cbind(altered.split.bias,altered.split.mse),altered.split.fmi,altered.split.length,altered.split.pctbias)
+colnames(altered.split.table) <- c('Coverage','Bias','MSE','FMI','CI Length','Pct Bias')
 altered.split.table
 
-wave.table <- data.frame(wave.cover[2],cbind(wave.bias,wave.mse),wave.fmi)
-colnames(wave.table) <- c('Coverage','Bias','MSE','FMI')
+wave.table <- data.frame(wave.cover[2],cbind(wave.bias,wave.mse),wave.fmi,wave.length,wave.pctbias)
+colnames(wave.table) <- c('Coverage','Bias','MSE','FMI','CI Length','Pct Bias')
 wave.table
 
 
