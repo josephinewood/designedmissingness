@@ -2,14 +2,14 @@
 # 
 # 
 # Regular Runs: 
-# nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="low" nmiss=11 nrem=2 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_low_highttime0.Rout &
-# nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="low" nmiss=11 nrem=2 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_low_highttime0.Rout &
-# 
-#   nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="med" nmiss=22 nrem=4 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med_highttime0.Rout &
-#   nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="med" nmiss=22 nrem=4 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_med_highttime0.Rout &
-# 
-#   nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="high" nmiss=33 nrem=6 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high_highttime0.Rout &
-#   nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="high" nmiss=33 nrem=6 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_high_highttime0.Rout &
+nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="low" nmiss=11 nrem=2 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_low_highttime0.Rout &
+nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="low" nmiss=11 nrem=2 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_low_highttime0.Rout &
+
+  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="med" nmiss=22 nrem=4 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med_highttime0.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="med" nmiss=22 nrem=4 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_med_highttime0.Rout &
+
+  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="high" nmiss=33 nrem=6 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high_highttime0.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="high" nmiss=33 nrem=6 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_high_highttime0.Rout &
 
 #hightime == 1
 nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="low" nmiss=11 nrem=2 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_low_highttime1.Rout &
@@ -205,6 +205,11 @@ mod.maker.nomiss <- function(dat){ #
 #Get results for the data with no missingess.
 fullmods <- mod.maker.nomiss(sim.data)
 
+#Analysis for models with no missing data
+#Bias
+#apply(do.call(rbind,fullmods$beta),2,mean) - pop.mod.coeffs[,1] 
+#do.call(rbind,fullmods$beta)
+
 #Remove unnecessary before analysis
 rm(comp, sigma, X, b1, b2,b3,b4, fit1, fit2, fit3, fit4, fit5, fit6, fit7,
    i, int, sigmaPID)
@@ -316,9 +321,17 @@ wavemods <- pm.mods(wave.data)
 
 save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,"_hightime",hightime,".RData"))
 
+#Remove errors
+for (j in no.sim:1){
+  if (length(alteredsplitmods[[j]]$beta) == 0){print(j)
+  alteredsplitmods[[j]] <- NULL
+  }
+}
+
+
 TD <- function(mods){
   intervals <- list()
-  for (i in 1:no.sim){
+  for (i in 1:length(mods)){
     Q <- apply(do.call(rbind,mods[[i]]$betas),2,mean)
     B <- apply(do.call(rbind,mods[[i]]$betas),2,var)
     W <- apply(do.call(rbind,mods[[i]]$se)^2,2,mean)
@@ -330,6 +343,30 @@ TD <- function(mods){
     intervals[[i]] <- cbind(Q ,lower = Q - qt(0.975,df)*Tm, upper = Q + qt(0.975,df)*Tm)
   }
   intervals
+}
+
+split.intervals <- TD(splitmods)
+altered.split.intervals <- TD(alteredsplitmods)
+wave.intervals <- TD(wavemods)
+
+#Remove anything with Q72 with an upper limit over 30.  These are clearly incorrect.  
+#Remove errors
+for (j in length(splitmods):1){
+  if (split.intervals[[j]][2,3] > 30){print(j)
+    splitmods[[j]] <- NULL
+  }
+}
+  
+for (j in length(alteredsplitmods):1){
+  if (altered.split.intervals[[j]][2,3] > 30){print(j)
+    alteredsplitmods[[j]] <- NULL
+  }
+}
+  
+for (j in length(wavemods):1){
+  if (wave.intervals[[j]][2,3] > 30){print(j)
+    wavemods[[j]] <- NULL
+  }
 }
 
 split.intervals <- TD(splitmods)
@@ -349,7 +386,7 @@ coverage <- function(intervals){
   # apply(do.call(rbind,cov),2,mean)
   
   fits <- list() # lists of lists of whether or not a parameter estimate fell in the sim's CI
-  for (i in 1:no.sim){
+  for (i in 1:length(intervals)){
     incl <- list()
     for (j in 1:no.var){
       incl[[j]] <- (pop.mod.coeffs[j] >= intervals[[i]][j,2]) & (pop.mod.coeffs[j] <= intervals[[i]][j,3])
@@ -370,7 +407,7 @@ wave.cover <- coverage(wave.intervals)
 
 cilength <- function(intervals){
   length <- list() # lists of lists of whether or not a parameter estimate fell in the sim's CI
-  for (i in 1:no.sim){
+  for (i in 1:length(intervals)){
     len <- list()
     for (j in 1:no.var){
       len[[j]] <-  intervals[[i]][j,3] - intervals[[i]][j,2]
@@ -397,7 +434,7 @@ bias <- function(intervals){
   #j-th variable
   for (j in 1:nrow(intervals[[1]])){
     Qdiffs[[j]] <- list(NA,nrow(intervals[[1]]))
-    for (i in 1:no.sim){
+    for (i in 1:length(intervals)){
       Qdiffs[[j]][i] <- unlist(intervals[[i]][j,1]) - unlist(pop.mod.coeffs[j,1])
     }
     
@@ -420,11 +457,11 @@ pctbias <- function(intervals){
   #j-th variable
   for (j in 1:nrow(intervals[[1]])){
     Qdiffs[[j]] <- list(NA,nrow(intervals[[1]]))
-    for (i in 1:no.sim){
+    for (i in 1:length(intervals)){
       Qdiffs[[j]][i] <- (unlist(intervals[[i]][j,1]) - unlist(pop.mod.coeffs[j,1])) / (unlist(pop.mod.coeffs[j,1]))
     }
     
-    results[j] <- mean(unlist(Qdiffs[[j]]))
+    results[j] <- 100*mean(unlist(Qdiffs[[j]]))
     
   }
   results
@@ -441,8 +478,8 @@ mse <- function(intervals){
   numerator <- list()
   Qdiffs2 <- list()
   for (j in 1:no.var){
-    Qdiffs2[[j]] <- rep(NA,no.sim)
-    for (i in 1:no.sim){
+    Qdiffs2[[j]] <- rep(NA,length(intervals))
+    for (i in 1:length(intervals)){
       Qdiffs2[[j]][i] <- (unlist(intervals[[i]][j,1]) - unlist(pop.mod.coeffs[j,1]))^2
     }
     
@@ -462,14 +499,14 @@ wave.mse <- mse(wave.intervals)
 
 #Note: Remove the rows where FMI is 0 likely due to non-vergence. 
 fmi <- function(mods){
-  FMI <- matrix(NA, nrow = no.sim, ncol = length(mods[[1]]$betas[[1]]))
-  for (i in 1:no.sim){
+  FMI <- matrix(NA, nrow = length(mods), ncol = length(mods[[1]]$betas[[1]]))
+  for (i in 1:length(mods)){
     B <- apply(do.call(rbind,mods[[i]]$betas),2,var)
     W <- apply(do.call(rbind,mods[[i]]$se)^2,2,mean)
     
     # Combined variance
-    TD <- (1 + 1/no.imp)*B + W
-    FMI[i,] <- ((1 + (1/no.imp))*B)/TD
+    TD <- (1 + 1/length(mods))*B + W
+    FMI[i,] <- ((1 + (1/length(mods)))*B)/TD
   }
   return(apply(FMI, 2, mean))
 }
@@ -481,21 +518,21 @@ wave.fmi <- fmi(wavemods)
 # COMPARISON TABLE #
 # coverage, bias, mse, fmi for each variable, each method
 
-split.table <- data.frame(split.cover[2],cbind(split.bias,split.mse),split.fmi,split.length,split.pctbias)
+split.table <- data.frame(split.cover[[2]],cbind(split.bias,split.mse),split.fmi,split.length[[2]],unlist(split.pctbias))
 colnames(split.table) <- c('Coverage','Bias','MSE','FMI','CI Length','Pct Bias')
 split.table
 
-altered.split.table <- data.frame(altered.split.cover[2],cbind(altered.split.bias,altered.split.mse),altered.split.fmi,altered.split.length,altered.split.pctbias)
+altered.split.table <- data.frame(altered.split.cover[[2]],cbind(altered.split.bias,altered.split.mse),altered.split.fmi,altered.split.length[[2]],unlist(altered.split.pctbias))
 colnames(altered.split.table) <- c('Coverage','Bias','MSE','FMI','CI Length','Pct Bias')
 altered.split.table
 
-wave.table <- data.frame(wave.cover[2],cbind(wave.bias,wave.mse),wave.fmi,wave.length,wave.pctbias)
+wave.table <- data.frame(wave.cover[[2]],cbind(wave.bias,wave.mse),wave.fmi,wave.length[[2]],unlist(wave.pctbias))
 colnames(wave.table) <- c('Coverage','Bias','MSE','FMI','CI Length','Pct Bias')
 wave.table
 
 
 
-save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,"_hightime",hightime,".RData"))
+#save.image(paste0("/home/gmatthews1/designedMissingness/simResults20180509_",no.pid,"_",corr.scale,"_",howmuch,"_hightime",hightime,".RData"))
 d <- list(split.table,altered.split.table,wave.table)
 save(d, file = paste0("/home/gmatthews1/designedMissingness/tables20180509_",no.pid,"_",corr.scale,"_",howmuch,"_hightime",hightime,".RData"))
 
