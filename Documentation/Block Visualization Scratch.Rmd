@@ -16,6 +16,14 @@ split.form <- function(set,grps){
    set
 }
 
+altered.split.form <- function(set,grps){
+   set$block[sample(2:nrow(set),nrow(set),FALSE)] <- c('A','B','C')
+   set[set$block == "A",grps$A] <- NA
+   set[set$block == "B",grps$B] <- NA
+   set[set$block == "C",grps$C] <- NA
+   set
+}
+
 wave.des <- function(set, nmiss, ...) { # nmiss is the number of days each person would miss? 11?? Like, miss a fourth of the days?
   id <- sample(2:5, size=nmiss)
   for (i in 1:nmiss) {
@@ -73,6 +81,10 @@ ggplot(datmelt, aes(Question, Day, fill=color)) + geom_raster() + scale_fill_man
 ```
 ```
 
+```{r}
+altered.dat <- altered.split.form(dat)
+altered.dat
+```
 
 
 
