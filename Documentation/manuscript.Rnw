@@ -434,31 +434,31 @@ In the final scenario, the goal was to determine which PM design would lead to t
 \label{sec:3.1}
 The first set of simulations run contained the parameters in the random-intercept logistic model with $\gamma_0 = -2.3$, $\beta_1 = 0.56$, $\beta_2 = 1.28$, and $\beta_3 = 0.2$. The effects of the variables here are comparable to those found in the original dataset. This fact implies that we can interpret the results here to show what may have occurred if the original study had implemented a PM design. Before we imposed a missingness structure on the 1,000 simulated samples we obtained the full data results shown in Table \ref{tab:table2}. Note that the full data results for the other simulation scenarios are also provided in this table for ease of reference.
 
-<<>>=
-load("~/designedmissingnessGit/Results/tables20180509_60_1_high.RData")
+<<echo=FALSE>>=
+d <- file("~/GitHub/designedmissingness/Results/tables20180509_60_1_high.RData")
 high <- d
 
-load("~/designedmissingnessGit/Results/tables20180509_60_1_med.RData")
+d <- file("~/GitHub/designedmissingness/Results/tables20180509_60_1_med.RData")
 med <- d
 
-load("~/designedmissingnessGit/Results/tables20180509_60_1_low.RData")
+d <- file("~/GitHub/designedmissingness/Results/tables20180509_60_1_low.RData")
 low <- d
 
 library(xtable)
-print(xtable(cbind("","","",rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])),digits= 3),include.rownames=FALSE)
+print(xtable(cbind("","","",rbind(low[1],med[1],high[1],low[2],med[2],high[2],low[3],med[3],high[3])),digits= 3),include.rownames=FALSE)
 
 
-load("~/designedmissingnessGit/Results/tables20180509_60_1_high_hightime1.RData")
+d <- file("~/GitHub/designedmissingness/Results/tables20180509_60_1_high_hightime1.RData")
 high <- d
 
-load("~/designedmissingnessGit/Results/tables20180509_60_1_med_hightime1.RData")
+d <- file("~/GitHub/designedmissingness/Results/tables20180509_60_1_med_hightime1.RData")
 med <- d
 
-load("~/designedmissingnessGit/Results/tables20180509_60_1_low_hightime1.RData")
+d <- file("~/GitHub/designedmissingness/Results/tables20180509_60_1_low_hightime1.RData")
 low <- d
 
 library(xtable)
-print(xtable(cbind("","","",rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])),digits= 3),include.rownames=FALSE)
+print(xtable(cbind("","","",rbind(low[1],med[1],high[1],low[2],med[2],high[2],low[3],med[3],high[3])),digits= 3),include.rownames=FALSE)
 
 @
 

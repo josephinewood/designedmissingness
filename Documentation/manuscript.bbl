@@ -1,0 +1,232 @@
+\begin{thebibliography}{34}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Andr{\'e}s~Houseman and Milton(2006)]{andres2006partial}
+E~Andr{\'e}s~Houseman and Donald~K Milton.
+\newblock Partial questionnaire designs, questionnaire non-response, and
+  attributable fraction: applications to adult onset asthma.
+\newblock \emph{Statistics in medicine}, 25\penalty0 (9):\penalty0 1499--1519,
+  2006.
+
+\bibitem[Collins et~al.(2001)Collins, Schafer, and Kam]{collins2001comparison}
+Linda~M Collins, Joseph~L Schafer, and Chi-Ming Kam.
+\newblock A comparison of inclusive and restrictive strategies in modern
+  missing data procedures.
+\newblock \emph{Psychological methods}, 6\penalty0 (4):\penalty0 330, 2001.
+
+\bibitem[Dempster et~al.(1977)Dempster, Laird, and Rubin]{dempster1977maximum}
+Arthur~P Dempster, Nan~M Laird, and Donald~B Rubin.
+\newblock Maximum likelihood from incomplete data via the em algorithm.
+\newblock \emph{Journal of the royal statistical society. Series B
+  (methodological)}, pages 1--38, 1977.
+
+\bibitem[Duncan et~al.(2013)Duncan, Duncan, and
+  Strycker]{duncan2013introduction}
+Terry~E Duncan, Susan~C Duncan, and Lisa~A Strycker.
+\newblock \emph{An introduction to latent variable growth curve modeling:
+  Concepts, issues, and application}.
+\newblock Routledge Academic, 2013.
+
+\bibitem[Gottschall et~al.(2012)Gottschall, West, and
+  Enders]{gottschall2012comparison}
+Amanda~C Gottschall, Stephen~G West, and Craig~K Enders.
+\newblock A comparison of item-level and scale-level multiple imputation for
+  questionnaire batteries.
+\newblock \emph{Multivariate Behavioral Research}, 47\penalty0 (1):\penalty0
+  1--25, 2012.
+
+\bibitem[Graham et~al.(1996)Graham, Hofer, and MacKinnon]{graham1996maximizing}
+John~W Graham, Scott~M Hofer, and David~P MacKinnon.
+\newblock Maximizing the usefulness of data obtained with planned missing value
+  patterns: An application of maximum likelihood procedures.
+\newblock \emph{Multivariate Behavioral Research}, 31\penalty0 (2):\penalty0
+  197--218, 1996.
+
+\bibitem[Graham et~al.(2001)Graham, Taylor, and Cumsille]{graham2001planned}
+John~W Graham, Bonnie~J Taylor, and Patricio~E Cumsille.
+\newblock Planned missing-data designs in analysis of change.
+\newblock 2001.
+
+\bibitem[Graham et~al.(2006)Graham, Taylor, Olchowski, and
+  Cumsille]{graham2006planned}
+John~W Graham, Bonnie~J Taylor, Allison~E Olchowski, and Patricio~E Cumsille.
+\newblock Planned missing data designs in psychological research.
+\newblock \emph{Psychological methods}, 11\penalty0 (4):\penalty0 323, 2006.
+
+\bibitem[Graham et~al.(2007)Graham, Olchowski, and Gilreath]{graham2007many}
+John~W Graham, Allison~E Olchowski, and Tamika~D Gilreath.
+\newblock How many imputations are really needed? some practical clarifications
+  of multiple imputation theory.
+\newblock \emph{Prevention Science}, 8\penalty0 (3):\penalty0 206--213, 2007.
+
+\bibitem[Harel(2007)]{harel2007inferences}
+Ofer Harel.
+\newblock Inferences on missing information under multiple imputation and
+  two-stage multiple imputation.
+\newblock \emph{Statistical Methodology}, 4\penalty0 (1):\penalty0 75--89,
+  2007.
+
+\bibitem[Harel and Zhou(2007)]{harel2007multiple}
+Ofer Harel and Xiao-Hua Zhou.
+\newblock Multiple imputation: review of theory, implementation and software.
+\newblock \emph{Statistics in medicine}, 26\penalty0 (16):\penalty0 3057--3077,
+  2007.
+
+\bibitem[Harel et~al.(2015)Harel, Stratton, and Aseltine]{harel2015designed}
+Ofer Harel, Jeffrey Stratton, and Robert Aseltine.
+\newblock Designed missingness to better estimate efficacy of behavioral
+  studies-application to suicide prevention trials.
+\newblock \emph{Journal of Medical Statistics and Informatics}, 3\penalty0
+  (1):\penalty0 2, 2015.
+
+\bibitem[Kalichman et~al.(2009)Kalichman, Amaral, White, Swetsze, Pope,
+  Kalichman, Cherry, and Eaton]{kalichman2009prevalence}
+Seth~C Kalichman, Christina~M Amaral, Denise White, Connie Swetsze, Howard
+  Pope, Moira~O Kalichman, Chauncey Cherry, and Lisa Eaton.
+\newblock Prevalence and clinical implications of interactive toxicity beliefs
+  regarding mixing alcohol and antiretroviral therapies among people living
+  with hiv/aids.
+\newblock \emph{AIDS patient care and STDs}, 23\penalty0 (6):\penalty0
+  449--454, 2009.
+
+\bibitem[Kalichman et~al.(2012)Kalichman, Amaral, White, Swetsze, Kalichman,
+  Cherry, and Eaton]{kalichman2012alcohol}
+Seth~C Kalichman, Christina~M Amaral, Denise White, Connie Swetsze, Moira~O
+  Kalichman, Chauncey Cherry, and Lisa Eaton.
+\newblock Alcohol and adherence to antiretroviral medications: interactive
+  toxicity beliefs among people living with hiv.
+\newblock \emph{Journal of the Association of Nurses in AIDS Care}, 23\penalty0
+  (6):\penalty0 511--520, 2012.
+
+\bibitem[King and Zeng(2001)]{king2001logistic}
+Gary King and Langche Zeng.
+\newblock Logistic regression in rare events data.
+\newblock \emph{Political analysis}, pages 137--163, 2001.
+
+\bibitem[Little and Rubin(2014)]{little2014statistical}
+Roderick~JA Little and Donald~B Rubin.
+\newblock \emph{Statistical analysis with missing data}.
+\newblock John Wiley \& Sons, 2014.
+
+\bibitem[Little(2013)]{little2013longitudinal}
+Todd~D Little.
+\newblock \emph{Longitudinal structural equation modeling}.
+\newblock Guilford Press, 2013.
+
+\bibitem[Little and Rhemtulla(2013)]{little2013planned}
+Todd~D Little and Mijke Rhemtulla.
+\newblock Planned missing data designs for developmental researchers.
+\newblock \emph{Child Development Perspectives}, 7\penalty0 (4):\penalty0
+  199--204, 2013.
+
+\bibitem[McArdle and Woodcock(1997)]{mcardle1997expanding}
+John~J McArdle and Richard~W Woodcock.
+\newblock Expanding test--retest designs to include developmental time-lag
+  components.
+\newblock \emph{Psychological Methods}, 2\penalty0 (4):\penalty0 403, 1997.
+
+\bibitem[Pellowski et~al.(2016)Pellowski, Kalichman, Kalichman, and
+  Cherry]{pellowski2016alcohol}
+Jennifer~A Pellowski, Seth~C Kalichman, Moira~O Kalichman, and Chauncey Cherry.
+\newblock Alcohol-antiretroviral therapy interactive toxicity beliefs and daily
+  medication adherence and alcohol use among people living with hiv.
+\newblock \emph{AIDS care}, 28\penalty0 (8):\penalty0 963--970, 2016.
+
+\bibitem[Raghunathan(2015)]{raghunathan2015missing}
+Trivellore Raghunathan.
+\newblock \emph{Missing data analysis in practice}.
+\newblock CRC Press, 2015.
+
+\bibitem[Raghunathan and Grizzle(1995)]{raghunathan1995split}
+Trivellore~E Raghunathan and James~E Grizzle.
+\newblock A split questionnaire survey design.
+\newblock \emph{Journal of the American Statistical Association}, 90\penalty0
+  (429):\penalty0 54--63, 1995.
+
+\bibitem[Rhemtulla et~al.(2014)Rhemtulla, Jia, Wu, and
+  Little]{rhemtulla2014planned}
+Mijke Rhemtulla, Fan Jia, Wei Wu, and Todd~D Little.
+\newblock Planned missing designs to optimize the efficiency of latent growth
+  parameter estimates.
+\newblock \emph{International Journal of Behavioral Development}, page
+  0165025413514324, 2014.
+
+\bibitem[Rhemtulla et~al.(2016)Rhemtulla, Savalei, and
+  Little]{rhemtulla2016asymptotic}
+Mijke Rhemtulla, Victoria Savalei, and Todd~D Little.
+\newblock On the asymptotic relative efficiency of planned missingness designs.
+\newblock \emph{Psychometrika}, 81\penalty0 (1):\penalty0 60--89, 2016.
+
+\bibitem[Rubin(2004)]{rubin2004multiple}
+D.B. Rubin.
+\newblock \emph{Multiple Imputation for Nonresponse in Surveys}.
+\newblock Wiley Classics Library. Wiley, 2004.
+\newblock ISBN 9780471655749.
+\newblock URL \url{https://books.google.com/books?id=bQBtw6rx\_mUC}.
+
+\bibitem[Rubin(1976)]{rubin1976inference}
+Donald~B Rubin.
+\newblock Inference and missing data.
+\newblock \emph{Biometrika}, pages 581--592, 1976.
+
+\bibitem[Saris et~al.(2004)Saris, Satorra, and Coenders]{saris20048}
+Willem~E Saris, Albert Satorra, and Germ{\`a} Coenders.
+\newblock 8. a new approach to evaluating the quality of measurement
+  instruments: The split-ballot mtmm design.
+\newblock \emph{Sociological Methodology}, 34\penalty0 (1):\penalty0 311--347,
+  2004.
+
+\bibitem[Shoemaker(1973)]{shoemaker1973principles}
+David~M Shoemaker.
+\newblock \emph{Principles and procedures of multiple matrix sampling.}
+\newblock Ballinger, 1973.
+
+\bibitem[Silvia et~al.(2014)Silvia, Kwapil, Walsh, and
+  Myin-Germeys]{silvia2014planned}
+Paul~J Silvia, Thomas~R Kwapil, Molly~A Walsh, and Inez Myin-Germeys.
+\newblock Planned missing-data designs in experience-sampling research: Monte
+  carlo simulations of efficient designs for assessing within-person
+  constructs.
+\newblock \emph{Behavior research methods}, 46\penalty0 (1):\penalty0 41--54,
+  2014.
+
+\bibitem[Sirotnik and Wellington(1977)]{sirotnik1977incidence}
+Kenneth Sirotnik and Roger Wellington.
+\newblock Incidence sampling: An integrated theory for “matrix sampling”.
+\newblock \emph{Journal of Educational Measurement}, 14\penalty0 (4):\penalty0
+  343--399, 1977.
+
+\bibitem[Thomas et~al.(2006)Thomas, Raghunathan, Schenker, Katzoff, and
+  Johnson]{thomas2006evaluation}
+Neal Thomas, Trivellore~E Raghunathan, Nathaniel Schenker, Myron~J Katzoff, and
+  Clifford~L Johnson.
+\newblock An evaluation of matrix sampling methods using data from the national
+  health and nutrition examination survey.
+\newblock \emph{Survey Methodology}, 32\penalty0 (2):\penalty0 217, 2006.
+
+\bibitem[{van Buuren} and Groothuis-Oudshoorn(2011)]{mice2011imputation}
+Stef {van Buuren} and Karin Groothuis-Oudshoorn.
+\newblock {mice}: Multivariate imputation by chained equations in r.
+\newblock \emph{Journal of Statistical Software}, 45\penalty0 (3):\penalty0
+  1--67, 2011.
+\newblock URL \url{http://www.jstatsoft.org/v45/i03/}.
+
+\bibitem[Wacholder et~al.(1994)Wacholder, Carroll, Pee, and
+  Gail]{wacholder1994partial}
+Sholom Wacholder, Raymond~J Carroll, David Pee, and Mitchell~H Gail.
+\newblock The partial questionnaire design for case-control studies.
+\newblock \emph{Statistics in Medicine}, 13\penalty0 (5-7):\penalty0 623--634,
+  1994.
+
+\bibitem[Zeger and Thomas(1997)]{zeger1997efficient}
+Linda~M Zeger and Neal Thomas.
+\newblock Efficient matrix sampling instruments for correlated latent traits:
+  examples from the national assessment of educational progress.
+\newblock \emph{Journal of the American Statistical Association}, 92\penalty0
+  (438):\penalty0 416--425, 1997.
+
+\end{thebibliography}
