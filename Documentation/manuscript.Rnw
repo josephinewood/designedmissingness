@@ -21,7 +21,7 @@
 
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+%\SweaveOpts{concordance=TRUE}
 
 \title{Comparing Different Planned Missingness Designs in Longitudinal Studies}
 
@@ -53,6 +53,7 @@
 
 
 \maketitle
+
 
 \begin{abstract}
 Planned Missingness (PM) designs, in which researchers deliberately collect only partial data, have enjoyed a recent growth in popularity. Among other benefits these designs have been proven capable of reducing the study costs and alleviating participant burden. Past research has shown that Split Form PM designs can be effective in simplifying complex surveys while Wave Missingness PM designs act similarly for Longitudinal studies. However, less work has been done to inform how to implement PM structures into studies which incorporate elements of both survey and longitudinal designs. Specifically, in studies where a questionnaire is given to participants at multiple measurement occasions the best way to design missingness is still unclear. To address this deficiency, data in this hybrid format was simulated under both Split Form and Wave Missingness PM structures. Multiple Imputation techniques were applied to estimate a multilevel logistic model in each of the simulations. Estimated parameters were compared to the true values to see which PM design allowed us to best capture the true model. The results of this study indicate that, compared to the Split Form Design, the Wave Missingness design consistently performed less effectively in capturing the multilevel model. Thus, in the context of longitudinal surveys this study recommends the use of Split Form missingness designs, which performs well under a number of different conditions.
@@ -209,7 +210,7 @@ cols <- c("Missing" = "red", "Observed" = "skyblue3")
 waveplot <-  ggplot(datmelt, aes(Question, Day, fill=color)) + geom_raster() + scale_fill_manual(values = cols)  + theme(axis.text.x = element_text(angle=45, vjust=0.5),panel.background = element_rect(fill = NA)) + labs(x = "Questions Asked",y = "Day",fill="Block") + scale_y_reverse() + theme(legend.title=element_blank(),legend.position="none")
 @
 
-<<misslow, fig.cap = "Low missingness", echo = FALSE, message = FALSE>>=
+<<misslow, fig.cap = "Low missingness", echo = FALSE, message = FALSE, warning = FALSE, fig = TRUE>>=
 require(gridExtra)
 grid.arrange(splitplot, alternatesplitplot, waveplot, ncol=3)
 @
@@ -432,18 +433,40 @@ In the final scenario, the goal was to determine which PM design would lead to t
 \label{sec:3.1}
 The first set of simulations run contained the parameters in the random-intercept logistic model with $\gamma_0 = -2.3$, $\beta_1 = 0.56$, $\beta_2 = 1.28$, and $\beta_3 = 0.2$. The effects of the variables here are comparable to those found in the original dataset. This fact implies that we can interpret the results here to show what may have occurred if the original study had implemented a PM design. Before we imposed a missingness structure on the 1,000 simulated samples we obtained the full data results shown in Table \ref{tab:table2}. Note that the full data results for the other simulation scenarios are also provided in this table for ease of reference.
 
-<<echo=FALSE>>=
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_high.RData")
-high <- d
+<<echo=FALSE, warning=FALSE>>=
+# if (Sys.info()[8] == "Josie"){
+#   setwd("~/GitHub/designedmissingness")
+# }
+# if (Sys.info()[8] == "gregorymatthews"){
+#   setwd("~/Dropbox/designedmissingnessGit")
+# }
 
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_med.RData")
-med <- d
+# Table 7
+library(kableExtra)
+library(dplyr)
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_high_hightime0.RData")
+high_8 <- d
 
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_low.RData")
-low <- d
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_med_hightime0.RData")
+med_8 <- d
 
-library(xtable)
-print(xtable(cbind("","","",rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])),digits= 3),type="latex", comment = FALSE)
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_low_hightime0.RData")
+low_8 <- d
+
+c8 <- rbind(low_8[[1]],med_8[[1]],high_8[[1]],low_8[[2]],med_8[[2]],high_8[[2]],low_8[[3]],med_8[[3]],high_8[[3]])
+
+df_8 <- data.frame(Design = rep(c("Split Form","Altered Split Form", "Wave Missingness"), each = 12), Missingness = rep(rep(c("Low","Medium", "High"), each = 4),3), Parameter = rep(c("$\\gamma_0$", "$\\beta_1$", "$\\beta_2$", "$\\beta_3$"),9), Bias = unlist(c8["Bias"]), unlist(c8["Pct Bias"]), MSE = unlist(c8["MSE"]), Coverage = c8["Coverage"], c8["CI Length"], FMI = c8["FMI"])
+
+df_8[,4:9] <- apply(df_8[,4:9], 2, round, digits = 3)
+
+names(df_8) <- c("Design", "Missingness", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
+row.names(df_8) <- NULL
+kable(df_8, escape = FALSE, format ="latex") %>%
+  collapse_rows(columns = 1:2, latex_hline = "full")
+  column_spec(1, width = "30em")
+
+# library(knitr)
+# kable(cbind("","","",rbind(low_8[[1]],med_8[[1]],high_8[[1]],low_8[[2]],med_8[[2]],high_8[[2]],low_8[[3]],med_8[[3]],high_8[[3]])),format="latex")
 
 
 load("~/GitHub/designedmissingness/Results/tables20180509_60_1_high_hightime1.RData")
