@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.10.5)  16 MAY 2018 17:31
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.10.5)  16 MAY 2018 17:52
 entering extended mode
 **./manuscript.tex
 (manuscript.tex
@@ -538,10 +538,10 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 LaTeX Warning: Reference `tab:table10' on page 3 undefined on input line 82.
 
 
-LaTeX Warning: Reference `fig:misslow' on page 3 undefined on input line 119.
+LaTeX Warning: Reference `fig:misslow' on page 3 undefined on input line 118.
 
 [3]
-Overfull \hbox (1.444pt too wide) in paragraph at lines 127--127
+Overfull \hbox (1.444pt too wide) in paragraph at lines 126--126
 \T1/aer/m/n/9.5 cost, re-searchers must con-sider the dis-ad-van-tages of more 
 blocks. In-evitably, greater
  []
@@ -551,22 +551,22 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [5]
 [6] [7]
-Underfull \hbox (badness 10000) in paragraph at lines 258--259
+Underfull \hbox (badness 10000) in paragraph at lines 257--258
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 263--271
+Underfull \hbox (badness 10000) in paragraph at lines 262--270
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 263--271
+Underfull \hbox (badness 10000) in paragraph at lines 262--270
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 263--271
+Underfull \hbox (badness 10000) in paragraph at lines 262--270
 
  []
 
@@ -575,64 +575,65 @@ Underfull \vbox (badness 4608) has occurred while \output is active []
 
  [9]
 [10] [11]
-LaTeX Font Info:    Try loading font information for T1+aett on input line 338.
+LaTeX Font Info:    Try loading font information for T1+aett on input line 337.
 
  ("C:\Program Files\MiKTeX 2.9\tex\latex\ae\t1aett.fd"
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
-Underfull \hbox (badness 10000) in paragraph at lines 449--449
+Underfull \vbox (badness 6842) has occurred while \output is active []
+
+ [12]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [13]
+Underfull \hbox (badness 10000) in paragraph at lines 500--500
 \T1/aer/m/n/8 Analysis
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 456--456
+Underfull \hbox (badness 10000) in paragraph at lines 507--507
 \T1/aer/m/n/8 Sample
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 463--463
+Underfull \hbox (badness 10000) in paragraph at lines 514--514
 \T1/aer/m/n/8 Inter-Survey
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 463--463
+Underfull \hbox (badness 10000) in paragraph at lines 514--514
 \T1/aer/m/n/8 Cor-re-la-tion
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 470--470
+Underfull \hbox (badness 10000) in paragraph at lines 521--521
 \T1/aer/m/n/8 Time Ef-fect
  []
 
-[12]
-Overfull \hbox (5.50793pt too wide) in paragraph at lines 486--545
+
+Overfull \hbox (5.50793pt too wide) in paragraph at lines 537--596
  []|  [] 
  []
 
 
-Overfull \hbox (5.50793pt too wide) in paragraph at lines 551--610
+Overfull \hbox (5.50793pt too wide) in paragraph at lines 602--661
  []|  [] 
  []
 
 
-Overfull \hbox (5.50793pt too wide) in paragraph at lines 616--675
+Overfull \hbox (5.50793pt too wide) in paragraph at lines 667--726
  []|  [] 
  []
 
 
-Overfull \hbox (10.40393pt too wide) in paragraph at lines 681--740
+Overfull \hbox (10.40393pt too wide) in paragraph at lines 732--791
  []|  [] 
  []
 
-
+[14] [15] [16] [17] [18] (manuscript.bbl [19]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [13]
-[14]
-Underfull \vbox (badness 5077) has occurred while \output is active []
-
- [15]
-[16] [17] (manuscript.bbl [18]
+ [20]
 Underfull \hbox (badness 3724) in paragraph at lines 165--170
 []\T1/aer/m/n/9.5 D.B. Ru-bin.  \T1/aer/m/it/9.5 Mul-ti-ple Im-pu-ta-tion for N
 on-re-sponse in Sur-veys\T1/aer/m/n/9.5 .  Wi-
@@ -644,23 +645,19 @@ Underfull \hbox (badness 7256) in paragraph at lines 165--170
 
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [19])
-[20] [21] [22] [23] [24] (manuscript.aux)
+) [21] [22] [23] [24] [25] (manuscript.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
  5600 strings out of 493323
- 83468 string characters out of 3139066
+ 83464 string characters out of 3139066
  232019 words of memory out of 3000000
  8986 multiletter control sequences out of 15000+200000
  55164 words of font info for 117 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,11n,38p,1477b,330s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 39i,11n,38p,1477b,328s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc}<C:/Program Files/Mi
 KTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9
 /fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Program Files/MiKTeX 2.9/fonts/ty
@@ -676,9 +673,9 @@ fonts/type1/public/amsfonts/cm/cmtt9.pfb><C:/Users/Josie/AppData/Roaming/MiKTeX
 /fonts/type1/urw/symbol/usyr.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/t
 imes/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
 
-Output written on manuscript.pdf (24 pages, 262327 bytes).
+Output written on manuscript.pdf (25 pages, 265538 bytes).
 PDF statistics:
- 141 PDF objects out of 1000 (max. 8388607)
+ 145 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  5 words of extra memory for PDF output out of 10000 (max. 10000000)
 
