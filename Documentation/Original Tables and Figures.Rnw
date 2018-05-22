@@ -1,0 +1,69 @@
+\documentclass{article}
+
+\begin{document}
+
+% Original Tables and Figures
+
+% Table 10
+
+% \begin{table}[h!]
+% 	\centering
+% 	\caption{The Three Form PM Design}
+% 	\label{tab:table10}
+% 	\setlength{\tabcolsep}{1cm}
+% 	\begin{tabular}{c|cccc}
+% 		\toprule
+% 		& \multicolumn{4}{c}{Block} \\
+% 		Form & X & A & B & C \\
+% 		\midrule
+% 		1 & 1 & 1 & 1 & 0 \\
+% 		2 & 1 & 1 & 0 & 1 \\
+% 		3 & 1 & 0 & 1 & 1 \\
+% 		\bottomrule
+% 	\end{tabular}
+% \end{table}
+
+% Table 11
+
+% \begin{table}[!h]
+% 	\centering
+% 	\caption{The Wave Missingness PM Design}
+% 	\label{tab:table11}
+% 	\setlength{\tabcolsep}{0.75cm}
+% 	\begin{tabular}{c|ccccc}
+% 		\toprule
+% 		& \multicolumn{5}{c}{Month} \\
+% 		Participant & 1 & 2 & 3 & 4 & 5 \\
+% 		\midrule
+% 		1 & 1 & 0 & 1 & 0 & 1 \\
+% 		2 & 1 & 1 & 0 & 1 & 0 \\
+% 		3 & 0 & 0 & 1 & 1 & 1 \\
+% 		4 & 1 & 1 & 1 & 0 & 0 \\
+% 		\bottomrule
+% 	\end{tabular}
+% \end{table}
+<<>>=
+library(kableExtra)
+library(dplyr)
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_high_hightime0.RData")
+high_8 <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_med_hightime0.RData")
+med_8 <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_low_hightime0.RData")
+low_8 <- d
+
+c8 <- rbind(low_8[[1]],med_8[[1]],high_8[[1]],low_8[[2]],med_8[[2]],high_8[[2]],low_8[[3]],med_8[[3]],high_8[[3]])
+
+df_8 <- data.frame(Design = rep(c("Split Form","Altered Split Form", "Wave Missingness"), each = 12), Missingness = rep(rep(c("Low","Medium", "High"), each = 4),3), Parameter = rep(c("$\\gamma_0$", "$\\beta_1$", "$\\beta_2$", "$\\beta_3$"),9), Bias = unlist(c8["Bias"]), unlist(c8["Pct Bias"]), MSE = unlist(c8["MSE"]), Coverage = c8["Coverage"], c8["CI Length"], FMI = c8["FMI"])
+
+df_8[,4:9] <- apply(df_8[,4:9], 2, round, digits = 3)
+
+names(df_8) <- c("Design", "Level", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
+row.names(df_8) <- NULL
+kable(df_8, escape = FALSE, format ="latex") %>%
+  collapse_rows(columns = 1:2, latex_hline = "full") %>%
+  kable_styling(latex_options = "scale_down")
+@
+\end{document}

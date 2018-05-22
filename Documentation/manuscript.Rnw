@@ -1,3 +1,113 @@
+% Predefine some figures
+
+<<echo = FALSE>>=
+# Creating dataframe to visualize - one subject's questions for 5 days
+split.form <- function(set, nrem = 2, bound = 0){
+  
+set[set$Day >= bound, paste0("Q",1:8)] <- t(apply(set[set$Day >= bound,paste0("Q",1:8)], 1, function(x){
+    ind <- sample(1:8, nrem)
+    x[ind] <- NA
+    as.numeric(x)
+  }))
+    
+  return(set)
+}
+@
+
+<<echo = FALSE>>=
+wave.des <- function(set, nmiss, ...) { # nmiss is the number of days each person would miss? 11?? Like, miss a fourth of the days?
+  id <- sample(2:45, size=nmiss)
+  for (i in 1:nmiss) {
+    set[set$Day %in% id[i], c('Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8')] <- NA
+  }
+  return(set)
+}
+@
+
+<<warning=FALSE, echo = FALSE>>=
+cols <- c('Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8')
+fill <- matrix(1, 45, 8)
+dat <- data.frame(fill)
+colnames(dat) <- cols
+dat$Day <- seq.int(nrow(dat))
+set.seed(1234)
+split.dat <- split.form(dat)[1:8]
+#split.dat
+@
+
+<<warning=FALSE,message=FALSE,echo=FALSE>>=
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+datmelt <- split.dat[1:8] %>% is.na %>% melt
+colnames(datmelt) <- c("Day","Question","Missing")
+#datmelt$block <- ifelse((datmelt$Question=="Q1")|(datmelt$Question=="Q8"),"X",ifelse((datmelt$Question=="Q2")|(datmelt$Question=="Q3"),"A",ifelse((datmelt$Question=="Q4")|(datmelt$Question=="Q5"),"B",ifelse((datmelt$Question=="Q6")|(datmelt$Question=="Q7"),"C",0))))
+datmelt$color <- ifelse(datmelt$Missing == "TRUE", "Missing", "Observed")
+  
+  #ifelse(datmelt$Missing == "TRUE", "Missing", ifelse(datmelt$block == "X","X",ifelse(datmelt$block == "A","A",ifelse(datmelt$block == "B","B",ifelse(datmelt$block == "C","C","Missing")))))
+@
+
+<<warning=FALSE,echo=FALSE>>=
+cols <- c("Missing" = "red", "Observed" = "skyblue3")
+splitplot <- ggplot(datmelt, aes(Question, Day, fill=color)) + geom_raster() + scale_fill_manual(values = cols)  + theme(axis.text.x = element_text(angle=45, vjust=0.5),panel.background = element_rect(fill = NA)) + labs(x = "Questions Asked",y = "Day",fill="Block") + scale_y_reverse() + theme(legend.title=element_blank(),legend.position="none")
+
+#+ geom_vline(xintercept=seq(1.5, 7.5, 2), lwd=1, colour="white") + geom_hline(yintercept=seq(1.5, 4.5, 1), lwd=1, colour="white")
+@
+
+<<warning=FALSE,echo=FALSE>>=
+cols <- c('Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8')
+fill <- matrix(1, 45, 8)
+dat <- data.frame(fill)
+colnames(dat) <- cols
+dat$Day <- seq.int(nrow(dat))
+set.seed(1234)
+alternate.split.dat <- split.form(dat, bound = 3)[1:8]
+#alternate.split.dat
+@
+
+<<warning=FALSE,message=FALSE,echo=FALSE>>=
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+datmelt <- alternate.split.dat[1:8] %>% is.na %>% melt
+colnames(datmelt) <- c("Day","Question","Missing")
+#datmelt$block <- ifelse((datmelt$Question=="Q1")|(datmelt$Question=="Q8"),"X",ifelse((datmelt$Question=="Q2")|(datmelt$Question=="Q3"),"A",ifelse((datmelt$Question=="Q4")|(datmelt$Question=="Q5"),"B",ifelse((datmelt$Question=="Q6")|(datmelt$Question=="Q7"),"C",0))))
+datmelt$color <- ifelse(datmelt$Missing == "TRUE", "Missing", "Observed")
+  
+  #ifelse(datmelt$Missing == "TRUE", "Missing", ifelse(datmelt$block == "X","X",ifelse(datmelt$block == "A","A",ifelse(datmelt$block == "B","B",ifelse(datmelt$block == "C","C","Missing")))))
+@
+
+<<warning=FALSE,echo=FALSE>>=
+cols <- c("Missing" = "red", "Observed" = "skyblue3")
+alternatesplitplot <- ggplot(datmelt, aes(Question, Day, fill=color)) + geom_raster() + scale_fill_manual(values = cols)  + theme(axis.text.x = element_text(angle=45, vjust=0.5),panel.background = element_rect(fill = NA)) + labs(x = "Questions Asked",y = "Day",fill="Block") + scale_y_reverse() + theme(legend.title=element_blank(),legend.position="none") 
+
+#+ geom_vline(xintercept=seq(1.5, 7.5, 2), lwd=1, colour="white") + geom_hline(yintercept=seq(1.5, 4.5, 1), lwd=1, colour="white")
+@
+
+<<echo=FALSE>>=
+set.seed(1234)
+wave.dat <- wave.des(dat,11)
+#wave.dat
+@
+
+<<echo=FALSE>>=
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+datmelt <- wave.dat[1:8] %>% is.na %>% melt
+colnames(datmelt) <- c("Day","Question","Missing")
+#datmelt$block <- ifelse((datmelt$Question=="Q1")|(datmelt$Question=="Q8"),"X",ifelse((datmelt$Question=="Q2")|(datmelt$Question=="Q3"),"A",ifelse((datmelt$Question=="Q4")|(datmelt$Question=="Q5"),"B",ifelse((datmelt$Question=="Q6")|(datmelt$Question=="Q7"),"C",0))))
+datmelt$color <- ifelse(datmelt$Missing == "TRUE", "Missing", "Observed")
+  
+  #ifelse(datmelt$Missing == "TRUE", "Missing", ifelse(datmelt$block == "X","X",ifelse(datmelt$block == "A","A",ifelse(datmelt$block == "B","B",ifelse(datmelt$block == "C","C","Missing")))))
+@
+
+<<echo=FALSE>>=
+cols <- c("Missing" = "red", "Observed" = "skyblue3")
+waveplot <-  ggplot(datmelt, aes(Question, Day, fill=color)) + geom_raster() + scale_fill_manual(values = cols)  + theme(axis.text.x = element_text(angle=45, vjust=0.5),panel.background = element_rect(fill = NA)) + labs(x = "Questions Asked",y = "Day",fill="Block") + scale_y_reverse() + theme(legend.title=element_blank(),legend.position="none")
+@
+
+
 \RequirePackage{fix-cm}
 
 \documentclass{svjour3}                     % onecolumn (standard format)
@@ -28,13 +138,113 @@
 % \usepackage[normalem]{ulem}
 % \usepackage{makecell}
 
-
+\raggedbottom
 
 \journalname{Sankhya B}
 
 
 \begin{document}
 %\SweaveOpts{concordance=TRUE}
+
+<<primary, echo=FALSE, message=FALSE, warning=FALSE, fig.pos = "H">>=
+library(kableExtra)
+library(dplyr)
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_high_hightime0.RData")
+high <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_med_hightime0.RData")
+med <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_low_hightime0.RData")
+low <- d
+
+r <- rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])
+
+df <- data.frame(Design = rep(c("Split Form","Altered Split Form", "Wave Missingness"), each = 12), Missingness = rep(rep(c("Low","Medium", "High"), each = 4),3), Parameter = rep(c("$\\gamma_0$", "$\\beta_1$", "$\\beta_2$", "$\\beta_3$"),9), Bias = unlist(r["Bias"]), unlist(r["Pct Bias"]), MSE = unlist(r["MSE"]), Coverage = r["Coverage"], r["CI Length"], FMI = r["FMI"])
+
+df[,4:9] <- apply(df[,4:9], 2, round, digits = 3)
+
+names(df) <- c("Design", "Level", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
+row.names(df) <- NULL
+primary <- kable(df, escape = FALSE, format ="latex", caption = "Primary Results (N = 60)") %>%
+  collapse_rows(columns = 1:2, latex_hline = "full") %>%
+  kable_styling(latex_options = c("scale_down","hold_position"))
+@
+
+<<sampsize, echo=FALSE, message=FALSE, warning=FALSE, fig.pos = "H">>=
+library(kableExtra)
+library(dplyr)
+load("~/GitHub/designedmissingness/Results/tables20180509_120_1_high_hightime0.RData")
+high <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_120_1_med_hightime0.RData")
+med <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_120_1_low_hightime0.RData")
+low <- d
+
+r <- rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])
+
+df <- data.frame(Design = rep(c("Split Form","Altered Split Form", "Wave Missingness"), each = 12), Missingness = rep(rep(c("Low","Medium", "High"), each = 4),3), Parameter = rep(c("$\\gamma_0$", "$\\beta_1$", "$\\beta_2$", "$\\beta_3$"),9), Bias = unlist(r["Bias"]), unlist(r["Pct Bias"]), MSE = unlist(r["MSE"]), Coverage = r["Coverage"], r["CI Length"], FMI = r["FMI"])
+
+df[,4:9] <- apply(df[,4:9], 2, round, digits = 3)
+
+names(df) <- c("Design", "Level", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
+row.names(df) <- NULL
+sampsize <- kable(df, escape = FALSE, format ="latex", caption = "Increased Sample Size Results (N = 120)") %>%
+  collapse_rows(columns = 1:2, latex_hline = "full") %>%
+  kable_styling(latex_options = c("scale_down","hold_position"))
+@
+
+<<hightime, echo=FALSE, message=FALSE, warning=FALSE, fig.pos = "H">>=
+library(kableExtra)
+library(dplyr)
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_high_hightime1.RData")
+high <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_med_hightime1.RData")
+med <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_low_hightime1.RData")
+low <- d
+
+r <- rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])
+
+df <- data.frame(Design = rep(c("Split Form","Altered Split Form", "Wave Missingness"), each = 12), Missingness = rep(rep(c("Low","Medium", "High"), each = 4),3), Parameter = rep(c("$\\gamma_0$", "$\\beta_1$", "$\\beta_2$", "$\\beta_3$"),9), Bias = unlist(r["Bias"]), unlist(r["Pct Bias"]), MSE = unlist(r["MSE"]), Coverage = r["Coverage"], r["CI Length"], FMI = r["FMI"])
+
+df[,4:9] <- apply(df[,4:9], 2, round, digits = 3)
+
+names(df) <- c("Design", "Level", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
+row.names(df) <- NULL
+hightime <- kable(df, escape = FALSE, format ="latex", caption = "High Time Results (N = 60)") %>%
+  collapse_rows(columns = 1:2, latex_hline = "full") %>%
+  kable_styling(latex_options = c("scale_down","hold_position"))
+@
+
+<<lowcorr, echo=FALSE, message=FALSE, warning=FALSE, fig.pos = "H">>=
+library(kableExtra)
+library(dplyr)
+load("~/GitHub/designedmissingness/Results/tables20180509_60_0.5_high_hightime0.RData")
+high <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_0.5_med_hightime0.RData")
+med <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_0.5_low_hightime0.RData")
+low <- d
+
+r <- rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])
+
+df <- data.frame(Design = rep(c("Split Form","Altered Split Form", "Wave Missingness"), each = 12), Missingness = rep(rep(c("Low","Medium", "High"), each = 4),3), Parameter = rep(c("$\\gamma_0$", "$\\beta_1$", "$\\beta_2$", "$\\beta_3$"),9), Bias = unlist(r["Bias"]), unlist(r["Pct Bias"]), MSE = unlist(r["MSE"]), Coverage = r["Coverage"], r["CI Length"], FMI = r["FMI"])
+
+df[,4:9] <- apply(df[,4:9], 2, round, digits = 3)
+
+names(df) <- c("Design", "Level", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
+row.names(df) <- NULL
+lowcorr <- kable(df, escape = FALSE, format ="latex", caption = "Low Inter-Survey Correlation Results (N = 60)") %>%
+  collapse_rows(columns = 1:2, latex_hline = "full") %>%
+  kable_styling(latex_options = c("scale_down","hold_position"))
+@
 
 \title{Comparing Different Planned Missingness Designs in Longitudinal Studies}
 
@@ -92,182 +302,27 @@ To delineate the remainder of this paper, in Section 2 we go into more depth on 
 \subsection{Split Form Design}
 \label{sec:1.1}
 
-Split Form missingness designs \citep{raghunathan1995split}, also  known as Multi-Form \citep{little2013planned} or Matrix Sampling designs \citep{thomas2006evaluation}, are very aptly named. Instead of giving participants one large survey, researchers create multiple forms, each containing a subset of the full survey's questions. A common form setup is the three-form design \citep{graham1996maximizing} in which the full survey is split into four blocks: X, A, B, and C. Each form of the survey includes the X block as well as two of the remaining blocks. This leaves the configurations seen in Table \\ref{tab:table10}, where "1" indicates that the block is included and "0" indicates that it is excluded. Note that every block appears in at least one form. By designing the forms in this manner we are able to estimate the relationship between any chosen items regardless of their blocks. That is, if we want to estimate the relationship between an item in block A and another in C, there is a form that allows this. \par
+Split Form missingness designs \citep{raghunathan1995split}, also  known as Multi-Form \citep{little2013planned} or Matrix Sampling designs \citep{thomas2006evaluation}, are very aptly named. Instead of giving participants one large survey, researchers create multiple forms, each containing a subset of the full survey's questions. How these subsets are chosen varies. A common form setup is three-form Block Design \citep{graham1996maximizing} in which the full survey is split into four blocks: X, A, B, and C. Each form of the survey includes the X block as well as two of the remaining blocks. A participant is then given a different form each day of the study. Designing the forms in this manner allows researchers to estimate the relationship between any chosen items, regardless of their blocks. For example, this allows the relationship between an item in block A and another in block C to be estimated and examined. \par
 
-We need to talk about the other type of split design that we used here which was that X of the 8 questions are randomly omitted on each day.  
+An important consideration here is question distribution. The X-block, being included in every form, should contain either the variables of greatest interest or those with the most predictive ability.
+Placing central items in the X-block ensures they are always collected and minimizes the efficiency loss of our analyses \citep{thomas2006evaluation}. On the other hand, placing the most predictive variables in the X-block allows Multiple Imputation to more effectively impute missing values from the other blocks \citep{gottschall2012comparison}. Similarly, it is good practice to place variables which are predictive of each other in separate blocks \citep{gottschall2012comparison}. While this approach provides researchers more freedom when forming the surveys, the puzzle of question distribution introduces new concerns. When the question groupings are not obvious, pilot studies may be necessary to determine the predictive potential of and relationships between variables. The cost and burden associated with an item must also be considered when deciding which block to place it in. For example, if a critical item is overly expensive or difficult to obtain we may be better off excluding it from the X-block \citep{little2013planned}. \par
 
-% \begin{table}[h!]
-% 	\centering
-% 	\caption{The Three Form PM Design}
-% 	\label{tab:table10}
-% 	\setlength{\tabcolsep}{1cm}
-% 	\begin{tabular}{c|cccc}
-% 		\toprule
-% 		& \multicolumn{4}{c}{Block} \\
-% 		Form & X & A & B & C \\
-% 		\midrule
-% 		1 & 1 & 1 & 1 & 0 \\
-% 		2 & 1 & 1 & 0 & 1 \\
-% 		3 & 1 & 0 & 1 & 1 \\
-% 		\bottomrule
-% 	\end{tabular}
-% \end{table}
+In addition, the number of blocks must be determined. Including more blocks in the design allows further increased missingness \citep{graham2006planned}. While increasing missingness may allow for further reductions in burden and cost, researchers must consider the disadvantages of more blocks. As more blocks are added, the number of possible forms increases. For example, consider two research teams. The first team divides their survey into an X-block and three other blocks of equal size, each containing 25\% of the survey. The second uses an X-block and nine others with 10\% of the items each. If the teams decide that each form will contain the X-block and two of the other blocks, then the second team will have 36 \textbf{(28? 8 choose 2?)} total forms while the first team can proceed with 3. \textbf{This is all assuming that the blocks represent the optimal question grouping. If this is not known, to account for possible relationships and correlation between questions, the teams would need to consider all possible blocks and create forms for every block configuration. For a 7 question survey, with any one question X block and the other 6 split into three blocks, there are 75 possible block configurations. For each configuration, there are 3 possible forms. So, a team would need to consider 225 different forms. Instead of creating 225 distinct forms, a research team can follow a alternative Split Form method.} \par
 
-<<echo = FALSE>>=
-# Creating dataframe to visualize - one subject's questions for 5 days
-split.form <- function(set, nrem = 2, bound = 0){
-  
-set[set$Day >= bound, paste0("Q",1:8)] <- t(apply(set[set$Day >= bound,paste0("Q",1:8)], 1, function(x){
-    ind <- sample(1:8, nrem)
-    x[ind] <- NA
-    as.numeric(x)
-  }))
-    
-  return(set)
-}
-@
-
-<<echo = FALSE>>=
-wave.des <- function(set, nmiss, ...) { # nmiss is the number of days each person would miss? 11?? Like, miss a fourth of the days?
-  id <- sample(2:45, size=nmiss)
-  for (i in 1:nmiss) {
-    set[set$Day %in% id[i], c('Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8')] <- NA
-  }
-  return(set)
-}
-@
-
-<<warning=FALSE, echo = FALSE>>=
-cols <- c('Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8')
-fill <- matrix(1, 45, 8)
-dat <- data.frame(fill)
-colnames(dat) <- cols
-dat$Day <- seq.int(nrow(dat))
-set.seed(1234)
-split.dat <- split.form(dat)[1:8]
-#split.dat
-@
-
-<<warning=FALSE,message=FALSE,echo=FALSE>>=
-library(ggplot2)
-library(dplyr)
-library(reshape2)
-datmelt <- split.dat[1:8] %>% is.na %>% melt
-colnames(datmelt) <- c("Day","Question","Missing")
-#datmelt$block <- ifelse((datmelt$Question=="Q1")|(datmelt$Question=="Q8"),"X",ifelse((datmelt$Question=="Q2")|(datmelt$Question=="Q3"),"A",ifelse((datmelt$Question=="Q4")|(datmelt$Question=="Q5"),"B",ifelse((datmelt$Question=="Q6")|(datmelt$Question=="Q7"),"C",0))))
-datmelt$color <- ifelse(datmelt$Missing == "TRUE", "Missing", "Observed")
-  
-  #ifelse(datmelt$Missing == "TRUE", "Missing", ifelse(datmelt$block == "X","X",ifelse(datmelt$block == "A","A",ifelse(datmelt$block == "B","B",ifelse(datmelt$block == "C","C","Missing")))))
-@
-
-<<warning=FALSE,echo=FALSE>>=
-cols <- c("Missing" = "red", "Observed" = "skyblue3")
-splitplot <- ggplot(datmelt, aes(Question, Day, fill=color)) + geom_raster() + scale_fill_manual(values = cols)  + theme(axis.text.x = element_text(angle=45, vjust=0.5),panel.background = element_rect(fill = NA)) + labs(x = "Questions Asked",y = "Day",fill="Block") + scale_y_reverse() + theme(legend.title=element_blank(),legend.position="none")
-
-#+ geom_vline(xintercept=seq(1.5, 7.5, 2), lwd=1, colour="white") + geom_hline(yintercept=seq(1.5, 4.5, 1), lwd=1, colour="white")
-@
-
-
-<<warning=FALSE,echo=FALSE>>=
-cols <- c('Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8')
-fill <- matrix(1, 45, 8)
-dat <- data.frame(fill)
-colnames(dat) <- cols
-dat$Day <- seq.int(nrow(dat))
-set.seed(1234)
-alternate.split.dat <- split.form(dat, bound = 3)[1:8]
-#alternate.split.dat
-@
-
-
-<<warning=FALSE,message=FALSE,echo=FALSE>>=
-library(ggplot2)
-library(dplyr)
-library(reshape2)
-datmelt <- alternate.split.dat[1:8] %>% is.na %>% melt
-colnames(datmelt) <- c("Day","Question","Missing")
-#datmelt$block <- ifelse((datmelt$Question=="Q1")|(datmelt$Question=="Q8"),"X",ifelse((datmelt$Question=="Q2")|(datmelt$Question=="Q3"),"A",ifelse((datmelt$Question=="Q4")|(datmelt$Question=="Q5"),"B",ifelse((datmelt$Question=="Q6")|(datmelt$Question=="Q7"),"C",0))))
-datmelt$color <- ifelse(datmelt$Missing == "TRUE", "Missing", "Observed")
-  
-  #ifelse(datmelt$Missing == "TRUE", "Missing", ifelse(datmelt$block == "X","X",ifelse(datmelt$block == "A","A",ifelse(datmelt$block == "B","B",ifelse(datmelt$block == "C","C","Missing")))))
-@
-
-<<warning=FALSE,echo=FALSE>>=
-cols <- c("Missing" = "red", "Observed" = "skyblue3")
-alternatesplitplot <- ggplot(datmelt, aes(Question, Day, fill=color)) + geom_raster() + scale_fill_manual(values = cols)  + theme(axis.text.x = element_text(angle=45, vjust=0.5),panel.background = element_rect(fill = NA)) + labs(x = "Questions Asked",y = "Day",fill="Block") + scale_y_reverse() + theme(legend.title=element_blank(),legend.position="none") 
-
-#+ geom_vline(xintercept=seq(1.5, 7.5, 2), lwd=1, colour="white") + geom_hline(yintercept=seq(1.5, 4.5, 1), lwd=1, colour="white")
-@
-
-
-<<echo=FALSE>>=
-set.seed(1234)
-wave.dat <- wave.des(dat,11)
-#wave.dat
-@
-
-<<echo=FALSE>>=
-library(ggplot2)
-library(dplyr)
-library(reshape2)
-datmelt <- wave.dat[1:8] %>% is.na %>% melt
-colnames(datmelt) <- c("Day","Question","Missing")
-#datmelt$block <- ifelse((datmelt$Question=="Q1")|(datmelt$Question=="Q8"),"X",ifelse((datmelt$Question=="Q2")|(datmelt$Question=="Q3"),"A",ifelse((datmelt$Question=="Q4")|(datmelt$Question=="Q5"),"B",ifelse((datmelt$Question=="Q6")|(datmelt$Question=="Q7"),"C",0))))
-datmelt$color <- ifelse(datmelt$Missing == "TRUE", "Missing", "Observed")
-  
-  #ifelse(datmelt$Missing == "TRUE", "Missing", ifelse(datmelt$block == "X","X",ifelse(datmelt$block == "A","A",ifelse(datmelt$block == "B","B",ifelse(datmelt$block == "C","C","Missing")))))
-@
-
-<<echo=FALSE>>=
-cols <- c("Missing" = "red", "Observed" = "skyblue3")
-waveplot <-  ggplot(datmelt, aes(Question, Day, fill=color)) + geom_raster() + scale_fill_manual(values = cols)  + theme(axis.text.x = element_text(angle=45, vjust=0.5),panel.background = element_rect(fill = NA)) + labs(x = "Questions Asked",y = "Day",fill="Block") + scale_y_reverse() + theme(legend.title=element_blank(),legend.position="none")
-@
-
-<<misslow, fig.cap = "Low missingness", echo = FALSE, message = FALSE, warning = FALSE, fig.keep = TRUE>>=
-require(gridExtra)
-grid.arrange(splitplot, alternatesplitplot, waveplot, ncol=3)
-@
-
-Figure \ref{fig:misslow} is 
-
-
-An important consideration when designing a Split Form survey is question distribution. The X-block, being included in every form, should contain either the variables of greatest interest or those with the most predictive ability.
-Placing central items in the X-block ensures they are always collected and minimizes the efficiency loss of our analyses \citep{thomas2006evaluation}. On the other hand, placing the most predictive variables in the X-block allows Multiple Imputation to more effectively impute missing values from the other blocks \citep{gottschall2012comparison}. Similarly, it is good practice to place variables which are predictive of each other in separate blocks \citep{gottschall2012comparison}. Note that when groupings are not as obvious, as in the previous example, pilot studies can help determine the predictive potential of variables. We may also wish to consider the cost and burden associated with an item when deciding which block to place it in. For example, if a critical item is overly expensive or difficult to obtain we may be better off excluding it from the X-block \citep{little2013planned}. \par
-
-In additon, the number of blocks must be determined. Including more blocks in the design allows further increased missingness \citep{graham2006planned}. For example, consider two groups of researchers. The first group divides their survey into an X-block and three other blocks of equal size, each containing 25\% of the survey, and the second uses an X-block and nine others with 10\% of the items each. The researchers decide that a pair of blocks will be asked together in at least one of the forms to ensure efficient estimations. Based on this requirement, the first group can only reduce the length of their survey by 25\% while the second group can decrease the length of their survey by up to 70\%. \par
-
-While increasing missingness may allow for further reductions in burden and cost, researchers must consider the disadvantages of more blocks. Inevitably, greater missingness leads to less efficient estimation \citep{rhemtulla2016asymptotic} but there is the added complication as more blocks introduce additional forms. If the second group of researchers in the example, for instance, decide that each form would contain the X-block and two of the other blocks, then they would be left with 36 total forms. For traditional paper surveys, this can make administering the survey difficult. However, for electronic questionaires, where form randomization can be automated, this is not an issue. Often, researchers using electronic surveys will give each participant a random sample of all survey items, in a way treating each item as its own block \citep{silvia2014planned}. Using this method, researchers reap the benefits of increased forms without the difficulty caused by manually building and administering these forms. \par
+\textbf{This method, hereafter referred to as Split Form planned missingness and illustrated in \ref{fig:formillustration}, involves meaningfully selecting an X block of $n$ questions and then randomly excluding $k$ questions on each day. In a way treating each item as its own block \citep{silvia2014planned}. This is simple in theory, but for traditional paper surveys this is very difficult to execute. Fortunately, recent technological advances have made the use of electronic questionaires more readily accessible. In this environment form randomization can be automated and the creation of numerous unique forms is no longer an issue.} Using this method, researchers reap the benefits of including all possible variable relationships through increased forms without the difficulty caused by manually building these forms. \par
 
 \subsection{Wave Missingness Design}
 \label{sec:1.2}
-While Split Form missingness can be applied to many experimental designs, the Wave Missingness design \citep{little2013planned} is unique to studies with multiple measurement occasions, or "waves". Unlike the Split Form design, where participants miss a subset of items in a single measurement occasion, the Wave Design entails randomizing participants to miss a measurement occasion entirely. An example of a Wave Missing design is shown in Table \ref{tab:table11} where data is collected monthly over the course of 5 months. However, each participant is only measured at three of these occasions. \par
-
-\begin{table}[b!]
-	\centering
-	\caption{The Wave Missingness PM Design}
-	\label{tab:table11}
-	\setlength{\tabcolsep}{0.75cm}
-	\begin{tabular}{c|ccccc}
-		\toprule
-		& \multicolumn{5}{c}{Month} \\
-		Participant & 1 & 2 & 3 & 4 & 5 \\
-		\midrule
-		1 & 1 & 0 & 1 & 0 & 1 \\
-		2 & 1 & 1 & 0 & 1 & 0 \\
-		3 & 0 & 0 & 1 & 1 & 1 \\
-		4 & 1 & 1 & 1 & 0 & 0 \\
-		\bottomrule
-	\end{tabular}
-\end{table}
+While Split Form missingness can be applied to many experimental designs, the Wave Missingness design \citep{little2013planned} is unique to studies with multiple measurement occasions, or "waves". Unlike the Split Form design, where participants miss a subset of items in a single measurement occasion, the Wave Design entails randomizing participants to miss a measurement occasion entirely. An example of a Wave Missing design is shown in Figure \ref{fig:formillustration} where data is collected monthly over the course of 5 months. However, each participant is only measured at three of these occasions. \par
 
 A relative advantage of the Wave Missingness design over the Split form design is increased control over the level of missingness. For studies with many measurement occasions, it is easy to make small changes to the amount of missing data. For example, the data described by \citet{pellowski2016alcohol} records measurements for 45 days. Missing eleven days here would result in 24.4\% missingness while missing twelve gives us 26.7\%. Further, Wave Missingness designs eclipse Split Form designs in terms of cost reduction \citep{little2013planned}. \par
 
-Another advantage of this design is many longitudinal study designs already use the Wave Missingness structure \citep{little2013planned}. Cohort Sequential Designs require cohorts of different ages to be followed longitudinally in such a way that the information from one cohort can be used to impute values for another \citep{little2013longitudinal, duncan2013introduction}. For example, there were three cohorts of ages 10, 11, and 12 at baseline and measured annually for four years. Although measurement only occurs at four waves we can frame this as a six-wave study where the 10-year old cohort has missing values at waves five and six, the 11-year old cohort at waves one and six, and the 12-year old cohort at waves one and two. Because the 10-year old cohort is the only group observed at the first wave, the missing values for the other groups are imputed using this information. By continuing in this manner the data that was collected over a four year period is extended it to cover six years, accelerating the study. The setup of this type of study is demonstrated in Table \ref{tab:table12}, where "1" and "0" respectively indicate an included and excluded wave. \par
+Another advantage of this design is many longitudinal study designs already use the Wave Missingness structure \citep{little2013planned}. Cohort Sequential Designs require cohorts of different ages to be followed longitudinally in such a way that the information from one cohort can be used to impute values for another \citep{little2013longitudinal, duncan2013introduction}. For example, there were three cohorts of ages 10, 11, and 12 at baseline and measured annually for four years. Although measurement only occurs at four waves we can frame this as a six-wave study where the 10-year old cohort has missing values at waves five and six, the 11-year old cohort at waves one and six, and the 12-year old cohort at waves one and two. Because the 10-year old cohort is the only group observed at the first wave, the missing values for the other groups are imputed using this information. By continuing in this manner the data that was collected over a four year period is extended it to cover six years, accelerating the study. The setup of this type of study is demonstrated in Table \ref{tab:cohort}, where "1" and "0" respectively indicate an included and excluded wave. \par
 
-\begin{table}[t!]
+\begin{table}[H]
 	\centering
 	\caption{Cohort Sequential Design}
-	\label{tab:table12}
+	\label{tab:cohort}
 	\setlength{\tabcolsep}{0.5cm}
 	\begin{tabular}{c|cccccc}
 		\toprule
@@ -281,12 +336,12 @@ Another advantage of this design is many longitudinal study designs already use 
 	\end{tabular}
 \end{table}
 
-Developmental time-lag models \citep{mcardle1997expanding} also make use of the Wave Missingness structure. As shown in Table \ref{tab:table13}, researchers observe participants at only two measurement occasions, varying the length between occasions for each participant, and then treat this two-time-point data as multi-time-point data with missing values. Under this framework they impute these missing values and estimate growth curve models. Estimating this type of model would normally require measuring participants at many time points. However, under the Wave Missingness design this is accomplished with only two measurement occasions per participant. These designs exemplify how useful the Wave Missingness structure is in accelerating longitudinal studies. \par
+Developmental time-lag models \citep{mcardle1997expanding} use the Wave Missingness structure, as well. As shown in Table \ref{tab:devtimelag}, researchers observe participants at only two measurement occasions, varying the length between occasions for each participant, and then treat this two-time-point data as multi-time-point data with missing values. Under this framework they impute these missing values and estimate growth curve models. Estimating this type of model would normally require measuring participants at many time points. However, under the Wave Missingness design this is accomplished with only two measurement occasions per participant. These designs exemplify how useful the Wave Missingness structure is in accelerating longitudinal studies. \par
 
-\begin{table}[b!]
+\begin{table}[H]
 	\centering
 	\caption{Developmental Time-Lag Setup}
-	\label{tab:table13}
+	\label{tab:devtimelag}
 	\setlength{\tabcolsep}{0.75cm}
 	\begin{tabular}{c|cccc}
 		\toprule
@@ -299,6 +354,15 @@ Developmental time-lag models \citep{mcardle1997expanding} also make use of the 
 		\bottomrule
 	\end{tabular}
 \end{table}
+
+\subsection{Altered Split Form}
+
+The Split Form planned missingness method can be modified to include the benefits of complete cases seen in Wave Missingness in what may be called Altered Split Form. In this method, the researcher asks participants all questions on the first $n$ days of the study. Thereafter, the survey design reverts to regular Split Form. This method allows the researcher to collect $n$ complete cases from each participant, aiding in the imputation process after surveys are administered. Altered Split Form, and the other planned missingness methods, is illustrated in Figure \ref{fig:formillustration} below.
+
+<<formillustration, fig.cap = "Low missingness", echo = FALSE, message = FALSE, warning = FALSE, fig.keep = TRUE, fig.pos = "H">>=
+require(gridExtra)
+grid.arrange(splitplot, alternatesplitplot, waveplot, ncol=3)
+@
 
 \subsection{Multiple Imputation}
 \label{sec:1.3}
@@ -325,10 +389,10 @@ The overall MI estimate of $\theta$ is defined as,
 \widehat{\theta} = \sum_{n=1}^{M} \widehat{\theta_n}.
 \end{equation}
 
-From here we can compute the sample variance of this estimate by calculating the between-imputation component, $B_M = \sum_{n=1}^{M} (\widehat{\theta_n} - \widehat{\theta})^2 / (M-1)$, and the within-imputation component, $W_M = \sum_{n=1}^{M} S_n^2 / M$. These components are combined to obtain the overall sample variance of our MI estimate as follows:
+From here we can compute the sample variance of this estimate by calculating the between-imputation component, $B_M = \frac{1}{(M-1)}\sum_{n=1}^{M} (\widehat{\theta_n} - \widehat{\theta})^2$, and the within-imputation component, $W_M = \frac{1}{(M)}\sum_{n=1}^{M} S_n^2$. These components are combined to obtain the overall sample variance of our MI estimate as follows:
 
 \begin{equation}
-T_M = W_M + (1+1/M)*B_M.
+T_M = W_M + \frac{M+1}{(M)}B_M.
 \end{equation}
 
 These equations form the basis of Rubin's combining rules and provide unbiased parameter estimates accounting for the inherent uncertainty in the imputation process \citep{raghunathan2015missing}. For a more in depth explanation of these methods we refer readers to \citet{little2014statistical}. \par
@@ -341,12 +405,12 @@ When using Multiple Imputation, researchers must decide on the number of imputat
 \label{sec:2.1}
 The dataset the simulations are based on originated in a study by \citet{pellowski2016alcohol}. The data was collected in an attempt to determine the day-level relationship between alcohol use, its interactive toxicity beliefs, and adherence to antiretroviral therapy (ART) amongst patients with HIV. Previous studies note that alcohol use combined with the perception that mixing alcohol and ARTs can cause adverse effects, correlated with non-adherence to ARTs \citep{kalichman2009prevalence, kalichman2012alcohol}. However, \citet{pellowski2016alcohol} pointed out that past research collected data over extended periods of time, preventing the identification a day-level interaction. Unlike others, this study was able to determine whether alcohol use and missed medication doses occurred on the same day. \par
 
-The study employed an observational cohort design, following sixty participants over forty-five consequtive days via a daily questionnaire. Questions in the survey concerned livelihood insecurities from the previous day as well as alcohol use. The analysis included eight particular questions: two binary questions on housing insecurity, four binary questions on food insecurity, and two questions concerning alcohol use (one binary variable and one count variable). The exact questions can be found in Table \ref{tab:table1}. \par
+The study employed an observational cohort design, following sixty participants over forty-five consequtive days via a daily questionnaire. Questions in the survey concerned livelihood insecurities from the previous day as well as alcohol use. The analysis included eight particular questions: two binary questions on housing insecurity, four binary questions on food insecurity, and two questions concerning alcohol use (one binary variable and one count variable). The exact questions can be found in Table \ref{tab:survey_qs}. \par
 
-\begin{table}[t]
+\begin{table}[H]
 	\centering
 	\caption{Survey Questions}
-	\label{tab:table1}
+	\label{tab:survey_qs}
 	\begin{tabular}{cp{6.5cm}c}
 		\toprule
 		Item Number & Question & Responses\\
@@ -367,25 +431,25 @@ Beyond the daily questionnaire, data was also collected through a computer-assis
 
 \subsection{Simulations}
 \label{sec:2.2}
-The first step in the process of creating the simulated datasets was to obtain parameter estimates from \citet{pellowski2016alcohol} and to quantify the relationships between variables. These estimated relationships were treated as the "true" relationships and one thousand samples were drawn using these parameters. The purpose of simulating these datasets was to see how well they captured the true relationship between daily medication adherence on a certain day, whether or not a participant drank that day, and their beliefs about alcohol-medication interactivity (included as a Z-transformed test score). Specifically, our model of interest is the random intercept model with time effect found below: \\
+The first step in the process of creating the simulated datasets was to obtain parameter estimates from \citet{pellowski2016alcohol} and to quantify the relationships between variables. These estimated relationships were treated as the "true" relationships and \textbf{one thousand (number or no???)} samples were drawn using these parameters. The purpose of simulating these datasets was to see how well they captured the true relationship between daily medication adherence on a certain day, whether or not a participant drank that day, and their beliefs about alcohol-medication interactivity (included as a Z-transformed test score). Specifically, \\
 
+Let $Y_{ij} \sim binomial(n_{ij},p_{ij})$ be whether the $j$th person missed their medication dose on the $i$th day. Then the model of interest is the random intercept model with time effect described as follows:
 \begin{align*}
-logit(MissedDose) &= \beta_{0j} + \beta_1*DrinkYN + \beta_2*ZAlcTox +\beta_3*Day \\
-Level 2: \beta_{0j} &= \gamma_0 + \epsilon_j
+logit(p_{ij}) &= \beta_{0j} + \beta_1DrinkYN_i + \beta_2ZAlcTox_i +\beta_3Day
 \end{align*}
-where, \\ \\
-$MissedDose = 1$ if the participant did not adhere to the ART, 0 otherwise. \\
-$DrinkYN = 1$ if the participant drank on a given day, 0 otherwise.\\
-$ZAlcTox =$ Z-transformed score on an alcohol-antiretroviral interactive toxicity scale developed by Kalichman \cite{kalichman2009prevalence}. \\
-$Day =$ The number of days since the study began, 0-44. \\
+where $\beta_{0j} = \gamma_0 + \alpha_j$ and $\alpha_j \sim \mathcal{N}(0,\sigma_\alpha^2)$. \\ \\ 
+Additionally, note: \\ \\
+$p_{ij} = 1$ when participant $p$ did not adhere to the ART on day $i$, 0 otherwise. \\
+$DrinkYN = 1$ if participant $p$  drank on day $i$, 0 otherwise.\\
+$ZAlcTox =$ participant $p$'s Z-transformed score on an alcohol-antiretroviral interactive toxicity scale developed by Kalichman \cite{kalichman2009prevalence}. \\
+$Day =$ Day $i$ of the study, 0-44. \\
 $j =$ participant index, 1-60. \\
-$\epsilon_j  \sim N(0, \sigma^2)$. \\ \\
 
 
-Based on the observed data, the true values of the parameters, $\gamma_0, \beta_1, \beta_2$, $\beta_3$, and $\sigma^2$ were found to be -2.3, 0.56, 1.28, 0.2, and 1.0 respectively. \par
-Once the samples were drawn, they were transformed under the three different missingness structures. These were the Split-Form and Wave Missingness designs previously mentioned as well as a variation on the Split-Form design where a few measurement occasions (here, two days per participant) are fully observed. To clarify this difference, see the hypothetical application of these designs to a five question multi-day survey in Table \ref{tab:table14}. As in the previous tables, "1" indicates an observed occasion while "0" indicates a missing one. We see that the Split Form design entails missing two items on each of the days. The altered Split Form, while similar, is fully measured on two of the measurement occasions. Because there are days which are fully observed, the relationships between variables may be clearer, allowing the imputation procedure to run more effectively. On the other hand, the Wave Missingness design shows two days in which no questions are asked but the full questionnaire is given on the remaining days. \par
+Based on the observed data, the true values of the parameters, $\gamma_0$, $\beta_1$, $\beta_2$, $\beta_3$, and $\sigma_\alpha^2$ were found to be -2.29, 0.28, 0.64, 0.01, and \textbf{1.0???} respectively. \par
+Once the samples were drawn, they were transformed under the three different missingness structures. These were the Split-Form and Wave Missingness designs previously mentioned as well as a variation on the Split-Form design where a few measurement occasions (here, two days per participant) are fully observed. To clarify this difference, see the hypothetical application of these designs to a five question multi-day survey in \textbf{Table \ref{tab:table14} (do we want the illustration here instead? or in both places?)}. As in the previous tables, "1" indicates an observed occasion while "0" indicates a missing one. We see that the Split Form design entails missing two items on each of the days. The altered Split Form, while similar, is fully measured on two of the measurement occasions. Because there are days which are fully observed, the relationships between variables may be clearer, allowing the imputation procedure to run more effectively. On the other hand, the Wave Missingness design shows two days in which no questions are asked but the full questionnaire is given on the remaining days. \par
 
-\begin{table}[t!]
+\begin{table}[H]
 	\centering
 	\caption{Different Planned Missingness Designs}
 	\setlength{\tabcolsep}{0.45cm}
@@ -422,10 +486,10 @@ Once the samples were drawn, they were transformed under the three different mis
 	\hspace*{-1cm}	
 \end{table}
 
-Additionally, for each different Missingness pattern we imposed low, medium, and high levels of missingness roughly corresponding to 25\%, 50\%, and 75\% missing data. Previous work by \citet{rhemtulla2014planned} found that for low levels of missingness (25\%) the Three-Form design outperforms the Wave Missingness design in capturing latent growth curve model parameters. However, because only low-levels of missingness are tested it is unknown whether this relationship holds at moderate or high levels. We hope that by including these different levels of missingness we will be able to see how these designs perform at all levels of the missingness spectrum. \par
-Once missingness was created, Multiple Imputation techniques were applied to estimate the relationship between medication adherence and the other variables in our model. Because we have control over the missing data mechanism, we know the data is MCAR. This fact allows for the principled use of MI techniques. Using the R package $\{$mice$\}$ \citep{mice2011imputation} our binary variables (Q1-Q7) were imputed using a logistic model based approach while the count variable (Q8) was imputed using predictive mean matching. \par
+Additionally, for each different Missingness pattern we imposed low, medium, and high levels of missingness roughly corresponding to 2, 4, and 6 missing questions. Previous work by \citet{rhemtulla2014planned} found that for low levels of missingness Split Form design outperforms the Wave Missingness design in capturing latent growth curve model parameters. However, because only low-levels of missingness are tested it is unknown whether this relationship holds at moderate or high levels. By including these different levels of missingness the performance at all levels of the missingness spectrum will be measured. \par
+Once missingness was created, Multiple Imputation techniques were applied to estimate the relationship between medication adherence and the other variables in our model. Because the missing data mechanism is controled, the data is known to be MCAR. This fact allows for the principled use of MI techniques. Using the R package $\{$mice$\}$ \citep{mice2011imputation} the binary variables (Q1-Q7) were imputed using a logistic model based approach while the count variable (Q8) was imputed using predictive mean matching \textbf{was it??? i don't think so, it was in the X block originally but double check!}. \par
 
-After imputating, a logistic random-intercept model was estimated for each of the imputed datasets and combined using Rubin's Rules \citep{rubin2004multiple}. From here, the results from each PM design were evaluated based on bias, percent bias, mean squared error (MSE), coverage, confidence interval (CI) length, and the fraction of missing information (FMI). The FMI is a measure of how much of the MI sample variance comes from differences between imputations. In addition to comparing the results between each of the PM designs, the same analyses were also performed before missingness was imposed. \par
+After imputing, a logistic random-intercept model was estimated for each of the imputed datasets and combined using Rubin's Rules \citep{rubin2004multiple}. From here, the results from each PM design were evaluated based on bias, percent bias, mean squared error (MSE), coverage, confidence interval (CI) length, and the fraction of missing information (FMI). The FMI is a measure of how much of the MI sample variance comes from differences between imputations. In addition to comparing the results between each of the PM designs, the same analyses were also performed before missingness was imposed. \par
 
 When determining if the PM designs are performing sufficiently, it is important to consider how well the simulated samples performed before adding a missingness structure. For example, consider two full data samples with respective biases on the $\beta_1$ estimate of 0.13 and 0.15. Further, after imposing different PM design structures on these samples, the average biases are 0.14 and 0.15 respectively. It would be unfair to claim that the first PM design performed better than the second because, by chance, it was based off of a more representative sample. This fact was considered when determining the evaluation criteria. \par
 
@@ -436,436 +500,50 @@ This process was repeated under the three modified simulation scenarios mentione
 \subsubsection{Increased Sample Size}
 In order to evaluate the impact of sample size on estimation, the original sample size of 60 participants was expanded to 120. The rest of the simulation process was carried out as before. As noted earlier, the cost savings gleaned from the PM designs could allow us to enroll more participants. Thus, even if one design performed more optimally than the others, if all designs also perform acceptably well at high samples, researchers can design missingness in whichever method is most convenient. Furthermore, because Wave Missingness allows for greater savings, an increase in sample size is more reasonable for that type of missingness. \par
 \subsubsection{Low Inter-Survey Correlation}
-For our second simulation scenario we looked to determine the effect of decreased inter-survey correlation on which PM design would perform best. To clarify, consider the fact that answers given on a particular day may be correlated with one another- the two questions on housing insecurity, for example, are likely to be "yes" on the same days. While this fact was accounted for in the original simulations, it was not in this set of simulations. If the probability of answering "yes" on Question 2, for instance, was a function of the answer to Question 1 and the baseline variables in the original simulations, then in this scenario it is a function of only the baseline variables. This implies that each of the questions are conditionally independent of each other given the baseline variables. If researchers have a questionnaire where they do not expect any of the answers to be obviously related the results here may help to choose which missingness design would be most optimal. \par
+For our second simulation scenario we looked to determine the effect of decreased inter-survey correlation on which PM design would perform best. To clarify, consider the fact that answers given on a particular day may be correlated with one another- the two questions on housing insecurity, for example, are likely to be "yes" on the same days. While this fact was accounted for in the original simulations, it was not in this set of simulations. If the probability of answering "yes" on Question 2, for instance, was a function of the answer to Question 1 and the baseline variables in the original simulations, then in this scenario it is a function of only the baseline variables. This implies that each of the questions are conditionally independent of each other given the baseline variables. If researchers have a questionnaire where they do not expect any of the answers to be obviously related the results here may help to choose which missingness design would be most optimal. To investigate this, the correlation of the variables was scaled by 0.5.\par
 \subsubsection{High Time Effect}
-In the final scenario, the goal was to determine which PM design would lead to the best estimates when time has a disproportionately large effect on our outcome variable. To do this we changed the value of the parameters $\gamma_0, \beta_1, \beta_2,$ and $\beta_3$ to -4.6, 0.28, 0.64, and 0.2 respectively. Note that instead of increasing the value of $\beta_3$, the slope for time effect, all the other parameters were decreased. This was done because $\beta_3$ was already fairly large and increasing its value further would cause the probability of missing a dose to rapidly approach 1. Decreasing the other variables effects ensured that time has a disproportionate effect without this problem. The results of this section may prove useful to researchers who believe that the overall passage of time plays a larger role in their outcome than a measurement taken at one specific point. \par
+In the final scenario, the goal was to determine which PM design would lead to the best estimates when time has a disproportionately large effect on our outcome variable. To do this we changed the value of the parameters $\gamma_0$, $\beta_1$, $\beta_2$, and $\beta_3$ to -4.56, 0.14, 0.32, and 0.01 respectively. Note that instead of increasing the value of $\beta_3$, the slope for time effect, all the other parameters were decreased. This was done because $\beta_3$ was already fairly large and increasing its value further would cause the probability of missing a dose to rapidly approach 1. Decreasing the other variables effects ensured that time has a disproportionate effect without this problem. The results of this section may prove useful to researchers who believe that the overall passage of time plays a larger role in their outcome than a measurement taken at one specific point. \par
 
 \section{Results}
 \label{sec:3}
 \subsection{Primary Simulation}
 \label{sec:3.1}
-The first set of simulations run contained the parameters in the random-intercept logistic model with $\gamma_0 = -2.3$, $\beta_1 = 0.56$, $\beta_2 = 1.28$, and $\beta_3 = 0.2$. The effects of the variables here are comparable to those found in the original dataset. This fact implies that we can interpret the results here to show what may have occurred if the original study had implemented a PM design. Before we imposed a missingness structure on the 1,000 simulated samples we obtained the full data results shown in Table \ref{tab:table2}. Note that the full data results for the other simulation scenarios are also provided in this table for ease of reference.
+The first set of simulations run contained the parameters in the random-intercept logistic model with $\gamma_0 = -2.28$, $\beta_1 = 0.28$, $\beta_2 = 0.64$, and $\beta_3 = 0.01$. The effects of the variables here are comparable to those found in the original dataset. This fact implies that we can interpret the results here to show what may have occurred if the original study had implemented a PM design. Before we imposed a missingness structure on the 1,000 simulated samples we obtained the full data results shown in Table \ref{tab:prelim} \textbf{not here yet}. Note that the full data results for the other simulation scenarios are also provided in this table for ease of reference.
 
-<<echo=FALSE, warning=FALSE>>=
-# if (Sys.info()[8] == "Josie"){
-#   setwd("~/GitHub/designedmissingness")
-# }
-# if (Sys.info()[8] == "gregorymatthews"){
-#   setwd("~/Dropbox/designedmissingnessGit")
-# }
-
-# Table 7
-library(kableExtra)
-library(dplyr)
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_high_hightime0.RData")
-high_8 <- d
-
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_med_hightime0.RData")
-med_8 <- d
-
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_low_hightime0.RData")
-low_8 <- d
-
-c8 <- rbind(low_8[[1]],med_8[[1]],high_8[[1]],low_8[[2]],med_8[[2]],high_8[[2]],low_8[[3]],med_8[[3]],high_8[[3]])
-
-df_8 <- data.frame(Design = rep(c("Split Form","Altered Split Form", "Wave Missingness"), each = 12), Missingness = rep(rep(c("Low","Medium", "High"), each = 4),3), Parameter = rep(c("$\\gamma_0$", "$\\beta_1$", "$\\beta_2$", "$\\beta_3$"),9), Bias = unlist(c8["Bias"]), unlist(c8["Pct Bias"]), MSE = unlist(c8["MSE"]), Coverage = c8["Coverage"], c8["CI Length"], FMI = c8["FMI"])
-
-df_8[,4:9] <- apply(df_8[,4:9], 2, round, digits = 3)
-
-names(df_8) <- c("Design", "Level", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
-row.names(df_8) <- NULL
-kable(df_8, escape = FALSE, format ="latex") %>%
-  collapse_rows(columns = 1:2, latex_hline = "full") %>%
-  kable_styling(latex_options = "scale_down")
-
-# library(knitr)
-# kable(cbind("","","",rbind(low_8[[1]],med_8[[1]],high_8[[1]],low_8[[2]],med_8[[2]],high_8[[2]],low_8[[3]],med_8[[3]],high_8[[3]])),format="latex")
-
-
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_high_hightime1.RData")
-high <- d
-
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_med_hightime1.RData")
-med <- d
-
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_low_hightime1.RData")
-low <- d
+<<echo = FALSE, message = FALSE, warning = FALSE, warning=FALSE>>=
+#prelim
 @
 
-% latex table generated in R 3.5.0 by xtable 1.8-2 package
-% Mon May 14 21:02:34 2018
-\begin{table}[ht]
-\centering
-\begin{tabular}{lllrrrr}
-  \hline
-Design & \% Missingness  & Parameter & Coverage & Bias & MSE & FMI \\ 
-  \hline
- &  &  & 0.989 & 0.042 & 0.018 & 0.002 \\ 
-   &  &  & 0.984 & -0.125 & 0.731 & 0.270 \\ 
-   &  &  & 0.934 & 0.008 & 0.024 & 0.000 \\ 
-   &  &  & 0.943 & -0.000 & 0.000 & 0.001 \\ 
-   \hline
-   &  &  & 0.986 & 0.040 & 0.019 & 0.012 \\ 
-   &  &  & 0.993 & -0.168 & 0.750 & 0.557 \\ 
-   &  &  & 0.932 & 0.008 & 0.024 & 0.002 \\ 
-   &  &  & 0.940 & -0.000 & 0.000 & 0.008 \\ 
-   \hline
-   &  &  & 0.984 & 0.036 & 0.027 & 0.030 \\ 
-   &  &  & 0.991 & -0.713 & 9.933 & 0.625 \\ 
-   &  &  & 0.932 & 0.009 & 0.027 & 0.005 \\ 
-   &  &  & 0.939 & -0.000 & 0.000 & 0.021 \\ 
-   \hline
-   &  &  & 0.988 & 0.042 & 0.018 & 0.002 \\ 
-   &  &  & 0.977 & -0.114 & 0.696 & 0.250 \\ 
-   &  &  & 0.933 & 0.008 & 0.024 & 0.000 \\ 
-   &  &  & 0.943 & -0.000 & 0.000 & 0.001 \\ 
-   \hline
-   &  &  & 0.988 & 0.040 & 0.018 & 0.010 \\ 
-   &  &  & 0.994 & -0.167 & 0.782 & 0.549 \\ 
-   &  &  & 0.931 & 0.009 & 0.024 & 0.002 \\ 
-   &  &  & 0.944 & -0.000 & 0.000 & 0.006 \\ 
-   \hline
-   &  &  & 0.983 & 0.036 & 0.022 & 0.027 \\ 
-   &  &  & 0.990 & -0.686 & 10.509 & 0.665 \\ 
-   &  &  & 0.928 & 0.009 & 0.026 & 0.007 \\ 
-   &  &  & 0.946 & -0.000 & 0.000 & 0.023 \\ 
-   \hline
-   &  &  & 0.991 & 0.040 & 0.018 & 0.006 \\ 
-   &  &  & 0.998 & -0.116 & 0.545 & 0.458 \\ 
-   &  &  & 0.932 & 0.008 & 0.024 & 0.001 \\ 
-   &  &  & 0.941 & -0.000 & 0.000 & 0.003 \\ 
-   \hline
-   &  &  & 0.991 & 0.029 & 0.018 & 0.055 \\ 
-   &  &  & 0.988 & -0.112 & 0.345 & 0.752 \\ 
-   &  &  & 0.934 & 0.009 & 0.024 & 0.007 \\ 
-   &  &  & 0.951 & -0.000 & 0.000 & 0.032 \\ 
-   \hline
-   &  &  & 0.994 & -0.003 & 0.022 & 0.258 \\ 
-   &  &  & 0.988 & -0.105 & 0.284 & 0.903 \\ 
-   &  &  & 0.937 & 0.011 & 0.025 & 0.039 \\ 
-   &  &  & 0.960 & -0.000 & 0.000 & 0.175 \\ 
-   \hline
-\end{tabular}
-\end{table}
+Of note in the complete-data primary analysis is that the coverage of the 95\% CIs is larger than expected for the parameter estimates and the percent bias for the $\beta_1$ estimate is somewhat large. This increased bias is likely due to the difficulties inherent in estimating logistic regression models with rare event data \citep{king2001logistic}. Nevertheless, this must be kept in mind when analyzing the results from the PM designs provided in Table \ref{tab:primary}. \textbf{In Table \ref{tab:primary} as in Tables \ref{tab:sampsize}, \ref{tab:lowcorr}, and \ref{tab:hightime} bold values indicate ``unacceptable" results.} That is, bias, percent bias, or MSE more than 40\% greater than the complete-data value or a CI coverage of less than 90\%.
 
-\begin{table}[b!]
-	\centering
-	\caption{Results of Analysis before imposing Missingness in each Scenario}
-	\setlength{\tabcolsep}{0.1cm}
-	\label{tab:table2}
-	\begin{tabular}{cc|ccccc}
-		\toprule
-		Scenario & Parameter & Bias & Percent Bias & MSE & Coverage & CI Length \\
-		\midrule
-		\multirow{4}{*}{\parbox{2cm}{Primary \\ Analysis (N=60)}} 
-		& $\gamma_0$ & 0.151 & 6.55\% & 0.037 & 99.0\% & 0.750 \\
-		& $\beta_1$ & 0.133 & 23.75\% & 0.028 & 95.5\% & 0.652 \\
-		& $\beta_2$ & 0.120 & 9.40\% & 0.022 & 97.5\% & 0.610 \\
-		& $\beta_3$ & 0.007 & 3.42\% & 7.11$*10^-5$ & 97.0\% & 0.034 \\
-		\midrule
-		\midrule
-		\multirow{4}{*}{\parbox{2cm}{Increased \\ Sample (N=120)}} 
-		& $\gamma_0$ & 0.106 & 4.61\% & 0.018 & 98.0\% & 0.528 \\
-		& $\beta_1$ & 0.099 & 17.63\% & 0.016 & 93.0\% & 0.460 \\
-		& $\beta_2$ & 0.091 & 7.12\% & 0.013 & 95.5\% & 0.429 \\
-		& $\beta_3$ & 0.005 & 2.34\% & 3.52$*10^-5$ & 96.5\% & 0.024 \\
-		\midrule
-		\midrule
-		\multirow{4}{*}{\parbox{2cm}{Low \\Inter-Survey Correlation (N=60)}} 
-		& $\gamma_0$ & 0.145 & 6.29\% & 0.033 & 99.0\% & 0.747 \\
-		& $\beta_1$ & 0.130 & 23.27\% & 0.027 & 94.5\% & 0.651 \\
-		& $\beta_2$ & 0.126 & 9.83\% & 0.026 & 94.0\% & 0.611 \\
-		& $\beta_3$ & 0.007 & 3.69\% & 8.88$*10^-5$ & 93.0\% & 0.034 \\
-		\midrule
-		\midrule
-		\multirow{4}{*}{\parbox{2cm}{High \\Time Effect (N=60)}}
-		& $\gamma_0$ & 0.170 & 3.69\% & 0.045 & 98.5\% & 0.888 \\
-		& $\beta_1$ & 0.123 & 43.86\% & 0.024 & 96.0\% & 0.598 \\
-		& $\beta_2$ & 0.124 & 19.35\% & 0.025 & 93.5\% & 0.575 \\
-		& $\beta_3$ & 0.006 & 2.95\% & 5.50$*10^-5$ & 95.5\% & 0.030 \\
-		\bottomrule
-	\end{tabular}
-\end{table}
-
-Of note in the complete-data primary analysis is that the coverage of the 95\% CIs is larger than expected for the parameter estimates and the percent bias for the $\beta_1$ estimate is somewhat large. This increased bias is likely due to the difficulties inherent in estimating logistic regression models with rare event data \citep{king2001logistic}. Nevertheless, we should keep this in mind when analyzing our results from the PM designs provided in Table \ref{tab:table3}. In Table \ref{tab:table3} as in Tables \ref{tab:table4}, \ref{tab:table5}, and \ref{tab:table6} bold values indicate "Unacceptable" results. That is, bias, percent bias, or MSE more than 40\% greater than the complete-data value or a CI coverage of less than 90\%.
-
-\begin{table}[p]
-	\centering
-	\caption{Primary Simulation Results (N=60)}
-	\setlength{\tabcolsep}{0.1cm}
-	\label{tab:table3}
-	\hspace*{-1cm}
-	\begin{tabular}{c|c|c|cccccc}
-		\toprule
-		Design & \% Missingness & Parameter & Bias & \% Bias & MSE & Coverage & CI Length & FMI \\
-		\midrule
-		\multirow{12}{*}{Split Form}
-		& \multirow{4}{*}{Low(25\%)}
-		& $\gamma_0$ & 0.151 & 6.59\% & 0.037 & 99.5\% & 0.753 & 0.009 \\
-		&& $\beta_1$ & 0.139 & 24.78\% & 0.029 & 96.0\% & 0.693 & 0.112 \\
-		&& $\beta_2$ & 0.120 & 9.41\% & 0.022 & 97.0\% & 0.610 & 0.002 \\
-		&& $\beta_3$ & 0.007 & 3.42\% & 7.12$*10^-5$ & 98.0\% & 0.034 & 0.003 \\ \cline{2-9} \noalign{\smallskip}
-		&\multirow{4}{*}{Medium(50\%)}
-		& $\gamma_0$ & 0.153 & 6.67\% & 0.037 & 99.0\% & 0.765 & 0.040 \\
-		&& $\beta_1$ & 0.162 & 28.93\% & 0.041 & 95.5\% & 0.869 & 0.390 \\
-		&& $\beta_2$ & 0.121 & 9.51\% & 0.022 & 97.0\% & 0.616 & 0.007 \\
-		&& $\beta_3$ & 0.007 & 3.40\% & 6.99$*10^-5$ & 98.5\% & 0.034 & 0.009 \\ \cline{2-9} \noalign{\smallskip}
-		& \multirow{4}{*}{High(75\%)}
-		& $\gamma_0$ & 0.154 & 6.70\% & 0.039 & 98.5\% & 0.818 & 0.147 \\
-		&& $\beta_1$ & \textbf{0.225} & \textbf{40.16}\% & \textbf{0.076} & 97.5\% & 1.464 & 0.710 \\
-		&& $\beta_2$ & 0.119 & 9.28\% & 0.022 & 97.5\% & 0.611 & 0.022 \\
-		&& $\beta_3$ & 0.007 & 3.42\% & 7.02$*10^-5$ & 98.0\% & 0.035 & 0.032 \\
-		\midrule
-		\midrule
-		\multirow{12}{*}{\parbox{1.75cm}{Altered \\ Split Form}}
-		& \multirow{4}{*}{Low(23.9\%)}
-		& $\gamma_0$ & 0.151 & 6.57\% & 0.037 & 98.0\% & 0.753 & 0.008 \\
-		&& $\beta_1$ & 0.137 & 24.55\% & 0.030 & 96.0\% & 0.690 & 0.105 \\
-		&& $\beta_2$ & 0.120 & 9.39\% & 0.022 & 97.5\% & 0.611 & 0.002 \\
-		&& $\beta_3$ & 0.007 & 3.42\% & 7.10$*10^-5$ & 98.0\% & 0.034 & 0.003 \\ \cline{2-9} \noalign{\smallskip}
-		&\multirow{4}{*}{Medium(47.8\%)}
-		& $\gamma_0$ & 0.153 & 6.67\% & 0.038 & 99.5\% & 0.760 & 0.030 \\
-		&& $\beta_1$ & 0.151 & 26.93\% & 0.036 & 96.0\% & 0.811 & 0.324 \\
-		&& $\beta_2$ & 0.119 & 9.28\% & 0.022 & 96.0\% & 0.611 & 0.006 \\
-		&& $\beta_3$ & 0.007 & 3.44\% & 7.10$*10^-5$ & 98.0\% & 0.034 & 0.007 \\ \cline{2-9} \noalign{\smallskip}
-		& \multirow{4}{*}{High(71.7\%)}
-		& $\gamma_0$ & 0.164 & 7.13\% & 0.042 & 98.0\% & 0.799 & 0.105 \\
-		&& $\beta_1$ & \textbf{0.225} & \textbf{40.14\%} & \textbf{0.080} & 96.0\% & 1.265 & 0.640 \\
-		&& $\beta_2$ & 0.117 & 9.13\% & 0.021 & 97.5\% & 0.615 & 0.019 \\
-		&& $\beta_3$ & 0.007 & 3.46\% & 7.07$*10^-5$ & 98.0\% & 0.034 & 0.023 \\
-		\midrule
-		\midrule
-		\multirow{12}{*}{\parbox{1.75cm}{Wave \\ Missingness}}
-		& \multirow{4}{*}{Low(24.4\%)}
-		& $\gamma_0$ & 0.152 & 6.61\% & 0.037 & 99.5\% & 0.757 & 0.023 \\
-		&& $\beta_1$ & 0.147 & 26.25\% & 0.033 & 96.0\% & 0.767 & 0.270 \\
-		&& $\beta_2$ & 0.119 & 9.27\% & 0.021 & 96.0\% & 0.610 & 0.004 \\
-		&& $\beta_3$ & 0.007 & 3.41\% & 6.97$*10^-5$ & 98.0\% & 0.034 & 0.006 \\ \cline{2-9} \noalign{\smallskip}
-		&\multirow{4}{*}{Medium(48.9\%)}
-		& $\gamma_0$ & 0.157 & 6.84\% & 0.039 & 100.0\% & 0.767 & 0.052 \\
-		&& $\beta_1$ & \textbf{0.190} & \textbf{33.95\%} & \textbf{0.058} & 94.5\% & 0.934 & 0.465 \\
-		&& $\beta_2$ & 0.119 & 9.27\% & 0.021 & 97.5\% & 0.609 & 0.008 \\
-		&& $\beta_3$ & 0.007 & 3.34\% & 6.80$*10^-5$ & 98.0\% & 0.034 & 0.010 \\ \cline{2-9} \noalign{\smallskip}
-		& \multirow{4}{*}{High(73.3\%)}
-		& $\gamma_0$ & 0.168 & 7.30\% & 0.045 & 99.5\% & 0.807 & 0.129 \\
-		&& $\beta_1$ & \textbf{0.290} & \textbf{51.77\%} & \textbf{0.132} & \textbf{88.5\%} & 1.335 & 0.680 \\
-		&& $\beta_2$ & 0.119 & 9.32\% & 0.022 & 96.0\% & 0.614 & 0.017 \\
-		&& $\beta_3$ & 0.007 & 3.40\% & 6.96$*10^-5$ & 98.5\% & 0.034 & 0.025 \\
-		\bottomrule
-	\end{tabular}
-\end{table}
-\begin{table}[p]
-	\centering
-	\caption{Increased Sample Size simulation Results (N=120)}
-	\setlength{\tabcolsep}{0.1cm}
-	\label{tab:table4}
-	\hspace*{-1cm}
-	\begin{tabular}{c|c|c|cccccc}
-		\toprule
-		Design & \% Missingness & Parameter & Bias & \% Bias & MSE & Coverage & CI Length & FMI \\
-		\midrule
-		\multirow{12}{*}{Split Form}
-		& \multirow{4}{*}{Low(25\%)}
-		& $\gamma_0$ & 0.106 & 4.60\% & 0.017 & 98.5\% & 0.533 & 0.022 \\
-		&& $\beta_1$ & 0.106 & 18.96\% & 0.018 & 96.0\% & 0.548 & 0.263 \\
-		&& $\beta_2$ & 0.091 & 7.14\% & 0.013 & 96.0\% & 0.429 & 0.004 \\
-		&& $\beta_3$ & 0.005 & 2.33\% & 3.47$*10^-5$ & 96.5\% & 0.024 & 0.005 \\ \cline{2-9} \noalign{\smallskip}
-		&\multirow{4}{*}{Medium(50\%)}
-		& $\gamma_0$ & 0.112 & 4.85\% & 0.019 & 98.0\% & 0.542 & 0.057 \\
-		&& $\beta_1$ & 0.134 & 23.86\% & \textbf{0.027} & 95.0\% & 0.696 & 0.489 \\
-		&& $\beta_2$ & 0.092 & 7.15\% & 0.013 & 96.5\% & 0.430 & 0.009 \\
-		&& $\beta_3$ & 0.005 & 2.31\% & 3.46$*10^-5$ & 96.0\% & 0.024 & 0.011 \\ \cline{2-9} \noalign{\smallskip}
-		& \multirow{4}{*}{High(75\%)}
-		& $\gamma_0$ & 0.110 & 4.80\% & 0.019 & 99.5\% & 0.575 & 0.153 \\
-		&& $\beta_1$ & \textbf{0.194} & \textbf{34.59\%} & \textbf{0.057} & 94.5\% & 1.088 & 0.742 \\
-		&& $\beta_2$ & 0.092 & 7.20\% & 0.013 & 95.0\% & 0.432 & 0.021 \\
-		&& $\beta_3$ & 0.005 & 2.31\% & 3.42$*10^-5$ & 97.5\% & 0.024 & 0.026 \\
-		\midrule
-		\midrule
-		\multirow{12}{*}{\parbox{1.75cm}{Altered \\ Split Form}}
-		& \multirow{4}{*}{Low(23.9\%)}
-		& $\gamma_0$ & 0.107 & 4.64\% & 0.017 & 98.0\% & 0.533 & 0.022 \\
-		&& $\beta_1$ & 0.111 & 19.80\% & 0.020 & 94.5\% & 0.545 & 0.263 \\
-		&& $\beta_2$ & 0.091 & 7.08\% & 0.013 & 96.0\% & 0.429 & 0.004 \\
-		&& $\beta_3$ & 0.005 & 2.31\% & 3.46$*10^-5$ & 96.0\% & 0.024 & 0.005 \\ \cline{2-9} \noalign{\smallskip}
-		&\multirow{4}{*}{Medium(47.8\%)}
-		& $\gamma_0$ & 0.115 & 4.99\% & 0.020 & 98.0\% & 0.542 & 0.056 \\
-		&& $\beta_1$ & 0.138 & 24.65\% & \textbf{0.028} & 94.5\% & 0.693 & 0.494 \\
-		&& $\beta_2$ & 0.091 & 7.24\% & 0.013 & 96.0\% & 0.430 & 0.008 \\
-		&& $\beta_3$ & 0.005 & 2.34\% & 3.54$*10^-5$ & 96.0\% & 0.024 & 0.011 \\ \cline{2-9} \noalign{\smallskip}
-		& \multirow{4}{*}{High(71.7\%)}
-		& $\gamma_0$ & 0.115 & 5.01\% & 0.020 & 99.0\% & 0.563 & 0.119 \\
-		&& $\beta_1$ & \textbf{0.188} & \textbf{33.65\%} & \textbf{0.058} & 91.5\% & 0.958 & 0.681 \\
-		&& $\beta_2$ & 0.092 & 7.16\% & 0.013 & 96.0\% & 0.432 & 0.018 \\
-		&& $\beta_3$ & 0.005 & 2.30\% & 3.44$*10^-5$ & 96.0\% & 0.024 & 0.020 \\
-		\midrule
-		\midrule
-		\multirow{12}{*}{\parbox{1.75cm}{Wave \\ Missingness}}
-		& \multirow{4}{*}{Low(24.4\%)}
-		& $\gamma_0$ & 0.108 & 4.72\% & 0.018 & 98.0\% & 0.533 & 0.024 \\
-		&& $\beta_1$ & 0.123 & 21.90\% & \textbf{0.024} & 92.0\% & 0.551 & 0.287 \\
-		&& $\beta_2$ & 0.092 & 7.18\% & 0.013 & 96.0\% & 0.429 & 0.004 \\
-		&& $\beta_3$ & 0.005 & 2.35\% & 3.51$*10^-5$ & 96.0\% & 0.024 & 0.005 \\ \cline{2-9} \noalign{\smallskip}
-		&\multirow{4}{*}{Medium(48.9\%)}
-		& $\gamma_0$ & 0.111 & 4.84\% & 0.019 & 99.0\% & 0.540 & 0.052 \\
-		&& $\beta_1$ & \textbf{0.168} & \textbf{30.02\%} & \textbf{0.043} & \textbf{85.5\%} & 0.671 & 0.489 \\
-		&& $\beta_2$ & 0.092 & 7.22\% & 0.013 & 95.0\% & 0.429 & 0.007 \\
-		&& $\beta_3$ & 0.005 & 2.32\% & 3.42$*10^-5$ & 97.0\% & 0.024 & 0.009 \\ \cline{2-9} \noalign{\smallskip}
-		& \multirow{4}{*}{High(73.3\%)}
-		& $\gamma_0$ & 0.123 & 5.33\% & 0.023 & 99.0\% & 0.558 & 0.108 \\
-		&& $\beta_1$ & \textbf{0.248} & \textbf{44.26\%} & \textbf{0.099} & \textbf{82.0\%} & 0.894 & 0.666 \\
-		&& $\beta_2$ & 0.094 & 7.36\% & 0.014 & 96.0\% & 0.430 & 0.013 \\
-		&& $\beta_3$ & 0.005 & 2.36\% & 3.53$*10^-5$ & 96.0\% & 0.024 & 0.015 \\
-		\bottomrule
-	\end{tabular}	
-\end{table}
-\begin{table}[p]
-	\centering
-	\caption{Low Inter-Survey Correlation Simulation Results (N=60)}
-	\label{tab:table5}
-	\setlength{\tabcolsep}{0.1cm}
-	\hspace*{-1cm}
-	\begin{tabular}{c|c|c|cccccc}
-		\toprule
-		Design & \% Missingness & Parameter & Bias & \% Bias & MSE & Coverage & CI Length & FMI \\
-		\midrule
-		\multirow{12}{*}{Split Form}
-		& \multirow{4}{*}{Low(25\%)}
-		& $\gamma_0$ & 0.146 & 6.34\% & 0.033 & 99.0\% & 0.755 & 0.025 \\
-		&& $\beta_1$ & 0.150 & 26.82\% & 0.034 & 95.5\% & 0.782 & 0.278 \\
-		&& $\beta_2$ & 0.126 & 9.82\% & 0.026 & 94.0\% & 0.612 & 0.004 \\
-		&& $\beta_3$ & 0.007 & 3.64\% & 8.68$*10^-5$ & 92.5\% & 0.034 & 0.007 \\ \cline{2-9} \noalign{\smallskip}
-		&\multirow{4}{*}{Medium(50\%)}
-		& $\gamma_0$ & 0.148 & 6.43\% & 0.034 & 99.0\% & 0.772 & 0.067 \\
-		&& $\beta_1$ & \textbf{0.183} & \textbf{32.65\%} & \textbf{0.053} & 95.0\% & 1.032 & 0.526 \\
-		&& $\beta_2$ & 0.125 & 9.80\% & 0.026 & 94.0\% & 0.613 & 0.010 \\
-		&& $\beta_3$ & 0.007 & 3.63\% & 8.73$*10^-5$ & 92.5\% & 0.035 & 0.015 \\ \cline{2-9} \noalign{\smallskip}
-		& \multirow{4}{*}{High(75\%)}
-		& $\gamma_0$ & 0.155 & 6.74\% & 0.036 & 99.5\% & 0.825 & 0.166 \\
-		&& $\beta_1$ & \textbf{0.276} & \textbf{49.31\%} & \textbf{0.116} & 95.0\% & 1.567 & 0.749 \\
-		&& $\beta_2$ & 0.124 & 9.71\% & 0.025 & 94.0\% & 0.618 & 0.025 \\
-		&& $\beta_3$ & 0.007 & 3.61\% & 8.73$*10^-5$ & 93.5\% & 0.035 & 0.034 \\
-		\midrule
-		\midrule
-		\multirow{12}{*}{\parbox{1.75cm}{Altered \\ Split Form}}
-		& \multirow{4}{*}{Low(23.9\%)}
-		& $\gamma_0$ & 0.141 & 6.13\% & 0.031 & 99.0\% & 0.754 & 0.023 \\
-		&& $\beta_1$ & 0.139 & 25.80\% & 0.030 & 95.5\% & 0.772 & 0.260 \\
-		&& $\beta_2$ & 0.126 & 9.82\% & 0.026 & 94.0\% & 0.612 & 0.004 \\
-		&& $\beta_3$ & 0.007 & 3.61\% & 8.55$*10^-5$ & 92.5\% & 0.034 & 0.006 \\ \cline{2-9} \noalign{\smallskip}
-		&\multirow{4}{*}{Medium(47.8\%)}
-		& $\gamma_0$ & 0.149 & 6.48\% & 0.035 & 99.5\% & 0.767 & 0.056 \\
-		&& $\beta_1$ & 0.170 & 30.44\% & \textbf{0.044} & 97.0\% & 0.968 & 0.486 \\
-		&& $\beta_2$ & 0.125 & 9.79\% & 0.025 & 93.5\% & 0.612 & 0.009 \\
-		&& $\beta_3$ & 0.007 & 3.64\% & 8.58$*10^-5$ & 92.5\% & 0.034 & 0.011 \\ \cline{2-9} \noalign{\smallskip}
-		& \multirow{4}{*}{High(71.7\%)}
-		& $\gamma_0$ & 0.149 & 6.47\% & 0.036 & 98.5\% & 0.809 & 0.139 \\
-		&& $\beta_1$ & \textbf{0.228} & \textbf{40.70\%} & \textbf{0.088} & 96.0\% & 1.425 & 0.708 \\
-		&& $\beta_2$ & 0.125 & 9.74\% & 0.026 & 94.0\% & 0.617 & 0.021 \\
-		&& $\beta_3$ & 0.007 & 3.62\% & 8.65$*10^-5$ & 93.5\% & 0.035 & 0.027 \\
-		\midrule
-		\midrule
-		\multirow{12}{*}{\parbox{1.75cm}{Wave \\ Missingness}}
-		& \multirow{4}{*}{Low(24.4\%)}
-		& $\gamma_0$ & 0.138 & 6.02\% & 0.031 & 99.5\% & 0.754 & 0.025 \\
-		&& $\beta_1$ & 0.158 & 28.17\% & 0.036 & 96.5\% & 0.776 & 0.286 \\
-		&& $\beta_2$ & 0.126 & 9.82\% & 0.026 & 94.0\% & 0.611 & 0.004 \\
-		&& $\beta_3$ & 0.007 & 3.61\% & 8.50$*10^-5$ & 92.5\% & 0.034 & 0.006 \\ \cline{2-9} \noalign{\smallskip}
-		&\multirow{4}{*}{Medium(48.9\%)}
-		& $\gamma_0$ & 0.148 & 6.43\% & 0.034 & 99.5\% & 0.765 & 0.053 \\
-		&& $\beta_1$ & \textbf{0.197} & \textbf{35.14\%} & \textbf{0.059} & 91.0\% & 0.939 & 0.472 \\
-		&& $\beta_2$ & 0.126 & 9.83\% & 0.026 & 93.5\% & 0.611 & 0.007 \\
-		&& $\beta_3$ & 0.007 & 3.60\% & 8.48$*10^-5$ & 92.0\% & 0.034 & 0.010 \\ \cline{2-9} \noalign{\smallskip}
-		& \multirow{4}{*}{High(73.3\%)}
-		& $\gamma_0$ & 0.158 & 6.86\% & 0.040 & 98.5\% & 0.799 & 0.122 \\
-		&& $\beta_1$ & \textbf{0.303} & \textbf{54.18\%} &\textbf{0.148} & \textbf{89.5\%} & 1.290 & 0.676 \\
-		&& $\beta_2$ & 0.127 & 9.94\% & 0.027 & 95.5\% & 0.615 & 0.015 \\
-		&& $\beta_3$ & 0.007 & 3.62\% & 8.77$*10^-5$ & 93.5\% & 0.035 & 0.021 \\
-		\bottomrule
-	\end{tabular}	
-\end{table}
-\begin{table}[p]
-	\centering
-	\caption{High Time Effect Simulation Results (N=60)}
-	\label{tab:table6}
-	\setlength{\tabcolsep}{0.1cm}
-	\hspace*{-1cm}
-	\begin{tabular}{c|c|c|cccccc}
-		\toprule
-		Design & \% Missingness & Parameter & Bias & \% Bias & MSE & Coverage & CI Length & FMI \\
-		\midrule
-		\multirow{12}{*}{Split Form}
-		& \multirow{4}{*}{Low(25\%)}
-		& $\gamma_0$ & 0.169 & 3.67\% & 0.045 & 99.0\% & 0.895 & 0.015 \\
-		&& $\beta_1$ & 0.133 & 47.54\% & 0.029 & 96.0\% & 0.708 & 0.262 \\
-		&& $\beta_2$ & 0.124 & 19.33\% & 0.025 & 93.5\% & 0.576 & 0.003 \\
-		&& $\beta_3$ & 0.006 & 2.96\% & 5.50$*10^-5$ & 94.5\% & 0.030 & 0.003 \\ \cline{2-9} \noalign{\smallskip}
-		&\multirow{4}{*}{Medium(50\%)}
-		& $\gamma_0$ & 0.174 & 3.77\% & 0.047 & 98.5\% & 0.912 & 0.050 \\
-		&& $\beta_1$ & \textbf{0.181} & \textbf{64.59\%} & \textbf{0.049} & 96.0\% & 0.981 & 0.554 \\
-		&& $\beta_2$ & 0.124 & 19.44\% & 0.025 & 94.0\% & 0.578 & 0.007 \\
-		&& $\beta_3$ & 0.006 & 2.97\% & 5.55$*10^-5$ & 96.0\% & 0.030 & 0.009 \\ \cline{2-9} \noalign{\smallskip}
-		& \multirow{4}{*}{High(75\%)}
-		& $\gamma_0$ & 0.177 & 3.85\% & 0.049 & 98.0\% & 0.954 & 0.117 \\
-		&& $\beta_1$ & \textbf{0.243} & \textbf{86.63\%} & \textbf{0.097} & 93.0\% & 1.433 & 0.729 \\
-		&& $\beta_2$ & 0.124 & 19.37\% & 0.025 & 94.0\% & 0.581 & 0.016 \\
-		&& $\beta_3$ & 0.006 & 2.97\% & 5.70$*10^-5$ & 94.0\% & 0.030 & 0.025 \\
-		\midrule
-		\midrule
-		\multirow{12}{*}{\parbox{1.75cm}{Altered \\ Split Form}}
-		& \multirow{4}{*}{Low(23.9\%)}
-		& $\gamma_0$ & 0.171 & 3.72\% & 0.046 & 99.0\% & 0.895 & 0.015 \\
-		&& $\beta_1$ & 0.142 & 50.55\% & 0.033 & 94.5\% & 0.717 & 0.272 \\
-		&& $\beta_2$ & 0.124 & 19.36\% & 0.025 & 93.5\% & 0.577 & 0.002 \\
-		&& $\beta_3$ & 0.006 & 2.95\% & 5.48$*10^-5$ & 95.5\% & 0.030 & 0.003 \\ \cline{2-9} \noalign{\smallskip}
-		&\multirow{4}{*}{Medium(47.8\%)}
-		& $\gamma_0$ & 0.176 & 3.82\% & 0.048 & 99.0\% & 0.905 & 0.038 \\
-		&& $\beta_1$ & 0.168 & 60.10\% & \textbf{0.043} & 95.5\% & 0.903 & 0.486 \\
-		&& $\beta_2$ & 0.124 & 19.36\% & 0.025 & 93.5\% & 0.581 & 0.006 \\
-		&& $\beta_3$ & 0.006 & 2.95\% & 5.60$*10^-5$ & 95.0\% & 0.030 & 0.007 \\ \cline{2-9} \noalign{\smallskip}
-		& \multirow{4}{*}{High(71.7\%)}
-		& $\gamma_0$ & 0.177 & 3.84\% & 0.051 & 99.5\% & 0.947 & 0.108 \\
-		&& $\beta_1$ & \textbf{0.257} & \textbf{91.96\%} & \textbf{0.097} & 94.5\% & 1.381 & 0.714 \\
-		&& $\beta_2$ & 0.124 & 19.34\% & 0.025 & 94.5\% & 0.581 & 0.014 \\
-		&& $\beta_3$ & 0.006 & 3.01\% & 5.76$*10^-5$ & 95.0\% & 0.030 & 0.023 \\
-		\midrule
-		\midrule
-		\multirow{12}{*}{\parbox{1.75cm}{Wave \\ Missingness}}
-		& \multirow{4}{*}{Low(24.4\%)}
-		& $\gamma_0$ & 0.170 & 3.70\% & 0.046 & 99.0\% & 0.895 & 0.016 \\
-		&& $\beta_1$ & 0.135 & 48.11\% & 0.026 & 96.5\% & 0.720 & 0.290 \\
-		&& $\beta_2$ & 0.124 & 19.40\% & 0.025 & 93.5\% & 0.576 & 0.002 \\
-		&& $\beta_3$ & 0.006 & 2.94\% & 5.50$*10^-5$ & 95.0\% & 0.030 & 0.003 \\ \cline{2-9} \noalign{\smallskip}
-		&\multirow{4}{*}{Medium(48.9\%)}
-		& $\gamma_0$ & 0.173 & 3.77\% & 0.047 & 99.0\% & 0.904 & 0.035 \\
-		&& $\beta_1$ & \textbf{0.186} & \textbf{66.53\%} & \textbf{0.052} & 92.0\% & 0.864 & 0.466 \\
-		&& $\beta_2$ & 0.124 & 19.40\% & 0.025 & 93.5\% & 0.576 & 0.004 \\
-		&& $\beta_3$ & 0.006 & 2.94\% & 5.50$*10^-5$ & 96.0\% & 0.030 & 0.006 \\ \cline{2-9} \noalign{\smallskip}
-		& \multirow{4}{*}{High(73.3\%)}
-		& $\gamma_0$ & 0.188 & 4.09\% & 0.055 & 98.5\% & 0.946 & 0.105 \\
-		&& $\beta_1$ & \textbf{0.322} & \textbf{115.10\%} & \textbf{0.149} & \textbf{85.5\%} & 1.306 & 0.712 \\
-		&& $\beta_2$ & 0.127 & 19.87\% & 0.026 & 93.5\% & 0.580 & 0.011 \\
-		&& $\beta_3$ & 0.006 & 3.02\% & 5.75$*10^-5$ & 95.0\% & 0.030 & 0.025 \\
-		\bottomrule
-	\end{tabular}
-\end{table}
+<<echo = FALSE, message = FALSE, warning = FALSE, warning=FALSE>>=
+primary
+@
 
 For the Split Form and Altered Split Form designs seen in Table \ref{tab:table3}, note that the greatest loss in efficiency was on the $\beta_1$ estimate. While the CI coverage remained high at all levels of missingness for the two designs, the bias, percent bias, and MSE reached unacceptable levels at the high missingness level. We also point out that the Altered Split Form design did not perform significantly better than the regular Split Form design. While some individual measurements outperformed those from the Split Form design, bias on $\beta_1$ for example, it underperformed in others, such as percent bias on $\beta_3$. In reference to the FMI on the $\beta_1$ estimate, we can see that at low and medium missingness both Split Form designs performed well. That is, there was less variance in the results from th imputed datasets than we expected given the amount of missing data.\par
 
-Towards the bottom of Table \ref{tab:table3}, the Wave Missingness design provided unacceptable results on bias, percent bias, and MSE for the $\beta_1$ estimate at both medium and high levels of missingness. Moreover, at high levels of missingness coverage became unacceptable as coverage probabilities of the 95\% CIs dropped to 88.5\%.  Additionally, we see that CI length for the $\beta_1$ estimate was roughly equal across all designs, despite the fact that the Wave Missingness design provided more biased estimates. \par
+Towards the bottom of Table \ref{tab:primary}, the Wave Missingness design provided unacceptable results on bias, percent bias, and MSE for the $\beta_1$ estimate at both medium and high levels of missingness. Moreover, at high levels of missingness coverage became unacceptable as coverage probabilities of the 95\% CIs dropped to 88.5\%.  Additionally, we see that CI length for the $\beta_1$ estimate was roughly equal across all designs, despite the fact that the Wave Missingness design provided more biased estimates. \par
 
 \subsection{Increased Sample Size}
 \label{sec:3.2}
-In the next simulation scenario the sample size was increased to 120 participants. All parameter values were held the same as in the original simulation. Table \ref{tab:table2}, again, contains the results of the analysis before applying any PM design. \par
+In the next simulation scenario the sample size was increased to 120 participants. All parameter values were held the same as in the original simulation. Table \ref{tab:prelim} \textbf{not here yet}, again, contains the results of the analysis before applying any PM design. The results of the full-data simulations are compared to those obtained from the PM designs, shown in Table \ref{tab:sampsize}. \par
 
-The results of the full-data simulations are compared to those obtained from the PM designs, shown in Table \ref{tab:table4}. First notice the bias of all parameters is lower than in the smaller sample size simulations. Next, the Split Form design performed similarly well as in the first. At low levels of missingness it gave acceptable results for bias, percent bias, and MSE for the $\beta_1$ and for medium levels only the MSE was unacceptable. However, the CI length is relatively far from the complete-data measurement in Table \ref{tab:table2}. The CI length from the complete-data simulations was 0.460 while at high levels of missingness the CI length reaches 1.088. Furthermore, the percent bias on the $\beta_1$ estimate is not seriously different from that obtained in the small sample scenario. For example, at medium levels of missingness the percent bias on $\beta_1$ is 23.86\% while for the smaller sample it was 23.75\%.
+<<echo = FALSE, message = FALSE, warning = FALSE, warning=FALSE>>=
+sampsize
+@
+
+First notice the bias of all parameters is lower than in the smaller sample size simulations. Next, the Split Form design performed similarly well as in the first. At low levels of missingness it gave acceptable results for bias, percent bias, and MSE for the $\beta_1$ and for medium levels only the MSE was unacceptable. However, the CI length is relatively far from the complete-data measurement in Table \ref{tab:prelim} \textbf{not here yet}. The CI length from the complete-data simulations was 0.460 while at high levels of missingness the CI length reaches 1.088. Furthermore, the percent bias on the $\beta_1$ estimate is not seriously different from that obtained in the small sample scenario. For example, at medium levels of missingness the percent bias on $\beta_1$ is 23.86\% while for the smaller sample it was 23.75\%.
 Similarly to the Split Form design, the Altered Split Form Design also provided unacceptable results for the MSE of the $\beta_1$ estimate at medium missingness and unacceptable bias, percent bias, and MSE at high levels.  \par
 For the Wave Missingness design we continue to see the issues observed in the small sample simulations. That is, for the $\beta_1$ estimate the measurements at medium and high levels of missingness are unacceptable and a steep drop off in coverage probability occurs for the 95\% CIs. In fact, at medium and high levels of missingness the coverages drop to 85.5\% and 82.0\%. The $\gamma_0$ parameter also continues to be estimated poorly at high levels of missing data under the Wave Missingness design. \par
 
 
 \subsection{Low Inter-Survey Correlation}
 \label{sec:3.3}
-For the next set of simulations sample size returned to 60 participants but the level of inter-survey correlation decreased. The results obtained from the full data simulations are provided in Table \ref{tab:table2} while the results from the PM designs are given in Table \ref{tab:table5}. \par
+For the next set of simulations sample size returned to 60 participants but the level of inter-survey correlation decreased. The results obtained from the full data simulations are provided in Table \ref{tab:prelim} \textbf{not here yet} while the results from the PM designs are given in Table \ref{tab:lowcorr}. \par
+
+<<echo = FALSE, message = FALSE, warning = FALSE, warning=FALSE>>=
+lowcorr
+@
 
 For the Split Form design it is important to notice that the efficiency of the $\beta_1$ estimate decreases much more rapidly than in the original simulations where survey questions were predictive of one another. For instance, the bias of $\beta_1$ at low levels of missingness, here, was found to be 0.150 and 0.276 at high levels. This left us with an increase in average bias of 0.126. Looking at the same increase in the original simulations, note that the bias only increased by 0.071. This loss in efficiency is seen in the other measurements on the $\beta_1$ estimate as well. Moreover, note that the Split Form design performs unacceptably in terms of bias, percent bias, and MSE at medium levels of missingness. This was not the case in the other missingness scenarios. \par
 
@@ -873,10 +551,13 @@ The Altered Split Form design at medium levels of missingness yielded an MSE out
 
 Under Wave Missingness the issues of unacceptable bias, percent bias and MSE occur. However, at low levels of missingness, the coverage of the $\beta_1$ estimate was fairly good (96.5\% compared to 94.5\% in the full data). Sufficient coverage did not hold through increased missingness as coverage dropped to 89.5\% in the high missingness scenario. As in other scenarios, the CI lengths produced under the Wave Missingness design are similar to those produced in the Split Form designs despite an increase in bias. However, here the increase in bias is less dramatic than in other scenarios. For example, at high levels of missingness in the original simulations the average bias on the $\beta_1$ estimate was 0.065 higher for the Wave Missingness design (at 0.290) than in the Split Form design (0.225). In this simulation scenario that same difference was only 0.027. Moreover, while the estimation of $\gamma_0$ was unacceptable at high levels of missingness in the other simulation scenarios, here it was in the acceptable range.\par
 
-
 \subsection{High Time Effect}
 \label{sec:3.4}
-In the final scenario we tested to see how the PM designs would capture a model where time had a disproportionately large effect on Missed Dose. In this scenario parameter values were changed to $\gamma_0 = -4.6$, $\beta_1 = 0.28$, $\beta_2 = 0.64$, and $\beta_3 = 0.2$. The results from our full-data analyses are provided in Table \ref{tab:table2} while the corresponding PM design results are in Table \ref{tab:table6}. \par
+In the final scenario we tested to see how the PM designs would capture a model where time had a disproportionately large effect on Missed Dose. In this scenario parameter values were changed to $\gamma_0 = -4.6$, $\beta_1 = 0.28$, $\beta_2 = 0.64$, and $\beta_3 = 0.2$. The results from our full-data analyses are provided in Table \ref{tab:table2} while the corresponding PM design results are in Table \ref{tab:hightime}. \par
+
+<<echo = FALSE, message = FALSE, warning = FALSE, warning=FALSE>>=
+hightime
+@
 
 The effects of imposing Split Form missingness in this high time effect scenario are similar to those under the low inter-survey correlation scenario. At low levels of missingness bias, percent bias, MSE, and coverage for $\beta_1$ are all within the acceptable range. At medium and high levels of missingness bias, percent bias, and MSE are unacceptably high. \par 
 

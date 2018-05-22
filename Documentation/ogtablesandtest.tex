@@ -1,0 +1,497 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage{graphicx}
+\usepackage{mathptmx}      
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage{caption}
+\usepackage{natbib}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+% Original Tables and Figures
+
+% Table 10
+
+% \begin{table}[h!]
+% 	\centering
+% 	\caption{The Three Form PM Design}
+% 	\label{tab:table10}
+% 	\setlength{\tabcolsep}{1cm}
+% 	\begin{tabular}{c|cccc}
+% 		\toprule
+% 		& \multicolumn{4}{c}{Block} \\
+% 		Form & X & A & B & C \\
+% 		\midrule
+% 		1 & 1 & 1 & 1 & 0 \\
+% 		2 & 1 & 1 & 0 & 1 \\
+% 		3 & 1 & 0 & 1 & 1 \\
+% 		\bottomrule
+% 	\end{tabular}
+% \end{table}
+
+% Table 11
+
+% \begin{table}[!h]
+% 	\centering
+% 	\caption{The Wave Missingness PM Design}
+% 	\label{tab:table11}
+% 	\setlength{\tabcolsep}{0.75cm}
+% 	\begin{tabular}{c|ccccc}
+% 		\toprule
+% 		& \multicolumn{5}{c}{Month} \\
+% 		Participant & 1 & 2 & 3 & 4 & 5 \\
+% 		\midrule
+% 		1 & 1 & 0 & 1 & 0 & 1 \\
+% 		2 & 1 & 1 & 0 & 1 & 0 \\
+% 		3 & 0 & 0 & 1 & 1 & 1 \\
+% 		4 & 1 & 1 & 1 & 0 & 0 \\
+% 		\bottomrule
+% 	\end{tabular}
+% \end{table}
+
+Tables for paper
+
+
+
+
+
+
+
+
+
+
+
+
+Table \ref{tab:primary}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{table}[H]
+
+\caption{\label{tab:primary}Primary Results (N = 60)}
+\centering
+\resizebox{\linewidth}{!}{\begin{tabular}[t]{l|l|l|r|r|r|r|r|r}
+\hline
+Design & Level & Parameter & Bias & Pct Bias & MSE & Coverage & CI Length & FMI\\
+\hline
+ &  & $\gamma_0$ & 0.042 & -1.817 & 0.018 & 0.988 & 0.702 & 0.002\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.071 & -25.122 & 0.269 & 0.983 & 2.534 & 0.236\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.008 & 1.253 & 0.024 & 0.932 & 0.585 & 0.000\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Low} & $\beta_3$ & 0.000 & -0.886 & 0.000 & 0.944 & 0.017 & 0.001\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.039 & -1.684 & 0.018 & 0.990 & 0.709 & 0.011\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.102 & -36.186 & 0.271 & 0.998 & 3.500 & 0.534\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.008 & 1.207 & 0.024 & 0.933 & 0.586 & 0.002\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Medium} & $\beta_3$ & 0.000 & -0.419 & 0.000 & 0.946 & 0.017 & 0.007\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.028 & -1.242 & 0.027 & 0.985 & 0.791 & 0.030\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.107 & -38.054 & 0.418 & 0.988 & 4.268 & 0.630\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.012 & 1.869 & 0.027 & 0.932 & 0.613 & 0.005\\
+\cline{3-9}
+\multirow{-12}{*}{\raggedright\arraybackslash Split Form} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & 0.000 & -0.471 & 0.000 & 0.946 & 0.020 & 0.020\\
+\cline{1-9}
+ &  & $\gamma_0$ & 0.042 & -1.832 & 0.018 & 0.990 & 0.701 & 0.001\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.069 & -24.401 & 0.283 & 0.983 & 2.508 & 0.218\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.008 & 1.272 & 0.024 & 0.933 & 0.585 & 0.000\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Low} & $\beta_3$ & 0.000 & -0.949 & 0.000 & 0.944 & 0.017 & 0.001\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.040 & -1.760 & 0.018 & 0.988 & 0.704 & 0.007\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.117 & -41.573 & 0.277 & 0.990 & 3.385 & 0.508\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.008 & 1.286 & 0.024 & 0.931 & 0.585 & 0.002\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Medium} & $\beta_3$ & 0.000 & -0.986 & 0.000 & 0.945 & 0.017 & 0.005\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.036 & -1.592 & 0.021 & 0.989 & 0.742 & 0.022\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.158 & -56.111 & 0.394 & 0.992 & 4.336 & 0.662\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.012 & 1.809 & 0.026 & 0.934 & 0.601 & 0.006\\
+\cline{3-9}
+\multirow{-12}{*}{\raggedright\arraybackslash Altered Split Form} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & 0.000 & -1.487 & 0.000 & 0.941 & 0.018 & 0.021\\
+\cline{1-9}
+ &  & $\gamma_0$ & 0.040 & -1.765 & 0.018 & 0.988 & 0.703 & 0.005\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.094 & -33.425 & 0.238 & 0.993 & 2.995 & 0.433\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.008 & 1.251 & 0.024 & 0.934 & 0.585 & 0.001\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Low} & $\beta_3$ & 0.000 & -0.875 & 0.000 & 0.943 & 0.017 & 0.002\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.028 & -1.223 & 0.018 & 0.995 & 0.744 & 0.051\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.088 & -31.121 & 0.240 & 0.992 & 3.497 & 0.718\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.009 & 1.436 & 0.024 & 0.933 & 0.588 & 0.006\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Medium} & $\beta_3$ & 0.000 & -1.326 & 0.000 & 0.946 & 0.017 & 0.025\\
+\cline{2-9}
+ &  & $\gamma_0$ & -0.004 & 0.194 & 0.020 & 0.995 & 0.962 & 0.224\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.080 & -28.263 & 0.234 & 0.985 & 3.791 & 0.886\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.011 & 1.700 & 0.024 & 0.938 & 0.607 & 0.032\\
+\cline{3-9}
+\multirow{-12}{*}{\raggedright\arraybackslash Wave Missingness} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & 0.000 & -3.304 & 0.000 & 0.970 & 0.020 & 0.148\\
+\hline
+\end{tabular}}
+\end{table}
+
+
+\end{knitrout}
+
+Table \ref{tab:sampsize}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{table}[H]
+
+\caption{\label{tab:sampsize}Increased Sample Size Results (N = 120)}
+\centering
+\resizebox{\linewidth}{!}{\begin{tabular}[t]{l|l|l|r|r|r|r|r|r}
+\hline
+Design & Level & Parameter & Bias & Pct Bias & MSE & Coverage & CI Length & FMI\\
+\hline
+ &  & $\gamma_0$ & 0.013 & -0.577 & 0.008 & 0.985 & 0.424 & 0.001\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.041 & -14.633 & 0.134 & 0.975 & 1.690 & 0.183\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.006 & 0.867 & 0.007 & 0.944 & 0.319 & 0.000\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Low} & $\beta_3$ & 0.000 & -0.868 & 0.000 & 0.954 & 0.012 & 0.000\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.012 & -0.544 & 0.008 & 0.985 & 0.429 & 0.009\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.073 & -25.973 & 0.148 & 0.991 & 2.366 & 0.449\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.006 & 0.875 & 0.007 & 0.944 & 0.320 & 0.002\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Medium} & $\beta_3$ & 0.000 & -0.832 & 0.000 & 0.953 & 0.012 & 0.002\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.004 & -0.179 & 0.011 & 0.973 & 0.465 & 0.025\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.145 & -51.616 & 0.304 & 0.983 & 3.281 & 0.649\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.007 & 1.136 & 0.008 & 0.939 & 0.332 & 0.005\\
+\cline{3-9}
+\multirow{-12}{*}{\raggedright\arraybackslash Split Form} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & 0.000 & 0.243 & 0.000 & 0.944 & 0.013 & 0.010\\
+\cline{1-9}
+ &  & $\gamma_0$ & 0.013 & -0.576 & 0.008 & 0.984 & 0.425 & 0.002\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.032 & -11.186 & 0.129 & 0.980 & 1.677 & 0.173\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.006 & 0.875 & 0.007 & 0.944 & 0.319 & 0.000\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Low} & $\beta_3$ & 0.000 & -0.883 & 0.000 & 0.952 & 0.012 & 0.000\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.013 & -0.553 & 0.008 & 0.983 & 0.426 & 0.005\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.058 & -20.672 & 0.145 & 0.996 & 2.250 & 0.414\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.006 & 0.879 & 0.007 & 0.944 & 0.319 & 0.001\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Medium} & $\beta_3$ & 0.000 & -0.917 & 0.000 & 0.951 & 0.012 & 0.002\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.011 & -0.465 & 0.008 & 0.986 & 0.434 & 0.017\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.112 & -39.796 & 0.228 & 0.994 & 3.245 & 0.691\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.006 & 0.886 & 0.007 & 0.940 & 0.321 & 0.004\\
+\cline{3-9}
+\multirow{-12}{*}{\raggedright\arraybackslash Altered Split Form} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & 0.000 & -1.054 & 0.000 & 0.952 & 0.012 & 0.009\\
+\cline{1-9}
+ &  & $\gamma_0$ & 0.013 & -0.575 & 0.008 & 0.985 & 0.426 & 0.004\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.064 & -22.793 & 0.137 & 0.987 & 2.064 & 0.342\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.005 & 0.832 & 0.007 & 0.944 & 0.319 & 0.001\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Low} & $\beta_3$ & 0.000 & -0.906 & 0.000 & 0.952 & 0.012 & 0.001\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.010 & -0.453 & 0.008 & 0.984 & 0.435 & 0.023\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.082 & -29.029 & 0.184 & 0.994 & 2.979 & 0.630\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.006 & 0.890 & 0.007 & 0.943 & 0.320 & 0.004\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Medium} & $\beta_3$ & 0.000 & -0.959 & 0.000 & 0.954 & 0.012 & 0.008\\
+\cline{2-9}
+ &  & $\gamma_0$ & -0.010 & 0.428 & 0.010 & 0.988 & 0.554 & 0.179\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.059 & -21.087 & 0.297 & 0.970 & 3.760 & 0.859\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.008 & 1.204 & 0.007 & 0.952 & 0.334 & 0.040\\
+\cline{3-9}
+\multirow{-12}{*}{\raggedright\arraybackslash Wave Missingness} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & 0.000 & -2.426 & 0.000 & 0.955 & 0.014 & 0.105\\
+\hline
+\end{tabular}}
+\end{table}
+
+
+\end{knitrout}
+
+Table \ref{tab:hightime}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{table}[H]
+
+\caption{\label{tab:hightime}High Time Results (N = 60)}
+\centering
+\resizebox{\linewidth}{!}{\begin{tabular}[t]{l|l|l|r|r|r|r|r|r}
+\hline
+Design & Level & Parameter & Bias & Pct Bias & MSE & Coverage & CI Length & FMI\\
+\hline
+ &  & $\gamma_0$ & -0.023 & 0.498 & 0.120 & 0.968 & 1.414 & 0.018\\
+\cline{3-9}
+ &  & $\beta_1$ & 0.604 & 429.053 & 0.669 & 0.973 & 4.812 & 0.271\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.010 & 3.263 & 0.048 & 0.955 & 0.827 & 0.003\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Low} & $\beta_3$ & 0.000 & -2.671 & 0.000 & 0.945 & 0.039 & 0.004\\
+\cline{2-9}
+ &  & $\gamma_0$ & -0.048 & 1.060 & 0.128 & 0.972 & 1.506 & 0.059\\
+\cline{3-9}
+ &  & $\beta_1$ & 0.724 & 513.940 & 0.898 & 0.988 & 5.933 & 0.499\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.025 & 7.927 & 0.047 & 0.958 & 0.834 & 0.013\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Medium} & $\beta_3$ & 0.000 & -2.867 & 0.000 & 0.938 & 0.039 & 0.017\\
+\cline{2-9}
+ &  & $\gamma_0$ & -0.178 & 3.882 & 0.370 & 0.984 & 2.050 & 0.132\\
+\cline{3-9}
+ &  & $\beta_1$ & 0.997 & 708.287 & 1.573 & 0.955 & 6.822 & 0.610\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.044 & 13.650 & 0.060 & 0.965 & 0.966 & 0.036\\
+\cline{3-9}
+\multirow{-12}{*}{\raggedright\arraybackslash Split Form} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & 0.000 & -0.787 & 0.000 & 0.955 & 0.048 & 0.060\\
+\cline{1-9}
+ &  & $\gamma_0$ & -0.019 & 0.415 & 0.119 & 0.966 & 1.401 & 0.011\\
+\cline{3-9}
+ &  & $\beta_1$ & 0.603 & 428.601 & 0.638 & 0.966 & 4.616 & 0.239\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.014 & 4.254 & 0.048 & 0.956 & 0.827 & 0.002\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Low} & $\beta_3$ & 0.000 & -3.004 & 0.000 & 0.944 & 0.039 & 0.003\\
+\cline{2-9}
+ &  & $\gamma_0$ & -0.045 & 0.988 & 0.124 & 0.978 & 1.493 & 0.053\\
+\cline{3-9}
+ &  & $\beta_1$ & 0.728 & 517.389 & 0.879 & 0.974 & 5.976 & 0.504\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.024 & 7.437 & 0.051 & 0.954 & 0.838 & 0.011\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Medium} & $\beta_3$ & -0.001 & -4.550 & 0.000 & 0.946 & 0.039 & 0.018\\
+\cline{2-9}
+ &  & $\gamma_0$ & -0.117 & 2.557 & 0.196 & 0.984 & 1.759 & 0.112\\
+\cline{3-9}
+ &  & $\beta_1$ & 0.876 & 622.327 & 1.305 & 0.968 & 6.913 & 0.650\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.026 & 8.265 & 0.051 & 0.963 & 0.892 & 0.034\\
+\cline{3-9}
+\multirow{-12}{*}{\raggedright\arraybackslash Altered Split Form} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & -0.001 & -5.340 & 0.000 & 0.949 & 0.043 & 0.055\\
+\cline{1-9}
+ &  & $\gamma_0$ & -0.057 & 1.249 & 0.127 & 0.968 & 1.454 & 0.038\\
+\cline{3-9}
+ &  & $\beta_1$ & 0.853 & 606.148 & 1.003 & 0.974 & 5.629 & 0.510\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.006 & 1.804 & 0.046 & 0.959 & 0.831 & 0.006\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Low} & $\beta_3$ & 0.000 & -3.051 & 0.000 & 0.945 & 0.039 & 0.011\\
+\cline{2-9}
+ &  & $\gamma_0$ & -0.182 & 3.981 & 0.166 & 0.979 & 1.813 & 0.183\\
+\cline{3-9}
+ &  & $\beta_1$ & 0.979 & 695.352 & 1.325 & 0.967 & 6.758 & 0.782\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.020 & 6.425 & 0.050 & 0.956 & 0.871 & 0.037\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Medium} & $\beta_3$ & -0.001 & -4.466 & 0.000 & 0.955 & 0.042 & 0.068\\
+\cline{2-9}
+ &  & $\gamma_0$ & -0.403 & 8.803 & 0.345 & 0.987 & 2.789 & 0.440\\
+\cline{3-9}
+ &  & $\beta_1$ & 1.050 & 745.735 & 1.504 & 0.951 & 7.357 & 0.887\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.019 & 5.848 & 0.050 & 0.973 & 0.960 & 0.099\\
+\cline{3-9}
+\multirow{-12}{*}{\raggedright\arraybackslash Wave Missingness} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & -0.003 & -18.904 & 0.000 & 0.975 & 0.052 & 0.200\\
+\hline
+\end{tabular}}
+\end{table}
+
+
+\end{knitrout}
+
+Table \ref{tab:lowcorr}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{table}[H]
+
+\caption{\label{tab:lowcorr}Low Inter-Survey Correlation Results (N = 60)}
+\centering
+\resizebox{\linewidth}{!}{\begin{tabular}[t]{l|l|l|r|r|r|r|r|r}
+\hline
+Design & Level & Parameter & Bias & Pct Bias & MSE & Coverage & CI Length & FMI\\
+\hline
+ &  & $\gamma_0$ & 0.042 & -1.856 & 0.018 & 0.990 & 0.702 & 0.002\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.067 & -23.958 & 0.265 & 0.981 & 2.537 & 0.230\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.007 & 1.122 & 0.024 & 0.938 & 0.585 & 0.000\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Low} & $\beta_3$ & 0.000 & -1.108 & 0.000 & 0.940 & 0.017 & 0.001\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.041 & -1.774 & 0.018 & 0.992 & 0.708 & 0.010\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.103 & -36.645 & 0.281 & 0.991 & 3.492 & 0.535\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.008 & 1.183 & 0.024 & 0.934 & 0.586 & 0.002\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Medium} & $\beta_3$ & 0.000 & -1.031 & 0.000 & 0.939 & 0.017 & 0.006\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.034 & -1.488 & 0.026 & 0.990 & 0.794 & 0.030\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.148 & -52.475 & 0.425 & 0.991 & 4.285 & 0.621\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.011 & 1.791 & 0.028 & 0.935 & 0.613 & 0.005\\
+\cline{3-9}
+\multirow{-12}{*}{\raggedright\arraybackslash Split Form} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & 0.000 & -0.870 & 0.000 & 0.941 & 0.020 & 0.020\\
+\cline{1-9}
+ &  & $\gamma_0$ & 0.043 & -1.874 & 0.018 & 0.989 & 0.701 & 0.001\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.066 & -23.566 & 0.258 & 0.984 & 2.535 & 0.224\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.007 & 1.116 & 0.024 & 0.935 & 0.585 & 0.000\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Low} & $\beta_3$ & 0.000 & -1.202 & 0.000 & 0.939 & 0.017 & 0.001\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.041 & -1.782 & 0.018 & 0.988 & 0.706 & 0.009\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.096 & -33.989 & 0.262 & 0.991 & 3.394 & 0.511\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.008 & 1.226 & 0.024 & 0.934 & 0.585 & 0.002\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Medium} & $\beta_3$ & 0.000 & -1.150 & 0.000 & 0.940 & 0.017 & 0.005\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.036 & -1.573 & 0.020 & 0.986 & 0.738 & 0.023\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.174 & -61.685 & 0.380 & 0.991 & 4.350 & 0.669\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.010 & 1.639 & 0.025 & 0.937 & 0.598 & 0.005\\
+\cline{3-9}
+\multirow{-12}{*}{\raggedright\arraybackslash Altered Split Form} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & 0.000 & -0.961 & 0.000 & 0.949 & 0.018 & 0.024\\
+\cline{1-9}
+ &  & $\gamma_0$ & 0.041 & -1.790 & 0.018 & 0.989 & 0.703 & 0.005\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.084 & -29.806 & 0.242 & 0.994 & 2.967 & 0.423\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.007 & 1.141 & 0.024 & 0.936 & 0.585 & 0.001\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Low} & $\beta_3$ & 0.000 & -1.100 & 0.000 & 0.940 & 0.017 & 0.002\\
+\cline{2-9}
+ &  & $\gamma_0$ & 0.031 & -1.347 & 0.018 & 0.992 & 0.739 & 0.046\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.112 & -39.818 & 0.246 & 0.988 & 3.491 & 0.722\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.008 & 1.269 & 0.024 & 0.936 & 0.588 & 0.005\\
+\cline{3-9}
+ & \multirow{-4}{*}{\raggedright\arraybackslash Medium} & $\beta_3$ & 0.000 & -1.499 & 0.000 & 0.944 & 0.017 & 0.024\\
+\cline{2-9}
+ &  & $\gamma_0$ & -0.003 & 0.133 & 0.022 & 0.996 & 0.985 & 0.237\\
+\cline{3-9}
+ &  & $\beta_1$ & -0.094 & -33.488 & 0.233 & 0.988 & 3.875 & 0.887\\
+\cline{3-9}
+ &  & $\beta_2$ & 0.010 & 1.616 & 0.025 & 0.941 & 0.608 & 0.033\\
+\cline{3-9}
+\multirow{-12}{*}{\raggedright\arraybackslash Wave Missingness} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & -0.001 & -3.529 & 0.000 & 0.964 & 0.021 & 0.160\\
+\hline
+\end{tabular}}
+\end{table}
+
+
+\end{knitrout}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

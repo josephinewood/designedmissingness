@@ -1,0 +1,206 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{mathptmx}      
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage{caption}
+\usepackage{natbib}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\begin{document}
+
+% Original Tables and Figures
+
+% Table 10
+
+% \begin{table}[h!]
+% 	\centering
+% 	\caption{The Three Form PM Design}
+% 	\label{tab:table10}
+% 	\setlength{\tabcolsep}{1cm}
+% 	\begin{tabular}{c|cccc}
+% 		\toprule
+% 		& \multicolumn{4}{c}{Block} \\
+% 		Form & X & A & B & C \\
+% 		\midrule
+% 		1 & 1 & 1 & 1 & 0 \\
+% 		2 & 1 & 1 & 0 & 1 \\
+% 		3 & 1 & 0 & 1 & 1 \\
+% 		\bottomrule
+% 	\end{tabular}
+% \end{table}
+
+% Table 11
+
+% \begin{table}[!h]
+% 	\centering
+% 	\caption{The Wave Missingness PM Design}
+% 	\label{tab:table11}
+% 	\setlength{\tabcolsep}{0.75cm}
+% 	\begin{tabular}{c|ccccc}
+% 		\toprule
+% 		& \multicolumn{5}{c}{Month} \\
+% 		Participant & 1 & 2 & 3 & 4 & 5 \\
+% 		\midrule
+% 		1 & 1 & 0 & 1 & 0 & 1 \\
+% 		2 & 1 & 1 & 0 & 1 & 0 \\
+% 		3 & 0 & 0 & 1 & 1 & 1 \\
+% 		4 & 1 & 1 & 1 & 0 & 0 \\
+% 		\bottomrule
+% 	\end{tabular}
+% \end{table}
+
+Tables for paper
+
+<<primary, echo=FALSE, message=FALSE, warning=FALSE, fig.pos = "H">>=
+library(kableExtra)
+library(dplyr)
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_high_hightime0.RData")
+high <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_med_hightime0.RData")
+med <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_low_hightime0.RData")
+low <- d
+
+r <- rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])
+
+df <- data.frame(Design = rep(c("Split Form","Altered Split Form", "Wave Missingness"), each = 12), Missingness = rep(rep(c("Low","Medium", "High"), each = 4),3), Parameter = rep(c("$\\gamma_0$", "$\\beta_1$", "$\\beta_2$", "$\\beta_3$"),9), Bias = unlist(r["Bias"]), unlist(r["Pct Bias"]), MSE = unlist(r["MSE"]), Coverage = r["Coverage"], r["CI Length"], FMI = r["FMI"])
+
+df[,4:9] <- apply(df[,4:9], 2, round, digits = 3)
+
+names(df) <- c("Design", "Level", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
+row.names(df) <- NULL
+primary <- kable(df, escape = FALSE, format ="latex", caption = "Primary Results (N = 60)") %>%
+  collapse_rows(columns = 1:2, latex_hline = "full") %>%
+  kable_styling(latex_options = c("scale_down","HOLD_position"))
+@
+
+<<sampsize, echo=FALSE, message=FALSE, warning=FALSE, fig.pos = "H">>=
+library(kableExtra)
+library(dplyr)
+load("~/GitHub/designedmissingness/Results/tables20180509_120_1_high_hightime0.RData")
+high <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_120_1_med_hightime0.RData")
+med <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_120_1_low_hightime0.RData")
+low <- d
+
+r <- rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])
+
+df <- data.frame(Design = rep(c("Split Form","Altered Split Form", "Wave Missingness"), each = 12), Missingness = rep(rep(c("Low","Medium", "High"), each = 4),3), Parameter = rep(c("$\\gamma_0$", "$\\beta_1$", "$\\beta_2$", "$\\beta_3$"),9), Bias = unlist(r["Bias"]), unlist(r["Pct Bias"]), MSE = unlist(r["MSE"]), Coverage = r["Coverage"], r["CI Length"], FMI = r["FMI"])
+
+df[,4:9] <- apply(df[,4:9], 2, round, digits = 3)
+
+names(df) <- c("Design", "Level", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
+row.names(df) <- NULL
+sampsize <- kable(df, escape = FALSE, format ="latex", caption = "Increased Sample Size Results (N = 120)") %>%
+  collapse_rows(columns = 1:2, latex_hline = "full") %>%
+  kable_styling(latex_options = c("scale_down","HOLD_position"))
+@
+
+<<hightime, echo=FALSE, message=FALSE, warning=FALSE, fig.pos = "H">>=
+library(kableExtra)
+library(dplyr)
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_high_hightime1.RData")
+high <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_med_hightime1.RData")
+med <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_1_low_hightime1.RData")
+low <- d
+
+r <- rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])
+
+df <- data.frame(Design = rep(c("Split Form","Altered Split Form", "Wave Missingness"), each = 12), Missingness = rep(rep(c("Low","Medium", "High"), each = 4),3), Parameter = rep(c("$\\gamma_0$", "$\\beta_1$", "$\\beta_2$", "$\\beta_3$"),9), Bias = unlist(r["Bias"]), unlist(r["Pct Bias"]), MSE = unlist(r["MSE"]), Coverage = r["Coverage"], r["CI Length"], FMI = r["FMI"])
+
+df[,4:9] <- apply(df[,4:9], 2, round, digits = 3)
+
+names(df) <- c("Design", "Level", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
+row.names(df) <- NULL
+hightime <- kable(df, escape = FALSE, format ="latex", caption = "High Time Results (N = 60)") %>%
+  collapse_rows(columns = 1:2, latex_hline = "full") %>%
+  kable_styling(latex_options = c("scale_down","HOLD_position"))
+@
+
+<<lowcorr, echo=FALSE, message=FALSE, warning=FALSE, fig.pos = "H">>=
+library(kableExtra)
+library(dplyr)
+load("~/GitHub/designedmissingness/Results/tables20180509_60_0.5_high_hightime0.RData")
+high <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_0.5_med_hightime0.RData")
+med <- d
+
+load("~/GitHub/designedmissingness/Results/tables20180509_60_0.5_low_hightime0.RData")
+low <- d
+
+r <- rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])
+
+df <- data.frame(Design = rep(c("Split Form","Altered Split Form", "Wave Missingness"), each = 12), Missingness = rep(rep(c("Low","Medium", "High"), each = 4),3), Parameter = rep(c("$\\gamma_0$", "$\\beta_1$", "$\\beta_2$", "$\\beta_3$"),9), Bias = unlist(r["Bias"]), unlist(r["Pct Bias"]), MSE = unlist(r["MSE"]), Coverage = r["Coverage"], r["CI Length"], FMI = r["FMI"])
+
+df[,4:9] <- apply(df[,4:9], 2, round, digits = 3)
+
+names(df) <- c("Design", "Level", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
+row.names(df) <- NULL
+lowcorr <- kable(df, escape = FALSE, format ="latex", caption = "Low Inter-Survey Correlation Results (N = 60)") %>%
+  collapse_rows(columns = 1:2, latex_hline = "full") %>%
+  kable_styling(latex_options = c("scale_down","HOLD_position"))
+@
+
+
+
+
+Table \ref{tab:primary}
+
+<<echo = FALSE, message = FALSE, warning = FALSE, warning=FALSE>>=
+primary
+@
+
+Table \ref{tab:sampsize}
+
+<<echo = FALSE, message = FALSE, warning = FALSE, warning=FALSE>>=
+sampsize
+@
+
+Table \ref{tab:hightime}
+
+<<echo = FALSE, message = FALSE, warning = FALSE, warning=FALSE>>=
+hightime
+@
+
+Table \ref{tab:lowcorr}
+
+<<echo = FALSE, message = FALSE, warning = FALSE, warning=FALSE>>=
+lowcorr
+@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
