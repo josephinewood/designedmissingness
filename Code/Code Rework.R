@@ -2,35 +2,35 @@
 # 
 # 
 # Regular Runs: 
-nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="low" nmiss=11 nrem=2 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_low_highttime0.Rout &
-nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="low" nmiss=11 nrem=2 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_low_highttime0.Rout &
+nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="low" nmiss=11 nr=2 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_low_highttime0.Rout &
+nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="low" nmiss=11 nr=2 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_low_highttime0.Rout &
 
-  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="med" nmiss=22 nrem=4 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med_highttime0.Rout &
-  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="med" nmiss=22 nrem=4 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_med_highttime0.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="med" nmiss=22 nr=4 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med_highttime0.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="med" nmiss=22 nr=4 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_med_highttime0.Rout &
 
-  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="high" nmiss=33 nrem=6 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high_highttime0.Rout &
-  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="high" nmiss=33 nrem=6 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_high_highttime0.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="high" nmiss=33 nr=6 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high_highttime0.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="high" nmiss=33 nr=6 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_high_highttime0.Rout &
 
 #hightime == 1
-nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="low" nmiss=11 nrem=2 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_low_highttime1.Rout &
-nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="low" nmiss=11 nrem=2 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_low_highttime1.Rout &
+nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="low" nmiss=11 nr=2 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_low_highttime1.Rout &
+nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="low" nmiss=11 nr=2 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_low_highttime1.Rout &
 
-  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="med" nmiss=22 nrem=4 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med_highttime1.Rout &
-  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="med" nmiss=22 nrem=4 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_med_highttime1.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="med" nmiss=22 nr=4 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med_highttime1.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="med" nmiss=22 nr=4 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_med_highttime1.Rout &
 
-  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="high" nmiss=33 nrem=6 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high_highttime1.Rout &
-  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="high" nmiss=33 nrem=6 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_high_highttime1.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=1 howmuch="high" nmiss=33 nr=6 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high_highttime1.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=1 howmuch="high" nmiss=33 nr=6 hightime=1' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_high_highttime1.Rout &
 
   
   
-nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=0.5 howmuch="low" nmiss=11 nrem=2 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_low_lowwcorr.Rout &
-nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=0.5 howmuch="low" nmiss=11 nrem=2 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_low_lowwcorr.Rout &
+nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=0.5 howmuch="low" nmiss=11 nr=2 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_low_lowwcorr.Rout &
+nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=0.5 howmuch="low" nmiss=11 nr=2 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_low_lowwcorr.Rout &
 
-  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=0.5 howmuch="med" nmiss=22 nrem=4 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med_lowwcorr.Rout &
-  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=0.5 howmuch="med" nmiss=22 nrem=4 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_med_lowwcorr.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=0.5 howmuch="med" nmiss=22 nr=4 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_med_lowwcorr.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=0.5 howmuch="med" nmiss=22 nr=4 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_med_lowwcorr.Rout &
 
-  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=0.5 howmuch="high" nmiss=33 nrem=6 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high_lowwcorr.Rout &
-  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=0.5 howmuch="high" nmiss=33 nrem=6 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_high_lowwcorr.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=60 corr.scale=0.5 howmuch="high" nmiss=33 nr=6 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar60_1_high_lowwcorr.Rout &
+  nohup R --vanilla CMD BATCH '--args no.pid=120 corr.scale=0.5 howmuch="high" nmiss=33 nr=6 hightime=0' /home/gmatthews1/designedMissingness/simulationPar.R /home/gmatthews1/designedMissingness/simulationPar120_1_high_lowwcorr.Rout &
 
 # Load necessary libraries
 library(mice)
