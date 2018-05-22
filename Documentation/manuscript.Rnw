@@ -15,6 +15,19 @@
 \usepackage{cite}
 \usepackage{caption}
 \usepackage{natbib}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+% \usepackage{threeparttable}
+% \usepackage{threeparttablex}
+% \usepackage[normalem]{ulem}
+% \usepackage{makecell}
+
 
 
 \journalname{Sankhya B}
@@ -79,7 +92,7 @@ To delineate the remainder of this paper, in Section 2 we go into more depth on 
 \subsection{Split Form Design}
 \label{sec:1.1}
 
-Split Form missingness designs \citep{raghunathan1995split}, also  known as Multi-Form \citep{little2013planned} or Matrix Sampling designs \citep{thomas2006evaluation}, are very aptly named. Instead of giving participants one large survey, researchers create multiple forms, each containing a subset of the full survey's questions. A common form setup is the three-form design \citep{graham1996maximizing} in which the full survey is split into four blocks: X, A, B, and C. Each form of the survey includes the X block as well as two of the remaining blocks. This leaves the configurations seen in Table \ref{tab:table10}, where "1" indicates that the block is included and "0" indicates that it is excluded. Note that every block appears in at least one form. By designing the forms in this manner we are able to estimate the relationship between any chosen items regardless of their blocks. That is, if we want to estimate the relationship between an item in block A and another in C, there is a form that allows this. \par
+Split Form missingness designs \citep{raghunathan1995split}, also  known as Multi-Form \citep{little2013planned} or Matrix Sampling designs \citep{thomas2006evaluation}, are very aptly named. Instead of giving participants one large survey, researchers create multiple forms, each containing a subset of the full survey's questions. A common form setup is the three-form design \citep{graham1996maximizing} in which the full survey is split into four blocks: X, A, B, and C. Each form of the survey includes the X block as well as two of the remaining blocks. This leaves the configurations seen in Table \\ref{tab:table10}, where "1" indicates that the block is included and "0" indicates that it is excluded. Note that every block appears in at least one form. By designing the forms in this manner we are able to estimate the relationship between any chosen items regardless of their blocks. That is, if we want to estimate the relationship between an item in block A and another in C, there is a form that allows this. \par
 
 We need to talk about the other type of split design that we used here which was that X of the 8 questions are randomly omitted on each day.  
 
@@ -210,7 +223,7 @@ cols <- c("Missing" = "red", "Observed" = "skyblue3")
 waveplot <-  ggplot(datmelt, aes(Question, Day, fill=color)) + geom_raster() + scale_fill_manual(values = cols)  + theme(axis.text.x = element_text(angle=45, vjust=0.5),panel.background = element_rect(fill = NA)) + labs(x = "Questions Asked",y = "Day",fill="Block") + scale_y_reverse() + theme(legend.title=element_blank(),legend.position="none")
 @
 
-<<misslow, fig.cap = "Low missingness", echo = FALSE, message = FALSE, warning = FALSE, fig = TRUE>>=
+<<misslow, fig.cap = "Low missingness", echo = FALSE, message = FALSE, warning = FALSE, fig.keep = TRUE>>=
 require(gridExtra)
 grid.arrange(splitplot, alternatesplitplot, waveplot, ncol=3)
 @
@@ -459,11 +472,11 @@ df_8 <- data.frame(Design = rep(c("Split Form","Altered Split Form", "Wave Missi
 
 df_8[,4:9] <- apply(df_8[,4:9], 2, round, digits = 3)
 
-names(df_8) <- c("Design", "Missingness", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
+names(df_8) <- c("Design", "Level", "Parameter", "Bias", "Pct Bias", "MSE", "Coverage", "CI Length", "FMI")
 row.names(df_8) <- NULL
 kable(df_8, escape = FALSE, format ="latex") %>%
-  collapse_rows(columns = 1:2, latex_hline = "full")
-  column_spec(1, width = "30em")
+  collapse_rows(columns = 1:2, latex_hline = "full") %>%
+  kable_styling(latex_options = "scale_down")
 
 # library(knitr)
 # kable(cbind("","","",rbind(low_8[[1]],med_8[[1]],high_8[[1]],low_8[[2]],med_8[[2]],high_8[[2]],low_8[[3]],med_8[[3]],high_8[[3]])),format="latex")
@@ -477,10 +490,6 @@ med <- d
 
 load("~/GitHub/designedmissingness/Results/tables20180509_60_1_low_hightime1.RData")
 low <- d
-
-library(xtable)
-print(xtable(cbind("","","",rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])),digits= 3),include.rownames=FALSE)
-
 @
 
 % latex table generated in R 3.5.0 by xtable 1.8-2 package

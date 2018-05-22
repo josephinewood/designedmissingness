@@ -65,6 +65,19 @@
 \usepackage{cite}
 \usepackage{caption}
 \usepackage{natbib}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+% \usepackage{threeparttable}
+% \usepackage{threeparttablex}
+% \usepackage[normalem]{ulem}
+% \usepackage{makecell}
+
 
 
 \journalname{Sankhya B}
@@ -128,7 +141,7 @@ To delineate the remainder of this paper, in Section 2 we go into more depth on 
 \subsection{Split Form Design}
 \label{sec:1.1}
 
-Split Form missingness designs \citep{raghunathan1995split}, also  known as Multi-Form \citep{little2013planned} or Matrix Sampling designs \citep{thomas2006evaluation}, are very aptly named. Instead of giving participants one large survey, researchers create multiple forms, each containing a subset of the full survey's questions. A common form setup is the three-form design \citep{graham1996maximizing} in which the full survey is split into four blocks: X, A, B, and C. Each form of the survey includes the X block as well as two of the remaining blocks. This leaves the configurations seen in Table \ref{tab:table10}, where "1" indicates that the block is included and "0" indicates that it is excluded. Note that every block appears in at least one form. By designing the forms in this manner we are able to estimate the relationship between any chosen items regardless of their blocks. That is, if we want to estimate the relationship between an item in block A and another in C, there is a form that allows this. \par
+Split Form missingness designs \citep{raghunathan1995split}, also  known as Multi-Form \citep{little2013planned} or Matrix Sampling designs \citep{thomas2006evaluation}, are very aptly named. Instead of giving participants one large survey, researchers create multiple forms, each containing a subset of the full survey's questions. A common form setup is the three-form design \citep{graham1996maximizing} in which the full survey is split into four blocks: X, A, B, and C. Each form of the survey includes the X block as well as two of the remaining blocks. This leaves the configurations seen in Table \\ref{tab:table10}, where "1" indicates that the block is included and "0" indicates that it is excluded. Note that every block appears in at least one form. By designing the forms in this manner we are able to estimate the relationship between any chosen items regardless of their blocks. That is, if we want to estimate the relationship between an item in block A and another in C, there is a form that allows this. \par
 
 We need to talk about the other type of split design that we used here which was that X of the 8 questions are randomly omitted on each day.  
 
@@ -401,10 +414,11 @@ In the final scenario, the goal was to determine which PM design would lead to t
 The first set of simulations run contained the parameters in the random-intercept logistic model with $\gamma_0 = -2.3$, $\beta_1 = 0.56$, $\beta_2 = 1.28$, and $\beta_3 = 0.2$. The effects of the variables here are comparable to those found in the original dataset. This fact implies that we can interpret the results here to show what may have occurred if the original study had implemented a PM design. Before we imposed a missingness structure on the 1,000 simulated samples we obtained the full data results shown in Table \ref{tab:table2}. Note that the full data results for the other simulation scenarios are also provided in this table for ease of reference.
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\begin{tabular}{l|l|l|r|r|r|r|r|r}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{\begin{tabular}{l|l|l|r|r|r|r|r|r}
 \hline
-Design & Missingness & Parameter & Bias & Pct Bias & MSE & Coverage & CI Length & FMI\\
+Design & Level & Parameter & Bias & Pct Bias & MSE & Coverage & CI Length & FMI\\
 \hline
  &  & $\gamma_0$ & 0.042 & -1.817 & 0.018 & 0.988 & 0.702 & 0.002\\
 \cline{3-9}
@@ -478,60 +492,10 @@ Design & Missingness & Parameter & Bias & Pct Bias & MSE & Coverage & CI Length 
 \cline{3-9}
 \multirow{-12}{*}{\raggedright\arraybackslash Wave Missingness} & \multirow{-4}{*}{\raggedright\arraybackslash High} & $\beta_3$ & 0.000 & -3.304 & 0.000 & 0.970 & 0.020 & 0.148\\
 \hline
-\end{tabular}
+\end{tabular}}
+\end{table}
 
-\begin{kframe}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in column\_spec(1, width = "{}30em"{}): argument "{}column"{} is missing, with no default}}\begin{verbatim}
-## % latex table generated in R 3.4.1 by xtable 1.8-2 package
-## % Thu May 17 15:47:48 2018
-## \begin{table}[ht]
-## \centering
-## \begin{tabular}{lllrrrrrr}
-##   \hline
-## "" & "" & "" & Coverage & Bias & MSE & FMI & CI Length & Pct Bias \\ 
-##   \hline
-##  &  &  & 0.968 & -0.023 & 0.120 & 0.018 & 1.414 & 0.498 \\ 
-##    &  &  & 0.973 & 0.604 & 0.669 & 0.271 & 4.812 & 429.053 \\ 
-##    &  &  & 0.955 & 0.010 & 0.048 & 0.003 & 0.827 & 3.263 \\ 
-##    &  &  & 0.945 & -0.000 & 0.000 & 0.004 & 0.039 & -2.671 \\ 
-##    &  &  & 0.972 & -0.048 & 0.128 & 0.059 & 1.506 & 1.060 \\ 
-##    &  &  & 0.988 & 0.724 & 0.898 & 0.499 & 5.933 & 513.940 \\ 
-##    &  &  & 0.958 & 0.025 & 0.047 & 0.013 & 0.834 & 7.927 \\ 
-##    &  &  & 0.938 & -0.000 & 0.000 & 0.017 & 0.039 & -2.867 \\ 
-##    &  &  & 0.984 & -0.178 & 0.370 & 0.132 & 2.050 & 3.882 \\ 
-##    &  &  & 0.955 & 0.997 & 1.573 & 0.610 & 6.822 & 708.287 \\ 
-##    &  &  & 0.965 & 0.044 & 0.060 & 0.036 & 0.966 & 13.650 \\ 
-##    &  &  & 0.955 & -0.000 & 0.000 & 0.060 & 0.048 & -0.787 \\ 
-##    &  &  & 0.966 & -0.019 & 0.119 & 0.011 & 1.401 & 0.415 \\ 
-##    &  &  & 0.966 & 0.603 & 0.638 & 0.239 & 4.616 & 428.601 \\ 
-##    &  &  & 0.956 & 0.014 & 0.048 & 0.002 & 0.827 & 4.254 \\ 
-##    &  &  & 0.944 & -0.000 & 0.000 & 0.003 & 0.039 & -3.004 \\ 
-##    &  &  & 0.978 & -0.045 & 0.124 & 0.053 & 1.493 & 0.988 \\ 
-##    &  &  & 0.974 & 0.728 & 0.879 & 0.504 & 5.976 & 517.389 \\ 
-##    &  &  & 0.954 & 0.024 & 0.051 & 0.011 & 0.838 & 7.437 \\ 
-##    &  &  & 0.946 & -0.001 & 0.000 & 0.018 & 0.039 & -4.550 \\ 
-##    &  &  & 0.984 & -0.117 & 0.196 & 0.112 & 1.759 & 2.557 \\ 
-##    &  &  & 0.968 & 0.876 & 1.305 & 0.650 & 6.913 & 622.327 \\ 
-##    &  &  & 0.963 & 0.026 & 0.051 & 0.034 & 0.892 & 8.265 \\ 
-##    &  &  & 0.949 & -0.001 & 0.000 & 0.055 & 0.043 & -5.340 \\ 
-##    &  &  & 0.968 & -0.057 & 0.127 & 0.038 & 1.454 & 1.249 \\ 
-##    &  &  & 0.974 & 0.853 & 1.003 & 0.510 & 5.629 & 606.148 \\ 
-##    &  &  & 0.959 & 0.006 & 0.046 & 0.006 & 0.831 & 1.804 \\ 
-##    &  &  & 0.945 & -0.000 & 0.000 & 0.011 & 0.039 & -3.051 \\ 
-##    &  &  & 0.979 & -0.182 & 0.166 & 0.183 & 1.813 & 3.981 \\ 
-##    &  &  & 0.967 & 0.979 & 1.325 & 0.782 & 6.758 & 695.352 \\ 
-##    &  &  & 0.956 & 0.020 & 0.050 & 0.037 & 0.871 & 6.425 \\ 
-##    &  &  & 0.955 & -0.001 & 0.000 & 0.068 & 0.042 & -4.466 \\ 
-##    &  &  & 0.987 & -0.403 & 0.345 & 0.440 & 2.789 & 8.803 \\ 
-##    &  &  & 0.951 & 1.050 & 1.504 & 0.887 & 7.357 & 745.735 \\ 
-##    &  &  & 0.973 & 0.019 & 0.050 & 0.099 & 0.960 & 5.848 \\ 
-##    &  &  & 0.975 & -0.003 & 0.000 & 0.200 & 0.052 & -18.904 \\ 
-##    \hline
-## \end{tabular}
-## \end{table}
-\end{verbatim}
-\end{kframe}
 \end{knitrout}
 
 % latex table generated in R 3.5.0 by xtable 1.8-2 package
