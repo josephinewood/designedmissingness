@@ -1,3 +1,53 @@
+
+
+\RequirePackage{fix-cm}
+
+\documentclass{svjour3}                     % onecolumn (standard format)
+%\documentclass[smallcondensed]{svjour3}     % onecolumn (ditto)
+%\documentclass[smallextended]{svjour3}       % onecolumn (second format)
+%\documentclass[twocolumn]{svjour3}          % twocolumn
+%
+
+\usepackage{graphicx}
+\usepackage{mathptmx}      
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage{caption}
+\usepackage{natbib}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+% \usepackage{threeparttable}
+% \usepackage{threeparttablex}
+% \usepackage[normalem]{ulem}
+% \usepackage{makecell}
+
+\raggedbottom
+
+\journalname{Sankhya B}
+
+
+\begin{document}
+%\SweaveOpts{concordance=TRUE}
+
+<<echo=FALSE>>=
+if (Sys.info()["user"] == "gregorymatthews") {
+  root <- "/Users/gregorymatthews/Dropbox/designedMissingnessGit/Results/"
+}
+
+if (Sys.info()["user"] != "gregorymatthews") {
+  root <- "~/GitHub/designedmissingness/Results/"
+}
+@
+
 % Predefine some figures
 
 <<echo = FALSE>>=
@@ -108,55 +158,20 @@ waveplot <-  ggplot(datmelt, aes(Question, Day, fill=color)) + geom_raster() + s
 @
 
 
-\RequirePackage{fix-cm}
-
-\documentclass{svjour3}                     % onecolumn (standard format)
-%\documentclass[smallcondensed]{svjour3}     % onecolumn (ditto)
-%\documentclass[smallextended]{svjour3}       % onecolumn (second format)
-%\documentclass[twocolumn]{svjour3}          % twocolumn
-%
-
-\usepackage{graphicx}
-\usepackage{mathptmx}      
-\usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage{booktabs}
-\usepackage{multirow}
-\usepackage{cite}
-\usepackage{caption}
-\usepackage{natbib}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage[table]{xcolor}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-% \usepackage{threeparttable}
-% \usepackage{threeparttablex}
-% \usepackage[normalem]{ulem}
-% \usepackage{makecell}
-
-\raggedbottom
-
-\journalname{Sankhya B}
-
-
-\begin{document}
-%\SweaveOpts{concordance=TRUE}
-
 <<primary, echo=FALSE, message=FALSE, warning=FALSE, fig.pos = "H">>=
+
 library(kableExtra)
 library(dplyr)
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_high_hightime0.RData")
+load(paste0(root,"tables20180509_60_1_high_hightime0.RData"))
 high <- d
 
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_med_hightime0.RData")
+load(paste0(root,"tables20180509_60_1_med_hightime0.RData"))
 med <- d
 
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_low_hightime0.RData")
+load(paste0(root,"tables20180509_60_1_low_hightime0.RData"))
 low <- d
+
+
 
 r <- rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])
 
@@ -174,13 +189,13 @@ primary <- kable(df, escape = FALSE, format ="latex", caption = "Primary Results
 <<sampsize, echo=FALSE, message=FALSE, warning=FALSE, fig.pos = "H">>=
 library(kableExtra)
 library(dplyr)
-load("~/GitHub/designedmissingness/Results/tables20180509_120_1_high_hightime0.RData")
+load(paste0(root,"tables20180509_120_1_high_hightime0.RData"))
 high <- d
 
-load("~/GitHub/designedmissingness/Results/tables20180509_120_1_med_hightime0.RData")
+load(paste0(root,"tables20180509_120_1_med_hightime0.RData"))
 med <- d
 
-load("~/GitHub/designedmissingness/Results/tables20180509_120_1_low_hightime0.RData")
+load(paste0(root,"tables20180509_120_1_low_hightime0.RData"))
 low <- d
 
 r <- rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])
@@ -199,13 +214,13 @@ sampsize <- kable(df, escape = FALSE, format ="latex", caption = "Increased Samp
 <<hightime, echo=FALSE, message=FALSE, warning=FALSE, fig.pos = "H">>=
 library(kableExtra)
 library(dplyr)
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_high_hightime1.RData")
+load(paste0(root,"tables20180509_60_1_high_hightime1.RData"))
 high <- d
 
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_med_hightime1.RData")
+load(paste0(root,"tables20180509_60_1_med_hightime1.RData"))
 med <- d
 
-load("~/GitHub/designedmissingness/Results/tables20180509_60_1_low_hightime1.RData")
+load(paste0(root,"tables20180509_60_1_low_hightime1.RData"))
 low <- d
 
 r <- rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])
@@ -224,13 +239,13 @@ hightime <- kable(df, escape = FALSE, format ="latex", caption = "High Time Resu
 <<lowcorr, echo=FALSE, message=FALSE, warning=FALSE, fig.pos = "H">>=
 library(kableExtra)
 library(dplyr)
-load("~/GitHub/designedmissingness/Results/tables20180509_60_0.5_high_hightime0.RData")
+load(paste0(root,"tables20180509_60_0.5_high_hightime0.RData"))
 high <- d
 
-load("~/GitHub/designedmissingness/Results/tables20180509_60_0.5_med_hightime0.RData")
+load(paste0(root,"tables20180509_60_0.5_med_hightime0.RData"))
 med <- d
 
-load("~/GitHub/designedmissingness/Results/tables20180509_60_0.5_low_hightime0.RData")
+load(paste0(root,"tables20180509_60_0.5_low_hightime0.RData"))
 low <- d
 
 r <- rbind(low[[1]],med[[1]],high[[1]],low[[2]],med[[2]],high[[2]],low[[3]],med[[3]],high[[3]])
