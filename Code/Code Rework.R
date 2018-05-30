@@ -123,7 +123,8 @@ pop.mod.coeffs <- summary(pop.mod)$coef[,1:2]
 no.var <- nrow(pop.mod.coeffs)
 
 if (hightime == 1){
-  pop.mod.coeffs[,1] <- pop.mod.coeffs[,1] * c(2,0.5,0.5,1)
+  #pop.mod.coeffs[,1] <- pop.mod.coeffs[,1] * c(2,0.5,0.5,1)
+  pop.mod.coeffs[,1] <- pop.mod.coeffs[,1] * c(1,1,1,10)#new test
 }
 
 # Correlation Matrix
@@ -179,7 +180,7 @@ for (i in 1:no.sim) {print(i)
   sigmaPID <- MD@theta
   
   if (hightime == 1){
-    MD@beta <- MD@beta * c(2,0.5,0.5,1)
+    MD@beta <- MD@beta * c(1,1,1,10)
   }
   
   X$groupErr <- rnorm(no.pid, mean=0, sd=sigmaPID)[X$PID]
@@ -194,7 +195,7 @@ for (i in 1:no.sim) {print(i)
 mod.maker.nomiss <- function(dat){ #
   modbetas <- list()
   modse <- list()
-  for (i in 1:length(dat)){
+  for (i in 1:length(dat)){print(i)
     try(model <- glmer(MissedDose ~ Q7 + ZAlcTox + Day + (1|PID), data = dat[[i]], family=binomial(link=logit)))
     try(modbetas[[i]] <- summary(model)$coef[,1]) # only take the coefficients of the variables, not the intercept
     try(modse[[i]] <- summary(model)$coef[,2])
@@ -204,6 +205,7 @@ mod.maker.nomiss <- function(dat){ #
 
 #Get results for the data with no missingess.
 fullmods <- mod.maker.nomiss(sim.data)
+#save(pop.mod.coeffs,fullmods,file = paste0("fullmods_",no.pid,"_",corr.scale,"_",howmuch,"_hightime",hightime,".RData"))
 
 #Analysis for models with no missing data
 #Bias
