@@ -205,7 +205,7 @@ mod.maker.nomiss <- function(dat){ #
 
 #Get results for the data with no missingess.
 fullmods <- mod.maker.nomiss(sim.data)
-#save(pop.mod.coeffs,fullmods,file = paste0("fullmods_",no.pid,"_",corr.scale,"_",howmuch,"_hightime",hightime,".RData"))
+save(pop.mod.coeffs,fullmods,file = paste0("fullmods_",no.pid,"_",corr.scale,"_",howmuch,"_hightime",hightime,".RData"))
 
 #Analysis for models with no missing data
 #Bias
