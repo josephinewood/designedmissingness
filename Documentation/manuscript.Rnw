@@ -55,8 +55,6 @@ library(kableExtra)
 load(paste0(root,"fullmods_60_1_high_hightime0.RData"))
 beta <- do.call(rbind,fullmods$beta)
 se <- do.call(rbind,fullmods$se) 
-se <- se[abs(beta[,2])<=10,]
-beta <- beta[abs(beta[,2])<=10,]
 
 #bias, percent bias, MSE, coverage, CI length
 bias <- apply(beta,2,mean) - pop.mod.coeffs[,1]
@@ -77,8 +75,7 @@ load(paste0(root,"fullmods_120_1_high_hightime0.RData"))
 #bias, percent bias, MSE, coverage, CI length
 beta <- do.call(rbind,fullmods$beta)
 se <- do.call(rbind,fullmods$se) 
-se <- se[abs(beta[,2])<=10,]
-beta <- beta[abs(beta[,2])<=10,]
+
 
 #bias, percent bias, MSE, coverage, CI length
 bias <- apply(beta,2,mean) - pop.mod.coeffs[,1]
@@ -99,9 +96,7 @@ load(paste0(root,"fullmods_60_1_high_hightime1.RData"))
 #bias, percent bias, MSE, coverage, CI length
 beta <- do.call(rbind,fullmods$beta)
 se <- do.call(rbind,fullmods$se) 
-ind <- abs(beta[,2])<=10
-se <- se[ind,]
-beta <- beta[ind,]
+
 
 #bias, percent bias, MSE, coverage, CI length
 bias <- apply(beta,2,mean) - pop.mod.coeffs[,1]
@@ -649,7 +644,7 @@ In order to evaluate the impact of sample size on estimation, the original sampl
 \subsubsection{Low Inter-Survey Correlation}
 For our second simulation scenario we looked to determine the effect of decreased inter-survey correlation on which PM design would perform best. To clarify, consider the fact that answers given on a particular day may be correlated with one another- the two questions on housing insecurity, for example, are likely to be "yes" on the same days. While this fact was accounted for in the original simulations, it was not in this set of simulations. If the probability of answering "yes" on Question 2, for instance, was a function of the answer to Question 1 and the baseline variables in the original simulations, then in this scenario it is a function of only the baseline variables. This implies that each of the questions are conditionally independent of each other given the baseline variables. If researchers have a questionnaire where they do not expect any of the answers to be obviously related the results here may help to choose which missingness design would be most optimal. To investigate this, the correlation of the variables was scaled by 0.5.\par
 \subsubsection{High Time Effect}
-In the final scenario, the goal was to determine which PM design would lead to the best estimates when time has a disproportionately large effect on our outcome variable. To do this we changed the value of the parameters $\gamma_0$, $\beta_1$, $\beta_2$, and $\beta_3$ to -4.56, 0.14, 0.32, and 0.01 respectively. Note that instead of increasing the value of $\beta_3$, the slope for time effect, all the other parameters were decreased. The results of this section may prove useful to researchers who believe that the overall passage of time plays a larger role in their outcome than a measurement taken at one specific point. \par
+In the final scenario, the goal was to determine which PM design would lead to the best estimates when time has a disproportionately large effect on our outcome variable. To do this held the values of $\gamma_0$, $\beta_1$, $\beta_2$ the same and increaed the effect of time (i.e. $\beta_3$) by ten times.  The results of this section may prove useful to researchers who believe that the overall passage of time plays a larger role in their outcome than a measurement taken at one specific point. \par
 
 \section{Results}
 \label{sec:3}
@@ -703,15 +698,18 @@ Under Wave Missingness the issues of unacceptable bias, percent bias and MSE occ
 \label{sec:3.4}
 In the final scenario we tested to see how the PM designs would capture a model where time had a disproportionately large effect on Missed Dose. The results from our full-data analyses are provided in Table \ref{tab:prelim} while the corresponding PM design results are in Table \ref{tab:hightime}. \par
 
+With the Split Form and Altered Split Form designs we observed coverage rates for $\beta_1$ paramter estimate that are slightly higher than the nominal level of 95\% coverage in the high, medium, and low levels of missingness.  The percentage of bias in these desgined is relatively low in the -30\% to -50\% range across low, medium, and high missingness.  As for Wave Missingness, the percent bias increases from about -40\% for low missingness all the way up to about -92\% for high missingness.  \par
+
+It is interesting to note that the FMI seems the be relatively unaffected by the level of missingness in the Split Form and Altered Split Form designs, but in Wave Missingness the FMI increases steadily as the level of missingess increases.  We also observe this in the confidence interval length, which is relatively stable around 4 for Split Form and Altered Split Form across the three different levels of missingness whereas the confidence interval length in Wave Missingness increases steadily and the amount of missing information increases.  \par
+
+
 <<echo = FALSE, message = FALSE, warning = FALSE, warning=FALSE>>=
 hightime
 @
 
-The effects of imposing Split Form missingness in this high time effect scenario are similar to those under the low inter-survey correlation scenario. At low levels of missingness bias, percent bias, MSE, and coverage for $\beta_1$ are all within the acceptable range. At medium and high levels of missingness bias, percent bias, and MSE are unacceptably high. \par 
+%The effects of imposing Split Form missingness in this high time effect scenario are similar to those under the low inter-survey correlation scenario.  The Altered Split Form design performed slightly better than the normal Split Form design under this simulation scenario. Note, however, that while the normal Split Form design provided unacceptable bias and percent bias for the $\beta_1$ estimate at medium levels of missingness, this was not true of the Altered Split Form design. Additionally, observe that at medium and high levels of missingness there was an improvement under the Split Form design in the CI lengths for the $\beta_1$ estimate. In the Split Form design the CI lengths were recorded as 0.981 and 1.433 at medium and high missingness. Under the Altered Split Form design these measurements were 0.903 and 1.381. \par
 
-The Altered Split Form design performed slightly better than the normal Split Form design under this simulation scenario. Note, however, that while the normal Split Form design provided unacceptable bias and percent bias for the $\beta_1$ estimate at medium levels of missingness, this was not true of the Altered Split Form design. Additionally, observe that at medium and high levels of missingness there was an improvement under the Split Form design in the CI lengths for the $\beta_1$ estimate. In the Split Form design the CI lengths were recorded as 0.981 and 1.433 at medium and high missingness. Under the Altered Split Form design these measurements were 0.903 and 1.381. \par
-
-In this simulation scenario, the Wave Missingness Design performs similarly to the Split Form and Altered Split Form designs at low levels of missingness. The bias, percent bias, MSE, and CI coverage for $\beta_1$ all performed acceptably using the Wave Missingness design at low levels of missingness. However, as missingness increases this design shows itself to be unsuitable in terms of estimating $\beta_1$ for the same reasons noted in the other scenarios. \par
+%In this simulation scenario, the Wave Missingness Design performs similarly to the Split Form and Altered Split Form designs at low levels of missingness. The bias, percent bias, MSE, and CI coverage for $\beta_1$ all performed acceptably using the Wave Missingness design at low levels of missingness. However, as missingness increases this design shows itself to be unsuitable in terms of estimating $\beta_1$ for the same reasons noted in the other scenarios. \par
 
 \subsection{Interpretation}
 \label{sec:3.5}
@@ -719,7 +717,7 @@ We note two commonalities throughout our simulation scenarios. The first is that
 
 This first result, the lack of improvement seen in the Altered Split form design is surprising. By keeping a small number of measurement occasions fully observed we would have expected the imputation process to perform more effectively and improve our estimates. However, even factoring in the slight decrease in overall missingness, this design performed only equally as well as the normal Split Form design. This may be a result of the fact that the number of observations we left fully observed was small; only two out of the forty-five days (approximately 4.4\% of days). While it may be interesting to see if the inclusion of more fully observed days is capable of improving our estimates, perhaps keeping five days (11.1\%) fully observed, we would need to be careful about raising this number too high. If the cost or burden of observations is a limiting factor, then collecting full data on even 10\% of the days may be unnecessarily burdensome. \par
 
-Of larger concern, however, is the steep drop-off in estimating quality of the Wave Missingness design as missingness increased. In every scenario tested, the Wave Missingness design produced unacceptable bias, percent bias, and MSE at medium and high levels of missingness. In addition, despite increased bias on estimates with missing values, the length of confidence intervals for these estimates remained the same as in the Split Form design. This implies that there is an underestimation of the variances occurring at some point in the imputation process. This is supported by the fact that, generally, the fraction of missing information estimated in the Wave Missingness design tended to be smaller than that of the corresponding Split Form design. This can also explain the lower confidence interval coverages obtained using this design. At high levels of missingness none of the scenarios allowed the Wave Missingness design to obtain coverages above 90\%. This leads to the belief that many of the imputations are producing datasets which are similar in terms of the relationships between variables but that are not representative of the true relationships. Because of this, the use of Wave Missingness designs for anything but small levels of missing data cannot be recommended. \par
+Of larger concern, however, is the steep drop-off in estimating quality of the Wave Missingness design as missingness increased. In every scenario tested, the Wave Missingness design produced high bias, percent bias, and MSE at medium and high levels of missingness. In addition, despite increased bias on estimates with missing values, the length of confidence intervals for these estimates remained the same as in the Split Form design. This implies that there is an underestimation of the variances occurring at some point in the imputation process. This is supported by the fact that, generally, the fraction of missing information estimated in the Wave Missingness design tended to be smaller than that of the corresponding Split Form design. This can also explain the lower confidence interval coverages obtained using this design. At high levels of missingness none of the scenarios allowed the Wave Missingness design to obtain coverages above 90\%. This leads to the belief that many of the imputations are producing datasets which are similar in terms of the relationships between variables but that are not representative of the true relationships. Because of this, the use of Wave Missingness designs for anything but small levels of missing data cannot be recommended. \par
 
 Additionally, all PM designs under all scenarios performed within acceptable ranges when measuring the effects of variables which had no missing values ($\gamma_0, \beta_2, \beta_3$). This fact makes the increased sample size scenario promising for researchers. While our estimation of $\beta_1$ was similar in this scenario as in others, the estimation of the other model parameters improved by leaps and bounds. If a PM design is able to reduce costs by 50\% by introducing missingness, using these extra funds to recruit more participants may be a good idea for researchers whose analysis of interest involves variables that will not have missing values. \par
 
