@@ -108,8 +108,11 @@ We're using different data! That's why we didn't use a latent growth curve model
 
 \item The model equation appears to be missing an error term in Level 1. If it isn't, that implies that data were generated with no prediction error - please clarify!\\
 
-{\bf Our response goes here.}\\
-The model has been specified correctly this time.  The reviewer is correct.  
+{\bf The model was indeed written incorrectly.  The model is now written as $$
+logit (p_{ij}) = \beta_{0j} + \beta_1DrinkYN_i + \beta_2ZAlcTox_i +\beta_3Day
+$$
+where $\beta_{0j} = \gamma_0 + \alpha_j$ and $\alpha_j \sim N(0,\sigma_\alpha^2)$.}\\
+
 
 \item I'm quite confused about the relation between the survey questions and the analysis model. Table 5 presents the survey questions, which I presumed to be the basis for the planned missing design, but the analysis model doesn't seem to include any of those items except "did you drink today" as a predictor. How is the split form design relevant to the variables included in the model? What was the missingness pattern of those items? More generally, I'd like to see the full model of the complete data that were generated and the details of all the missingness patterns that were imposed (i.e., which variables were missing data on which days in the 25\%, 50\%, and 75\% missing conditions).\\
 
