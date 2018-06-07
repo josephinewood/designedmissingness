@@ -116,46 +116,45 @@ where $\beta_{0j} = \gamma_0 + \alpha_j$ and $\alpha_j \sim N(0,\sigma_\alpha^2)
 
 \item I'm quite confused about the relation between the survey questions and the analysis model. Table 5 presents the survey questions, which I presumed to be the basis for the planned missing design, but the analysis model doesn't seem to include any of those items except "did you drink today" as a predictor. How is the split form design relevant to the variables included in the model? What was the missingness pattern of those items? More generally, I'd like to see the full model of the complete data that were generated and the details of all the missingness patterns that were imposed (i.e., which variables were missing data on which days in the 25\%, 50\%, and 75\% missing conditions).\\
 
-{\bf Our response goes here.}\\
-This has been addressed.  Please see the new figures that are red and blue.  Tables INSERT NUMBERS!.  
+{\bf The analysis model contains only one of the survey questions, but the other survey questions are used in the imputation model to impute the missing values of the question used in the analysis model.  An example of the missingness pattern fo rlow levels of missingness for split design can be seen in figure 1 in the left-most image.  }\\
+ 
 
 \item In the split form design, is Day 5 / Q5 supposed to be missing? It's otherwise strange that Q5 is answered on 4/5 days and that Day 5 as 4/5 questions, as opposed to all the other days/questions being 3/5.\\
 
-{\bf Our response goes here.}\\
-The reviewer is correct.  We have replaced those tables with new figures.....
+{\bf We have removed this table from the manuscript and replaced with this Figure 1.  Figure 1 shows an example of the missingness patterns for one single participant.  }\\
 
 \item Further, please clarify whether that Table 6 presents the PM designs for a single participant. That is, I think another participant would be missing different questions on different days in the Split Form design, or missing different waves in the Wave Missingness design. Normally these design tables (like Tables 1-4) have a column for participants/forms, but Table 6 does not.\\
 
-{\bf Our response goes here.}\\
-Yes this is for one participant.  We have removed this table.  We have replaced these with figures.  The figure give an example of what it would look like for one individual, but each individual will have a different set of missing questions.  
+{\bf The table that the reviewer is referring to has been removed from the manuscript.  It has been replaced by figure 1 and it is indeed and example of the missingness design for one single individual.    }\\
+  
 
 \item "The FMI is a measure of how much of the MI sampling variance comes from differences between imputations." That is how it is computed, but it is more generally a measure of the proportion of information that is lost as a result of missing data (e.g., see Savalei & Rhemtulla, 2012 "On obtaining estimates of the fraction of missing information from FIML") "When determining if the PM designs are performing sufficiently...three possible PM designs." If different missingness structures are applied to the very same data sets, then the results are perfectly comparable. Further, it's not clear what "bias" and "average biases" refer to here - an estimate cannot be said to be biased based on a single data set, and it's not clear what's being averaged over.\\ 
 
-{\bf Our response goes here.}\\
-We agree with the description of FMI.  In spirit it is accounting for how much missing data there is.  CHANGE IN TEXT.  
+{\bf We have changed this sentence to now read: ``The FMI is a measure of the fraction of information that is lost due to missing data."\\
 
-Let me read the FMI section and see what they are talkin gabout here.  
+We have changed this sentence to read ``In addition to comparing the results between each of the PM designs, the same analyses were also performed before missingness was imposed." We believe this addresses the reveiwers concern.  \\
 
-If you mean that they are all the same for different planned missingness patterns that is not correct.  We don't fully understan this statement from the reviewer.    
+Finally, the bias and average bias are found by averaging across the different simulations.  }\\
+
 
 \item "If a 95\% CI has a true coverage of 90\% then the Type I error rate is double what it should be." That's only true if the true parameter value is 0 and you're testing the hypothesis that the estimated parameter is different from 0. Otherwise these measures get at different things. (Indeed, there is no Type I error rate if the parameter value is not 0).\\
 
-{\bf Our response goes here.}\\
-We disagree politely.  Here is why........
+{\bf Type I error rate refers to the rate at which the null hypothesis is rejected given that the null hypothesis is true.  In this case, we are implicitly testing the null hypothesis that each regression coefficient is equal to the known value.  (e.g. $\beta_1 = 0.28$).  Since we know the true values of our population parameters, and we are generating simulated data sets based on those values our coverage rates are in fact estimating $1 - \alpha$, where $\alpha$ is the probability of making a type I error.  There is always a type I error rate, even for parameter values different than 0.  It is simply calculated by measuring how often the test is rejected (i.e. how often a confidence interval misses the true parameter value) conditional on the null hypothesis being true.}\\
+
 
 \item "While this fact was accounted for in the original simulations, it was not in this set of simulations." This sentence makes it sound as though the second simulation design somehow failed to model the correlations among variables, rather than that low correlations were imposed. Am I right that the actual inter-item correlations are not presented anywhere in the paper? This is relevant information that is missing.\\
 
 {\bf Our response goes here.}\\
-We are using inter-item correlation.  Just specify. 
+The correlation matrix used needs to be added to the paper.  
 
 \item Results are presented for the main effects in the model, but not for the variance of the random intercept - it would be interesting to see these results as well.\\
 
-{\bf Our response goes here.}\\
-1.) Either add this if it's easy.  
-
-OR
-
-2.) The main interest of this paper was the fixed effects.  So we excluded the variance of the random intercept.  
+{\bf The main interest of this paper was the fixed effects coefficients, so we excluded analysis of the variance of the random intercept.  }\\
+% 1.) Either add this if it's easy.  
+% 
+% OR
+% 
+% 2.) The main interest of this paper was the fixed effects.  So we excluded the variance of the random intercept.  
 
 \item It is impossible to understand the results of the low inter-survey correlation condition without a clearer presentation of the design. If survey items were predictable from "baseline items" but not from each other, what were the correlations between these items and the baseline items? Were the baseline items used in imputation? And again, since the survey items don't seem to be in the model anywhere, how are these relationships expected to affect parameter estimation?\\
 
