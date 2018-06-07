@@ -86,13 +86,12 @@ How to respond to this: ``Are these sample sizes typical? And is there good reas
 
 \item I was troubled by the seemingly arbitrary thresholds for what were unacceptable criteria. How was "Bias, Percent Bias, or MSE more than 40\% greater than the complete-data value or a CI coverage of less than 90\%" determined?\\
 
-{\bf Our response goes here.}\\
-These threshholds are identified in Collins, Cam, and Schafer.  
+{\bf We have removed the mention of these cut-offs.  However, they are based on suggestions put forth in Collins, L. M., Schafer, J. L., & Kam, C.-M. (2001)}\\
+
 
 \item In section 4.3, the authors seem to confuse the idea of bias and efficiency.\\
+{\bf That is correct.  The mentions of efficiency have been removed from this section.  }\\
 
-{\bf Our response goes here.}\\
-CHECK THIS.  
 
 \end{itemize}
 
