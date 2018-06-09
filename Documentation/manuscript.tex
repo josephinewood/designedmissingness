@@ -341,52 +341,13 @@ Additionally, note: \\ \\
 \end{itemize}.
 
 Based on the observed data, the true values of the parameters, $\gamma_0$, $\beta_1$, $\beta_2$, $\beta_3$, and $\sigma_\alpha^2$ were found to be -2.29, 0.28, 0.64, 0.01, and 1.12, respectively. \par
-Once the samples were drawn, missingness was added under three different structures. These were the Split-Form and Wave Missingness designs previously mentioned as well as a variation on the Split-Form design where a few measurement occasions (here, two days per participant) are fully observed. To clarify this difference, see the hypothetical application of these designs to a five question multi-day survey in Table \ref{tab:table14} \textbf{Greg: I think we need either only the table or only the illustration.  Not sure we need both.}. As in the previous tables, "1" indicates an observed occasion while "0" indicates a missing one. We see that the Split Form design entails missing two items on each of the days. The altered Split Form, while similar, is fully measured on two of the measurement occasions. Because there are days which are fully observed, the relationships between variables may be clearer, allowing the imputation procedure to run more effectively. On the other hand, the Wave Missingness design shows two days in which no questions are asked but the full questionnaire is given on the remaining days. \par
-
-\begin{table}[H]
-	\centering
-	\caption{Different Planned Missingness Designs}
-	\setlength{\tabcolsep}{0.45cm}
-	\label{tab:table14}
-	\hspace*{-1cm}
-	\begin{tabular}{c|c|ccccc}
-		\toprule
-		Design & Day & Q1 & Q2 & Q3 & Q4 & Q5 \\
-		\midrule
-		\multirow{5}{*}{Split Form}
-		& 1 & 1 & 1 & 0 & 0 & 1 \\
-		& 2 & 0 & 0 & 1 & 1 & 1 \\
-		& 3 & 0 & 1 & 1 & 0 & 1 \\
-		& 4 & 1 & 0 & 1 & 1 & 0 \\
-		& 5 & 1 & 1 & 0 & 1 & 1 \\
-		\midrule
-		\midrule
-		\multirow{5}{*}{Altered Split Form}
-		& 1 & 1 & 1 & 1 & 1 & 1 \\
-		& 2 & 1 & 1 & 1 & 1 & 1 \\
-		& 3 & 0 & 0 & 1 & 1 & 1 \\
-		& 4 & 1 & 1 & 0 & 1 & 0 \\
-		& 5 & 0 & 1 & 1 & 0 & 1 \\
-		\midrule
-		\midrule
-		\multirow{5}{*}{Wave Missingness}
-		& 1 & 1 & 1 & 1 & 1 & 1 \\
-		& 2 & 0 & 0 & 0 & 0 & 0 \\
-		& 3 & 1 & 1 & 1 & 1 & 1 \\
-		& 4 & 1 & 1 & 1 & 1 & 1 \\
-		& 5 & 0 & 0 & 0 & 0 & 0 \\
-		\bottomrule
-	\end{tabular}
-	\hspace*{-1cm}	
-\end{table}
+Once the samples were drawn, missingness was added under three different structures. These were the Split-Form and Wave Missingness designs previously mentioned as well as a variation on the Split-Form design where a few measurement occasions (here, two days per participant) are fully observed. To clarify this difference, see the hypothetical application of these designs to a five question multi-day survey in Figure \ref{fig:formillustration}. \par
 
 
-%FIX THIS: THIS SOUNDS LIKE WE ADDED MORE MISSINGNESS. FIXED
 For each different designed missingness pattern we imposed low, medium, and high levels of missingness roughly corresponding to 2, 4, and 6 missing questions. Previous work by \citet{rhemtulla2014planned} found that for low levels of missingness Split Form design outperforms the Wave Missingness design in capturing latent growth curve model parameters. However, because only low-levels of missingness are tested it is unknown whether this relationship holds at moderate or high levels. By including these different levels of missingness the performance at all levels of the missingness spectrum will be measured. \par
-Once missingness was created, Multiple Imputation techniques were applied to estimate the relationship between medication adherence and the other variables in our model. Because the missing data mechanism is controled, the data is known to be MCAR. This fact allows for the principled use of MI techniques. Using the R package \texttt{mice} \citep{mice2011imputation} the binary variables (Q1-Q7) were imputed using a logistic model based approach while the count variable (Q8) was imputed using predictive mean matching %\textbf{was it??? i don't think so, it was in the X block originally but double check!Greg: Yes it was}. 
-\par
+Once missingness was created, Multiple Imputation techniques were applied to estimate the relationship between medication adherence and the other variables in our model. Because the missing data mechanism is controled, the data is known to be MCAR. This fact allows for the principled use of MI techniques. Using the R package \texttt{mice} \citep{mice2011imputation} the binary variables (Q1-Q7) were imputed using a logistic model based approach while the count variable (Q8) was imputed using predictive mean matching measure of the proportion of information that is lost as a result of missing data. \par
 
-After imputing, a logistic random-intercept model was estimated for each of the imputed datasets and combined using Rubin's Rules \citep{rubin2004multiple}. From here, the results from each PM design were evaluated based on bias, percent bias, mean squared error (MSE), coverage, confidence interval (CI) length, and the fraction of missing information (FMI). The FMI is a measure of how much of the MI sample variance comes from differences between imputations. In addition to comparing the results between each of the PM designs, the same analyses were also performed before missingness was imposed. \par
+After imputing, a logistic random-intercept model was estimated for each of the imputed datasets and combined using Rubin's Rules \citep{rubin2004multiple}. From here, the results from each PM design were evaluated based on bias, percent bias, mean squared error (MSE), coverage, confidence interval (CI) length, and the fraction of missing information (FMI). The FMI is a measure of the fraction of information that is lost due to missing data. In addition to comparing the results between each of the PM designs, the same analyses were also performed before missingness was imposed. \par
 
 When determining if the PM designs are performing sufficiently, it is important to consider how well the simulated samples performed before adding a missingness structure. For example, consider two full data samples with respective biases on the $\beta_1$ estimate of 0.13 and 0.15. Further, after imposing different PM design structures on these samples, the average biases are 0.14 and 0.15 respectively. It would be unfair to claim that the first PM design performed better than the second because, by chance, it was based off of a more representative sample. This fact was considered when determining the evaluation criteria. \par
 
@@ -396,8 +357,10 @@ This process was repeated under the three modified simulation scenarios mentione
 
 \subsubsection{Increased Sample Size}
 In order to evaluate the impact of sample size on estimation, the original sample size of 60 participants was expanded to 120. The rest of the simulation process was carried out as before. As noted earlier, the cost savings gleaned from the PM designs could allow us to enroll more participants. Thus, even if one design performed more optimally than the others, if all designs also perform acceptably well at high samples, researchers can design missingness in whichever method is most convenient. Furthermore, because Wave Missingness allows for greater savings, an increase in sample size is more reasonable for that type of missingness. \par
+
 \subsubsection{Low Inter-Survey Correlation}
-For our second simulation scenario we looked to determine the effect of decreased inter-survey correlation on which PM design would perform best. To clarify, consider the fact that answers given on a particular day may be correlated with one another- the two questions on housing insecurity, for example, are likely to be "yes" on the same days. While this fact was accounted for in the original simulations, it was not in this set of simulations. If the probability of answering "yes" on Question 2, for instance, was a function of the answer to Question 1 and the baseline variables in the original simulations, then in this scenario it is a function of only the baseline variables. This implies that each of the questions are conditionally independent of each other given the baseline variables. If researchers have a questionnaire where they do not expect any of the answers to be obviously related the results here may help to choose which missingness design would be most optimal. To investigate this, the correlation of the variables was scaled by 0.5.\par
+For our second simulation scenario we looked to determine the effect of decreased inter-survey correlation on which PM design would perform best. To clarify, consider the fact that answers given on a particular day may be correlated with one another- the two questions on housing insecurity, for example, are likely to be "yes" on the same days. This set of simulations reduced the correlations between survey questions to study the impact lower correlation between survey question answers.  This was done to simulate a scenario where researchers have a questionnaire that they do not expect any of the answers to be obviously related. To investigate this, the correlation betwen the variables was reduced by half.\par
+
 \subsubsection{High Time Effect}
 In the final scenario, the goal was to determine which PM design would lead to the best estimates when time has a disproportionately large effect on our outcome variable. To do this held the values of $\gamma_0$, $\beta_1$, $\beta_2$ the same and increaed the effect of time (i.e. $\beta_3$) by ten times.  The results of this section may prove useful to researchers who believe that the overall passage of time plays a larger role in their outcome than a measurement taken at one specific point. \par
 
@@ -410,43 +373,43 @@ The first set of simulations run contained the parameters in the random-intercep
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{table}[!h]
 
-\caption{\label{tab:unnamed-chunk-2}\label{tab:prelim} Primary Results (N = 60)}
+\caption{\label{tab:unnamed-chunk-2}\label{tab:prelim} Preliminary Results (N = 60)}
 \centering
 \resizebox{\linewidth}{!}{\begin{tabular}[t]{l|l|r|l|r|l|r}
 \hline
 Scenario & Parameter & Bias & Pct Bias & MSE & Coverage & CI Length\\
 \hline
- & $\gamma_0$ & 0.042 & -1.86\% & 0.018 & 98.8\% & 0.700\\
+ & $\gamma_0$ (-2.287) & 0.042 & -1.86\% & 0.018 & 98.8\% & 0.700\\
 
- & $\beta_1$ & -0.103 & -36.45\% & 0.871 & 95.4\% & 3.040\\
+ & $\beta_1$ (0.282) & -0.103 & -36.45\% & 0.871 & 95.4\% & 3.040\\
 
- & $\beta_2$ & 0.008 & 1.26\% & 0.024 & 93.4\% & 0.585\\
+ & $\beta_2$ (0.637) & 0.008 & 1.26\% & 0.024 & 93.4\% & 0.585\\
 
-\multirow{-4}{*}{\raggedright\arraybackslash Primary Analysis (n = 60)} & $\beta_3$ & 0.000 & -0.83\% & 0.000 & 94.2\% & 0.017\\
+\multirow{-4}{*}{\raggedright\arraybackslash Primary Analysis (n = 60)} & $\beta_3$ (0.0147) & 0.000 & -0.83\% & 0.000 & 94.2\% & 0.017\\
 \cline{1-7}
- & $\gamma_0$ & 0.014 & -0.59\% & 0.008 & 98.4\% & 0.424\\
+ & $\gamma_0$ (-2.287) & 0.014 & -0.59\% & 0.008 & 98.4\% & 0.424\\
 
- & $\beta_1$ & -0.038 & -13.5\% & 0.135 & 95.2\% & 1.384\\
+ & $\beta_1$ (0.282) & -0.038 & -13.5\% & 0.135 & 95.2\% & 1.384\\
 
- & $\beta_2$ & 0.006 & 0.86\% & 0.007 & 94.4\% & 0.319\\
+ & $\beta_2$ (0.637) & 0.006 & 0.86\% & 0.007 & 94.4\% & 0.319\\
 
-\multirow{-4}{*}{\raggedright\arraybackslash Increased Sample Size (n = 120)} & $\beta_3$ & 0.000 & -0.87\% & 0.000 & 95.3\% & 0.012\\
+\multirow{-4}{*}{\raggedright\arraybackslash Increased Sample Size (n = 120)} & $\beta_3$ (0.0147) & 0.000 & -0.87\% & 0.000 & 95.3\% & 0.012\\
 \cline{1-7}
- & $\gamma_0$ & 0.044 & -1.91\% & 0.018 & 98.8\% & 0.700\\
+ & $\gamma_0$ (-2.287) & 0.044 & -1.91\% & 0.018 & 98.8\% & 0.700\\
 
- & $\beta_1$ & -0.067 & -23.67\% & 0.298 & 95.8\% & 2.001\\
+ & $\beta_1$ (0.282) & -0.067 & -23.67\% & 0.298 & 95.8\% & 2.001\\
 
- & $\beta_2$ & 0.007 & 1.11\% & 0.024 & 93.5\% & 0.585\\
+ & $\beta_2$ (0.637) & 0.007 & 1.11\% & 0.024 & 93.5\% & 0.585\\
 
-\multirow{-4}{*}{\raggedright\arraybackslash Low Inter-Survey Correlation (n = 60)} & $\beta_3$ & 0.000 & -1.17\% & 0.000 & 94\% & 0.017\\
+\multirow{-4}{*}{\raggedright\arraybackslash Low Inter-Survey Correlation (n = 60)} & $\beta_3$ (0.0147) & 0.000 & -1.17\% & 0.000 & 94\% & 0.017\\
 \cline{1-7}
- & $\gamma_0$ & -0.020 & 0.44\% & 0.114 & 96.2\% & 1.368\\
+ & $\gamma_0$ (-2.287) & -0.020 & 0.44\% & 0.114 & 96.2\% & 1.368\\
 
- & $\beta_1$ & -6.781 & -4815.84\% & 136.550 & 96.6\% & 88815.966\\
+ & $\beta_1$ (0.282) & -6.781 & -4815.84\% & 136.550 & 96.6\% & 88815.966\\
 
- & $\beta_2$ & 0.014 & 4.54\% & 0.047 & 95.7\% & 0.832\\
+ & $\beta_2$ (0.637) & 0.014 & 4.54\% & 0.047 & 95.7\% & 0.832\\
 
-\multirow{-4}{*}{\raggedright\arraybackslash High Time Effect (n = 60)} & $\beta_3$ & 0.000 & -0.98\% & 0.000 & 94.5\% & 0.039\\
+\multirow{-4}{*}{\raggedright\arraybackslash High Time Effect (n = 60)} & $\beta_3$ (0.147) & 0.000 & -0.98\% & 0.000 & 94.5\% & 0.039\\
 \hline
 \end{tabular}}
 \end{table}
@@ -454,8 +417,7 @@ Scenario & Parameter & Bias & Pct Bias & MSE & Coverage & CI Length\\
 
 \end{knitrout}
 
-
-Of note in the complete-data primary analysis is that the coverage of the 95\% CIs is larger than expected for the parameter estimates and the percent bias for the $\beta_1$ estimate is somewhat large. This increased bias is likely due to the difficulties inherent in estimating logistic regression models with rare event data \citep{king2001logistic}. Nevertheless, this must be kept in mind when analyzing the results from the PM designs provided in Table \ref{tab:primary}. %\textbf{In Table \ref{tab:primary} as in Tables \ref{tab:sampsize}, \ref{tab:lowcorr}, and \ref{tab:hightime} bold values indicate ``unacceptable" results.} That is, bias, percent bias, or MSE more than 40\% greater than the complete-data value or a CI coverage of less than 90\%.
+Of note in the complete-data primary analysis is that the coverage of the 95\% CIs is larger than expected for the parameter estimates and the percent bias for the $\beta_1$ estimate is somewhat large. This increased bias is likely due to the difficulties inherent in estimating logistic regression models with rare event data \citep{king2001logistic}. Nevertheless, this must be kept in mind when analyzing the results from the PM designs provided in Table \ref{tab:primary}.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{table}[!h]
@@ -735,9 +697,9 @@ Design & Level & Parameter & Bias & Pct Bias & MSE & Coverage & CI Length & FMI\
 
 \end{knitrout}
 
-For the Split Form design it is important to notice that the efficiency of the $\beta_1$ estimate decreases much more rapidly than in the original simulations where survey questions were predictive of one another. For instance, the bias of $\beta_1$ at low levels of missingness, here, was found to be 0.150 and 0.276 at high levels. This left us with an increase in average bias of 0.126. Looking at the same increase in the original simulations, note that the bias only increased by 0.071. This loss in efficiency is seen in the other measurements on the $\beta_1$ estimate as well. Moreover, note that the Split Form design performs unacceptably in terms of bias, percent bias, and MSE at medium levels of missingness. This was not the case in the other missingness scenarios. \par
+For the Split Form design it is important to notice that the bias of the $\beta_1$ estimate decreases much more than in the original simulations when moving from low to high missingess. For instance, the bias of $\beta_1$ at low levels of missingness, here, was found to be -0.041 and -0.145 at high levels. Looking at the same increase in the original simulations, note that the bias only changed from -0.071 to -0.107. \par
 
-The Altered Split Form design at medium levels of missingness yielded an MSE outside of the acceptable range and at high levels bias, the percent bias are unacceptable as well. Additionally, the coverage of the $\beta_1$ CIs was quite a bit higher than in the full-data simulations. That is, while the coverage probability obtained in the full-data simulations was 94.5\%, under this Altered Split Form design the coverages are 95.5\%, 97.0\%, and 96.0\% at low, medium, and high levels of missingness respectively. \par
+The Altered Split Form design at medium levels of missingness yielded an MSE outside of the acceptable range and at high levels bias, the percent bias are unacceptable as well. Additionally, the coverage of the $\beta_1$ CIs was quite a bit higher than in the full-data simulations. That is, while the coverage probability obtained in the full-data simulations was 95.4\%, under this Altered Split Form design the coverages are 98.4\%, 99.1\%, and 99.1\% at low, medium, and high levels of missingness, respectively. \par
 
 Under Wave Missingness the issues of unacceptable bias, percent bias and MSE occur. However, at low levels of missingness, the coverage of the $\beta_1$ estimate was fairly good (96.5\% compared to 94.5\% in the full data). Sufficient coverage did not hold through increased missingness as coverage dropped to 89.5\% in the high missingness scenario. As in other scenarios, the CI lengths produced under the Wave Missingness design are similar to those produced in the Split Form designs despite an increase in bias. However, here the increase in bias is less dramatic than in other scenarios. For example, at high levels of missingness in the original simulations the average bias on the $\beta_1$ estimate was 0.065 higher for the Wave Missingness design (at 0.290) than in the Split Form design (0.225). In this simulation scenario that same difference was only 0.027. Moreover, while the estimation of $\gamma_0$ was unacceptable at high levels of missingness in the other simulation scenarios, here it was in the acceptable range.\par
 
