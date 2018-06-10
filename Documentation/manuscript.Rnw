@@ -659,7 +659,7 @@ Towards the bottom of Table \ref{tab:primary}, the Wave Missingness design provi
 \label{sec:3.2}
 In the next simulation scenario the sample size was increased to 120 participants. All parameter values were held the same as in the original simulation. Table \ref{tab:prelim}, again, contains the results of the analysis before applying any PM design. The results of the full-data simulations are compared to those obtained from the PM designs, shown in Table \ref{tab:sampsize}. \par
 
-<<echo = FALSE, message = FALSE, warning = FALSE, warning=FALSE>>=
+<<echo = FALSE, message = FALSE, warning = FALSE, warning=FALSE>>=X
 sampsize
 @
 
